@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     FILE *file = fopen(argv[i], "r");
     if (file == NULL) {
-      perror("Unable to open file: ");
+      perror("Unable to open file");
       exit(1);
     }
 
