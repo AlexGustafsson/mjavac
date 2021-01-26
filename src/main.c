@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "main.h"
 
@@ -12,7 +13,25 @@ int main(int argc, char **argv) {
   printf("Running in debug mode\n");
 #endif
 
-  if (!yylex())
-    printf("Done!\n");
+  if (argc == 1)
+    die_with_usage(argv);
+
+  for (int i = 1; i < argc; i++) {
+    FILE *file = fopen(argv[i], "r");
+    if (file == NULL) {
+      perror("Unable to open file: ");
+      exit(1);
+    }
+
+    yyset_in(file);
+    yylex();
+    fclose(file);
+  }
+
   return 0;
+}
+
+void die_with_usage(char **argv) {
+  printf("%s: <source file 1> [source file 2, source file 3, ...]\n", argv[0]);
+  exit(1);
 }
