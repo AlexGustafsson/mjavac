@@ -1,3 +1,12 @@
+# Quickstart
+
+```sh
+make build
+./build/mjavac test/examples/factorial.java
+```
+
+# Development
+
 Make sure you meet the following prerequisites:
 
 Building:
