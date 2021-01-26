@@ -6,7 +6,7 @@
 %option noyywrap stack nodefault
 
 whitespace [ \t]+
-newlines \n+
+newline \n
 
 keyword class|public|static|main|extends|if|while|"("|")"|"["|"]"|"{"|"}"|";"|","|"."|this|new|=
 type int|boolean|void
@@ -30,9 +30,9 @@ identifier [a-zA-Z_][a-zA-Z0-9]*
 
 {comment_single_line}{whitespace}* yy_push_state(COMMENTED_LINE);
 <COMMENTED_LINE>[^\n]* {printf("[Comment '%s']\n", yytext);}
-<COMMENTED_LINE>\n yy_pop_state();
+<COMMENTED_LINE>{newline} yy_pop_state();
 
 {whitespace} /* ignore */
-{newlines} {printf("\n");}
+{newline}+ {printf("\n");}
 
 . {printf("\033[31m[Unexpected '%s']\033[0m", yytext); error_count++;}
