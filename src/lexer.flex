@@ -4,10 +4,11 @@
 
 %option noyywrap
 
-%x STRING
+quote_double \"
+
+%x STRING_DOUBLE_QUOTED
 
 %%
-[^"]*           { printf("OTHER: %s\n",yytext);}
-["]              {BEGIN STRING;}
-<STRING>["]      {BEGIN INITIAL;}
-<STRING>[^"]*   {printf("STRING: %s\n", yytext);}
+{quote_double} BEGIN(STRING_DOUBLE_QUOTED);
+<STRING_DOUBLE_QUOTED>[^\"]* {printf("STRING_DOUBLE_QUOTED: %s\n", yytext);}
+<STRING_DOUBLE_QUOTED>{quote_double} BEGIN(INITIAL);
