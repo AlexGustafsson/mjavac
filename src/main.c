@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
 
   if (error_count > 0) {
     printf("One or more errors occured while lexing\n");
+    return 1;
   }
 
   return 0;
