@@ -3,6 +3,8 @@
 
 #include "main.h"
 
+int error_count = 0;
+
 int main(int argc, char **argv) {
 #ifdef DEBUG
   printf("Running in debug mode\n");
@@ -15,6 +17,10 @@ int main(int argc, char **argv) {
     }
   } else {
     lex_file(stdin);
+  }
+
+  if (error_count > 0) {
+    printf("One or more errors occured while lexing\n");
   }
 
   return 0;
