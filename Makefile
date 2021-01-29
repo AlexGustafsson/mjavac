@@ -14,7 +14,7 @@ objects := $(subst src,build,$(source:.c=.o))
 
 filesToFormat := $(source) $(sourceHeaders)
 
-.PHONY: build debug format analyze lint test clean
+.PHONY: build debug format analyze lint test package clean
 
 # Build mjavac, default action
 build: build/mjavac
@@ -68,6 +68,9 @@ lint: compile_commands.json
 
 test: build/mjavac
 	./test/test.sh build/mjavac
+
+package:
+	zip -r archive.zip README.md Makefile .clang-format test src ci
 
 clean:
 	rm -rf build/*
