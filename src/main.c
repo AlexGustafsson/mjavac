@@ -13,7 +13,14 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
       FILE *file = fopen(argv[i], "r");
+      if (file == 0) {
+        fprintf(stderr, "Unable to open file %s: ", argv[i]);
+        perror("");
+        exit(1);
+      }
+
       lex_file(file);
+      fclose(file);
     }
   } else {
     lex_file(stdin);
@@ -28,14 +35,8 @@ int main(int argc, char **argv) {
 }
 
 void lex_file(FILE *file) {
-  if (file == NULL) {
-    perror("Unable to open file");
-    exit(1);
-  }
-
   yyset_in(file);
   yylex();
-  fclose(file);
 }
 
 void die_with_usage(char **argv) {
