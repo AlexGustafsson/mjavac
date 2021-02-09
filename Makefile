@@ -1,53 +1,67 @@
 # Disable echoing of commands
 MAKEFLAGS += --silent
 
+OUTPUT_PATH=build/production
+
 # Optimize the code and show all warnings (except unused parameters)
-BUILD_FLAGS=-O3 -Wall -Wextra -pedantic -Wno-unused-parameter $(BUILD_VARIABLES)
+BUILD_FLAGS=-I src -I $(OUTPUT_PATH) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++20
 
 # Don't optimize, provide all warnings and build with clang's memory checks and support for GDB debugging
-DEBUG_FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -fsanitize=address -fno-omit-frame-pointer -g $(BUILD_VARIABLES) -DDEBUG
+DEBUG_FLAGS=-I src -I $(OUTPUT_PATH) -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++20 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
+
+FLEX_FLAGS=
+BISON_FLAGS=-t
+
+ifdef DEBUG
+	OUTPUT_PATH=build/debug
+	CXX=clang
+	BUILD_FLAGS=$(DEBUG_FLAGS)
+	FLEX_FLAGS=--debug
+	BISON_FLAGS=-v -t --graph
+endif
 
 # Source code
-source := $(shell find src -type f -name "*.c")
-headers := $(shell find src -type f -name "*.h")
-objects := $(subst src,build,$(source:.c=.o))
-
-filesToFormat := $(source) $(sourceHeaders)
+source := $(shell find src -type f -name "*.cc")
+headers := $(shell find src -type f -name "*.hpp")
+objects := $(subst src,$(OUTPUT_PATH),$(source:.cc=.o))
 
 .PHONY: build debug format analyze lint test package clean
 
 # Build mjavac, default action
-build: build/mjavac
+build: $(OUTPUT_PATH)/mjavac
 
 # Build mjavac with extra debugging enabled
-debug: CC=clang
-debug: build/mjavac.debug
+debug:
+	DEBUG=true $(MAKE)
 
 # Executable linking
-build/mjavac: $(objects) build/lexer.yy.o
-	$(CC) $(BUILD_FLAGS) -o $@ $(objects) build/lexer.yy.o
-
-build/mjavac.debug: $(objects) build/lexer.yy.debug.o
-	$(CC) $(DEBUG_FLAGS) -o $@ $(objects) build/lexer.yy.debug.o
+# The repeat is there since it seems the target-specific overriding of OUTPUT_PATH
+# will not occur in time for $(OUTPUT_PATH) to be used in the rule's output
+$(OUTPUT_PATH)/mjavac: $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/parser.tab.o $(objects)
+	$(CXX) $(BUILD_FLAGS) -o $@ $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/parser.tab.o $(objects)
 
 # Source compilation
-$(objects): build/%.o: src/%.c src/%.h
+$(objects): $(OUTPUT_PATH)/%.o: src/%.cc src/%.hpp
 	mkdir -p $(dir $@)
-	$(CC) $(BUILD_FLAGS) -c $< -o $@
+	$(CXX) $(BUILD_FLAGS) -c $< -o $@
 
-build/lexer.yy.o: build/lexer.yy.c
-	$(CC) $(BUILD_FLAGS) -Wno-unused-function -Wno-unneeded-internal-declaration -c $< -o $@
+# Compile the lexer
+$(OUTPUT_PATH)/lexer.yy.o: $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/lexer.yy.c
+	$(CXX) $(BUILD_FLAGS) -Wno-unused-function -Wno-unneeded-internal-declaration -c $(OUTPUT_PATH)/parser.tab.hpp -o $(OUTPUT_PATH)/lexer.yy.o
 
-build/lexer.yy.debug.o: build/lexer.yy.debug.c
-	$(CC) $(BUILD_FLAGS) -Wno-unused-function -Wno-unneeded-internal-declaration -c $< -o $@
+# Generate the lexer
+$(OUTPUT_PATH)/lexer.yy.c: src/lexer.flex
+	mkdir -p $(OUTPUT_PATH)
+	flex $(FLEX_FLAGS) --outfile $(OUTPUT_PATH)/lexer.yy.c $<
 
-build/lexer.yy.c: src/lexer.flex
-	mkdir -p build
-	flex -o $@ $<
+# Compile the parser
+$(OUTPUT_PATH)/parser.tab.o: $(OUTPUT_PATH)/parser.tab.cc
+	$(CXX) $(BUILD_FLAGS) -c $(OUTPUT_PATH)/parser.tab.cc -o $(OUTPUT_PATH)/parser.tab.o
 
-build/lexer.yy.debug.c: src/lexer.flex
-	mkdir -p build
-	flex --debug --outfile $@ $<
+# Generate the parser
+$(OUTPUT_PATH)/parser.tab.cc $(OUTPUT_PATH)/parser.tab.hpp: src/parser.yy
+	mkdir -p $(OUTPUT_PATH)
+	bison $(BISON_FLAGS) $< --output=$(OUTPUT_PATH)/parser.tab.cc --defines=$(OUTPUT_PATH)/parser.tab.hpp
 
 # Create the compilation database for llvm tools
 compile_commands.json: Makefile
@@ -56,7 +70,7 @@ compile_commands.json: Makefile
 
 # Format code according to .clang-format
 format: compile_commands.json
-	clang-format -i -style=file $(filesToFormat)
+	clang-format -style=file -i $(source) $(headers)
 
 # Analyze code and produce a report using the llvm tool scan-build
 analyze: compile_commands.json
@@ -66,8 +80,8 @@ analyze: compile_commands.json
 lint: compile_commands.json
 	./ci/lint.sh $(source)
 
-test: build/mjavac
-	./test/test.sh build/mjavac
+test: build/debug/mjavac
+	./test/test.sh build/debug/mjavac
 
 package:
 	zip -r archive.zip README.md Makefile .clang-format test src ci

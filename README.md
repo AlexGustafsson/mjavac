@@ -10,7 +10,7 @@ make build
 Make sure you meet the following prerequisites:
 
 Building:
-* `$CC` refers to a modern compiler such as :
+* `$CXX` refers to a modern compiler such as:
   * `gcc` 10 (`brew install gcc` on macOS)
   * `clang` 11 (`brew install llvm` on macOS)
 
