@@ -3,12 +3,12 @@
 
 #include "parser.tab.hpp"
 
-#include "node.hpp"
+#include "nodes/nodes.hpp"
 
 #include "main.hpp"
 
 int error_count = 0;
-extern std::shared_ptr<Node> root;
+extern std::shared_ptr<nodes::ProgramNode> root;
 std::ifstream inputFile;
 std::string parsed = "";
 
@@ -46,12 +46,8 @@ int main(int argc, char **argv) {
       return 0;
     }
 
-    std::cout << "Built a parse-tree:" << std::endl;
-    root->print_tree(0);
-
     diagram_stream << "digraph {" << std::endl;
-    int count = 0;
-    root->generate_tree(count, &diagram_stream);
+    root->generate_parse_graph(diagram_stream);
     diagram_stream << "}" << std::endl;
     diagram_stream.close();
 

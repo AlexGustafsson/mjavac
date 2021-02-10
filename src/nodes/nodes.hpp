@@ -1,0 +1,8 @@
+#include "class-decleration-node.hpp"
+#include "conditional-node.hpp"
+#include "loop-node.hpp"
+#include "method-decleration-node.hpp"
+#include "node.hpp"
+#include "program-node.hpp"
+#include "variable-decleration-node.hpp"
+#include "operator.hpp"

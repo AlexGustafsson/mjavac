@@ -16,9 +16,9 @@
 class {return yy::parser::make_KEYWORD_CLASS();}
 public {return yy::parser::make_KEYWORD_PUBLIC();}
 static {return yy::parser::make_KEYWORD_STATIC();}
-main {return yy::parser::make_KEYWORD_MAIN();}
 extends {return yy::parser::make_KEYWORD_EXTENDS();}
 if {return yy::parser::make_KEYWORD_IF();}
+else {return yy::parser::make_KEYWORD_ELSE();}
 while {return yy::parser::make_KEYWORD_WHILE();}
 "(" {return yy::parser::make_KEYWORD_PARANTHESES_LEFT();}
 ")" {return yy::parser::make_KEYWORD_PARANTHESES_RIGHT();}
@@ -31,6 +31,7 @@ while {return yy::parser::make_KEYWORD_WHILE();}
 this {return yy::parser::make_KEYWORD_THIS();}
 new {return yy::parser::make_KEYWORD_NEW();}
 "=" {return yy::parser::make_KEYWORD_EQUAL();}
+"." {return yy::parser::make_KEYWORD_DOT();}
 
 [0-9]+ {return yy::parser::make_INTEGER(yytext);}
 true|false {return yy::parser::make_BOOLEAN(yytext);}
@@ -46,8 +47,6 @@ int|boolean|void {return yy::parser::make_TYPE(yytext);}
 "+" {return yy::parser::make_OPERATOR_PLUS();}
 "-" {return yy::parser::make_OPERATOR_MINUS();}
 "*" {return yy::parser::make_OPERATOR_MULTIPLICATION();}
-
-"System.out.println" {yy::parser::make_PRINTLN();}
 
 [a-zA-Z_][a-zA-Z0-9]* {return yy::parser::make_IDENTIFIER(yytext);}
 
