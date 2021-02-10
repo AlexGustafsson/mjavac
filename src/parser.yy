@@ -1,4 +1,5 @@
 %skeleton "lalr1.cc"
+%require "3.7"
 %defines
 %define parse.error verbose
 %define api.value.type variant

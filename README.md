@@ -10,9 +10,9 @@ make build
 Make sure you meet the following prerequisites:
 
 Building:
-* `$CXX` refers to a modern compiler:
-  * `gcc` 10 or newer (`brew install gcc` on macOS)
-  * `clang` 10 or newer (`brew install llvm` on macOS)
+* `$CXX` refers to a modern C++ compiler:
+  * `g++` 10 or newer (`brew install gcc` on macOS)
+  * `clang++` 10 or newer (`brew install llvm` on macOS)
 
 Developing:
 * `clang` 10 or newer is installed

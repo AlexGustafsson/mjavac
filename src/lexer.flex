@@ -1,7 +1,11 @@
 %top {
-  #include "parser.tab.hh"
+  #include "parser.tab.hpp"
   #define YY_DECL yy::parser::symbol_type yylex()
   extern int error_count;
+
+  extern int input(char* buffer, int length);
+
+  #define YY_INPUT(buffer, result, length) (result = input(buffer, length));
 }
 
 %option noyywrap nounput batch noinput stack nodefault
@@ -45,7 +49,7 @@ int|boolean|void {return yy::parser::make_TYPE(yytext);}
 
 "System.out.println" {yy::parser::make_PRINTLN();}
 
-[a-zA-Z_][a-zA-Z0-9]* {return yy::parser::make_IDENTIFIER();}
+[a-zA-Z_][a-zA-Z0-9]* {return yy::parser::make_IDENTIFIER(yytext);}
 
 "//" yy_push_state(COMMENTED_LINE);
 <COMMENTED_LINE>[^\n]* /* ignore */
@@ -54,6 +58,6 @@ int|boolean|void {return yy::parser::make_TYPE(yytext);}
 [ \t]+ /* ignore */
 \r?\n+ /* ignore */
 
-<<EOF>> {return yy::parser::make_END()};
+<<EOF>> {return yy::parser::make_END();};
 
 . {printf("\033[31m[Unexpected '%s']\033[0m", yytext); error_count++;}

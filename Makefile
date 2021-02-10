@@ -14,7 +14,8 @@ BISON_FLAGS=-t
 
 ifdef DEBUG
 	OUTPUT_PATH=build/debug
-	CXX=clang
+	CXX=clang++
+	CC=clang
 	BUILD_FLAGS=$(DEBUG_FLAGS)
 	FLEX_FLAGS=--debug
 	BISON_FLAGS=-v -t --graph
@@ -29,6 +30,8 @@ objects := $(subst src,$(OUTPUT_PATH),$(source:.cc=.o))
 
 # Build mjavac, default action
 build: $(OUTPUT_PATH)/mjavac
+	ln -s $(PWD)/build/production/mjavac $(PWD)/build/mjavac &> /dev/null || true
+	ln -s $(PWD)/build/debug/mjavac $(PWD)/build/mjavac.debug &> /dev/null || true
 
 # Build mjavac with extra debugging enabled
 debug:
@@ -46,13 +49,13 @@ $(objects): $(OUTPUT_PATH)/%.o: src/%.cc src/%.hpp
 	$(CXX) $(BUILD_FLAGS) -c $< -o $@
 
 # Compile the lexer
-$(OUTPUT_PATH)/lexer.yy.o: $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/lexer.yy.c
-	$(CXX) $(BUILD_FLAGS) -Wno-unused-function -Wno-unneeded-internal-declaration -c $(OUTPUT_PATH)/parser.tab.hpp -o $(OUTPUT_PATH)/lexer.yy.o
+$(OUTPUT_PATH)/lexer.yy.o: $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/lexer.yy.cc
+	$(CXX) $(BUILD_FLAGS) -Wno-unused-function -Wno-unneeded-internal-declaration -c $(OUTPUT_PATH)/lexer.yy.cc -o $(OUTPUT_PATH)/lexer.yy.o
 
 # Generate the lexer
-$(OUTPUT_PATH)/lexer.yy.c: src/lexer.flex
+$(OUTPUT_PATH)/lexer.yy.cc: src/lexer.flex
 	mkdir -p $(OUTPUT_PATH)
-	flex $(FLEX_FLAGS) --outfile $(OUTPUT_PATH)/lexer.yy.c $<
+	flex $(FLEX_FLAGS) --outfile $(OUTPUT_PATH)/lexer.yy.cc $<
 
 # Compile the parser
 $(OUTPUT_PATH)/parser.tab.o: $(OUTPUT_PATH)/parser.tab.cc
