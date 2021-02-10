@@ -10,12 +10,12 @@ make build
 Make sure you meet the following prerequisites:
 
 Building:
-* `$CXX` refers to a modern compiler such as:
-  * `gcc` 10 (`brew install gcc` on macOS)
-  * `clang` 11 (`brew install llvm` on macOS)
+* `$CXX` refers to a modern compiler:
+  * `gcc` 10 or newer (`brew install gcc` on macOS)
+  * `clang` 10 or newer (`brew install llvm` on macOS)
 
 Developing:
-* `clang` 7 or newer is installed
+* `clang` 10 or newer is installed
 * `scan-build` refers to version 7 or newer which comes with `clang`
 * `clang-format` refers to version 7 or newer which comes with `clang`
 
