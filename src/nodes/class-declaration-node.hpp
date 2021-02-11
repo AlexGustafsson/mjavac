@@ -24,6 +24,8 @@ public:
 
   ClassDeclarationNode(std::string identifier, std::string extended_identifier);
   ClassDeclarationNode(std::string identifier);
+
+  void setDeclarations(std::list<Node*> declaration);
 };
 } // namespace nodes
 

@@ -16,7 +16,7 @@
   #define YY_DECL yy::parser::symbol_type yylex()
   YY_DECL;
 
-  Node* root;
+  ProgramNode* root;
 
   extern int node_id;
 }
@@ -65,8 +65,8 @@ ClassDeclarations : ClassDeclaration { $$.push_back($1); }
   | ClassDeclarations ClassDeclaration { $$ = $1; $$.push_back($2); }
   ;
 
-ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2, $4); $$->declarations = $6; }
-  | KEYWORD_CLASS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2); $$->declarations = $4; }
+ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2, $4); $$->setDeclarations($6); }
+  | KEYWORD_CLASS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2); $$->setDeclarations($4); }
   ;
 
 Declarations : Declaration { $$.push_back($1); }
