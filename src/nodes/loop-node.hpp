@@ -2,15 +2,9 @@
 #define CONDITIONAL_NODE_H
 
 #include <fstream>
-#include <iostream>
-#include <list>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <vector>
 
 #include "node.hpp"
 
-/* Base node class */
 namespace nodes {
 class LoopNode : public Node {
 public:
@@ -18,7 +12,9 @@ public:
   Node *loop_expression;
 
   LoopNode(Node* expression, Node* loop_expression);
+
+  void generate_parse_graph(std::ofstream &stream) const;
 };
-} // namespace nodes
+}
 
 #endif

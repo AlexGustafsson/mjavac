@@ -2,16 +2,12 @@
 #define METHOD_DECLERATION_NODE_H
 
 #include <fstream>
-#include <iostream>
 #include <list>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <vector>
+#include <string>
 
 #include "node.hpp"
 #include "variable-declaration-node.hpp"
 
-/* Base node class */
 namespace nodes {
 class MethodDeclarationNode : public Node {
 
@@ -23,7 +19,9 @@ public:
   std::list<Node*> statements;
 
   MethodDeclarationNode(std::string type, std::string identifier);
+
+  void generate_parse_graph(std::ofstream &stream) const;
 };
-} // namespace nodes
+}
 
 #endif

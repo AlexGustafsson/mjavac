@@ -2,11 +2,7 @@
 #define VARIABLE_DECLERATION_NODE_H
 
 #include <fstream>
-#include <iostream>
-#include <list>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <vector>
+#include <string>
 
 #include "node.hpp"
 
@@ -20,7 +16,9 @@ public:
   bool is_array;
 
   VariableDeclarationNode(std::string type, std::string identifier, bool is_array=false);
+
+  void generate_parse_graph(std::ofstream &stream) const;
 };
-} // namespace nodes
+}
 
 #endif

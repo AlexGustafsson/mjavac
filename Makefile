@@ -4,10 +4,10 @@ MAKEFLAGS += --silent
 OUTPUT_PATH=build/production
 
 # Optimize the code and show all warnings (except unused parameters)
-BUILD_FLAGS=-I src -I $(OUTPUT_PATH) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++20
+BUILD_FLAGS=-I src -I $(OUTPUT_PATH) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17
 
 # Don't optimize, provide all warnings and build with clang's memory checks and support for GDB debugging
-DEBUG_FLAGS=-I src -I $(OUTPUT_PATH) -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++20 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
+DEBUG_FLAGS=-I src -I $(OUTPUT_PATH) -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
 
 FLEX_FLAGS=
 BISON_FLAGS=-t

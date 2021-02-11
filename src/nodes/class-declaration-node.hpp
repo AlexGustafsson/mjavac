@@ -2,17 +2,13 @@
 #define CLASS_DECLERATION_NODE_H
 
 #include <fstream>
-#include <iostream>
+#include <string>
 #include <list>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <vector>
 
 #include "node.hpp"
 #include "variable-declaration-node.hpp"
 #include "method-declaration-node.hpp"
 
-/* Base node class */
 namespace nodes {
 class ClassDeclarationNode : public Node {
 public:
@@ -25,8 +21,9 @@ public:
   ClassDeclarationNode(std::string identifier, std::string extended_identifier);
   ClassDeclarationNode(std::string identifier);
 
-  void setDeclarations(std::list<Node*> declaration);
+  void setDeclarations(std::list<Node *> declarations);
+  void generate_parse_graph(std::ofstream &stream) const;
 };
-} // namespace nodes
+}
 
 #endif
