@@ -46,9 +46,7 @@ int main(int argc, char **argv) {
       return 0;
     }
 
-    diagram_stream << "digraph {" << std::endl;
     root->generate_parse_graph(diagram_stream);
-    diagram_stream << "}" << std::endl;
     diagram_stream.close();
 
     //Build symbol table
