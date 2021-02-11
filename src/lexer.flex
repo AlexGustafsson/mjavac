@@ -20,8 +20,8 @@ extends {return yy::parser::make_KEYWORD_EXTENDS();}
 if {return yy::parser::make_KEYWORD_IF();}
 else {return yy::parser::make_KEYWORD_ELSE();}
 while {return yy::parser::make_KEYWORD_WHILE();}
-"(" {return yy::parser::make_KEYWORD_PARANTHESES_LEFT();}
-")" {return yy::parser::make_KEYWORD_PARANTHESES_RIGHT();}
+"(" {return yy::parser::make_KEYWORD_PARENTHESES_LEFT();}
+")" {return yy::parser::make_KEYWORD_PARENTHESES_RIGHT();}
 "[" {return yy::parser::make_KEYWORD_BRACKET_LEFT();}
 "]" {return yy::parser::make_KEYWORD_BRACKET_RIGHT();}
 "{" {return yy::parser::make_KEYWORD_BRACE_LEFT();}

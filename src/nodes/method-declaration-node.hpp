@@ -9,20 +9,20 @@
 #include <vector>
 
 #include "node.hpp"
-#include "variable-decleration-node.hpp"
+#include "variable-declaration-node.hpp"
 
 /* Base node class */
 namespace nodes {
-class MethodDeclerationNode : public Node {
+class MethodDeclarationNode : public Node {
 
 public:
   bool is_public;
   std::string type;
   std::string identifier;
-  std::list<VariableDeclerationNode*> parameters;
+  std::list<VariableDeclarationNode*> parameters;
   std::list<Node*> statements;
 
-  MethodDeclerationNode(std::string type, std::string identifier);
+  MethodDeclarationNode(std::string type, std::string identifier);
 };
 } // namespace nodes
 

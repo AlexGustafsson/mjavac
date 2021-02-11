@@ -9,13 +9,13 @@
 #include <vector>
 
 #include "node.hpp"
-#include "class-decleration-node.hpp"
+#include "class-declaration-node.hpp"
 
 /* Base node class */
 namespace nodes {
 class ProgramNode : public Node {
 public:
-  std::list<ClassDeclerationNode*> declerations;
+  std::list<ClassDeclarationNode*> declarations;
 
   ProgramNode();
 };

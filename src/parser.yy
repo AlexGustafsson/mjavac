@@ -22,7 +22,7 @@
 }
 
 %token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_STATIC KEYWORD_EXTENDS
-%token KEYWORD_IF KEYWORD_WHILE KEYWORD_PARANTHESES_LEFT KEYWORD_PARANTHESES_RIGHT
+%token KEYWORD_IF KEYWORD_WHILE KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT
 %token KEYWORD_BRACKET_LEFT KEYWORD_BRACKET_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT
 %token KEYWORD_SEMICOLON KEYWORD_COMMA KEYWORD_THIS KEYWORD_NEW KEYWORD_EQUAL KEYWORD_ELSE
 %token KEYWORD_DOT
@@ -37,16 +37,16 @@
 
 %type <ProgramNode*> Program
 
-%type <std::list<ClassDeclerationNode*>> ClassDeclerations
-%type <ClassDeclerationNode*> ClassDecleration
+%type <std::list<ClassDeclarationNode*>> ClassDeclarations
+%type <ClassDeclarationNode*> ClassDeclaration
 
-%type <std::list<Node*>> Declerations
-%type <Node*> Decleration
+%type <std::list<Node*>> Declarations
+%type <Node*> Declaration
 
-%type <VariableDeclerationNode*> VariableDecleration
-%type <MethodDeclerationNode*> MethodDecleration
+%type <VariableDeclarationNode*> VariableDeclaration
+%type <MethodDeclarationNode*> MethodDeclaration
 
-%type <std::list<VariableDeclerationNode*>> MethodParameters
+%type <std::list<VariableDeclarationNode*>> MethodParameters
 
 %type <std::list<Node*>> Statements Expressions
 %type <Node*> Statement Expression
@@ -57,46 +57,46 @@
 
 %%
 
-Program : ClassDeclerations { root = new ProgramNode(); root->declerations = $1; }
+Program : ClassDeclarations { root = new ProgramNode(); root->declarations = $1; }
   | END { root = new ProgramNode(); }
   ;
 
-ClassDeclerations : ClassDecleration { $$.push_back($1); }
-  | ClassDeclerations ClassDecleration { $$ = $1; $$.push_back($2); }
+ClassDeclarations : ClassDeclaration { $$.push_back($1); }
+  | ClassDeclarations ClassDeclaration { $$ = $1; $$.push_back($2); }
   ;
 
-ClassDecleration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER KEYWORD_BRACE_LEFT Declerations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclerationNode($2, $4); $$->declerations = $6; }
-  | KEYWORD_CLASS IDENTIFIER KEYWORD_BRACE_LEFT Declerations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclerationNode($2); $$->declerations = $4; }
+ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2, $4); $$->declarations = $6; }
+  | KEYWORD_CLASS IDENTIFIER KEYWORD_BRACE_LEFT Declarations KEYWORD_BRACE_RIGHT { $$ = new ClassDeclarationNode($2); $$->declarations = $4; }
   ;
 
-Declerations : Decleration { $$.push_back($1); }
-  | Declerations Decleration { $$ = $1; $$.push_back($2); }
+Declarations : Declaration { $$.push_back($1); }
+  | Declarations Declaration { $$ = $1; $$.push_back($2); }
   ;
 
-Decleration : VariableDecleration KEYWORD_SEMICOLON { $$ = $1; }
-  | MethodDecleration { $$ = $1; }
+Declaration : VariableDeclaration KEYWORD_SEMICOLON { $$ = $1; }
+  | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDecleration : TYPE KEYWORD_BRACKET_LEFT KEYWORD_BRACKET_RIGHT IDENTIFIER { $$ = new VariableDeclerationNode($1, $4, true); }
-  | TYPE IDENTIFIER { $$ = new VariableDeclerationNode($1, $2); }
+VariableDeclaration : TYPE KEYWORD_BRACKET_LEFT KEYWORD_BRACKET_RIGHT IDENTIFIER { $$ = new VariableDeclarationNode($1, $4, true); }
+  | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
   ;
 
-MethodDecleration : KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARANTHESES_LEFT MethodParameters KEYWORD_PARANTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclerationNode($2, $3); $$->parameters = $5; $$->statements = $8; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARANTHESES_LEFT KEYWORD_PARANTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclerationNode($2, $3); $$->statements = $7; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARANTHESES_LEFT MethodParameters KEYWORD_PARANTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclerationNode($2, $3); $$->parameters = $5; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARANTHESES_LEFT KEYWORD_PARANTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclerationNode($2, $3); }
+MethodDeclaration : KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->parameters = $5; $$->statements = $8; }
+  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->statements = $7; }
+  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->parameters = $5; }
+  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); }
   ;
 
-MethodParameters : VariableDecleration { $$.push_back($1); }
-  | MethodParameters KEYWORD_COMMA VariableDecleration { $$ = $1; $1.push_back($3); }
+MethodParameters : VariableDeclaration { $$.push_back($1); }
+  | MethodParameters KEYWORD_COMMA VariableDeclaration { $$ = $1; $1.push_back($3); }
   ;
 
 Statements : Statement { $$.push_back($1); }
   | Statements Statement { $$ = $1; $$.push_back($2); }
   ;
 
-Statement : KEYWORD_IF KEYWORD_PARANTHESES_LEFT Expression KEYWORD_PARANTHESES_RIGHT Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
-  | KEYWORD_WHILE KEYWORD_PARANTHESES_LEFT Expression KEYWORD_PARANTHESES_RIGHT Statement { $$ = new LoopNode($3, $5); }
+Statement : KEYWORD_IF KEYWORD_PARENTHESES_LEFT Expression KEYWORD_PARENTHESES_RIGHT Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
+  | KEYWORD_WHILE KEYWORD_PARENTHESES_LEFT Expression KEYWORD_PARENTHESES_RIGHT Statement { $$ = new LoopNode($3, $5); }
   ;
 
 Expressions : Expression { $$.push_back($1); }

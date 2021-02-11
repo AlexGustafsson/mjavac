@@ -12,14 +12,14 @@
 
 /* Base node class */
 namespace nodes {
-class VariableDeclerationNode : public Node {
+class VariableDeclarationNode : public Node {
 
 public:
   std::string type;
   std::string identifier;
   bool is_array;
 
-  VariableDeclerationNode(std::string type, std::string identifier, bool is_array=false);
+  VariableDeclarationNode(std::string type, std::string identifier, bool is_array=false);
 };
 } // namespace nodes
 
