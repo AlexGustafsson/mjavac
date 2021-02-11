@@ -21,7 +21,7 @@
   extern int node_id;
 }
 
-%token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_STATIC KEYWORD_EXTENDS
+%token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_PRIVATE KEYWORD_STATIC KEYWORD_EXTENDS
 %token KEYWORD_IF KEYWORD_WHILE KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT
 %token KEYWORD_BRACKET_LEFT KEYWORD_BRACKET_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT
 %token KEYWORD_SEMICOLON KEYWORD_COMMA KEYWORD_THIS KEYWORD_NEW KEYWORD_EQUAL KEYWORD_ELSE
@@ -45,6 +45,7 @@
 
 %type <VariableDeclarationNode*> VariableDeclaration
 %type <MethodDeclarationNode*> MethodDeclaration
+%type <MethodDeclarationNode*> MethodScopeDeclaration
 
 %type <std::list<VariableDeclarationNode*>> MethodParameters
 
@@ -81,10 +82,17 @@ VariableDeclaration : TYPE KEYWORD_BRACKET_LEFT KEYWORD_BRACKET_RIGHT IDENTIFIER
   | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
   ;
 
-MethodDeclaration : KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->parameters = $5; $$->statements = $8; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->statements = $7; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); $$->parameters = $5; }
-  | KEYWORD_PUBLIC TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = new MethodDeclarationNode($2, $3); }
+MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = $1; $$.type = $2; $$.identifier = $3; $$->parameters = $5; $$->statements = $8; }
+  | MethodScopeDeclaration TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT Statements KEYWORD_BRACE_RIGHT { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; }
+  | MethodScopeDeclaration TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT MethodParameters KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; }
+  | MethodScopeDeclaration TYPE IDENTIFIER KEYWORD_PARENTHESES_LEFT KEYWORD_PARENTHESES_RIGHT KEYWORD_BRACE_LEFT KEYWORD_BRACE_RIGHT { $$ = $1; $$->type = $2; $$->identifier = $3; }
+  ;
+
+MethodScopeDeclaration : KEYWORD_PUBLIC KEYWORD_STATIC { $$ = new MethodDeclarationNode(true, true); }
+  | KEYWORD_PRIVATE KEYWORD_STATIC { $$ = new MethodDeclarationNode(false, true); }
+  | KEYWORD_PUBLIC { $$ = new MethodDeclarationNode(true, false); }
+  | KEYWORD_PRIVATE { $$ = new MethodDeclarationNode(false, false); }
+  | KEYWORD_STATIC { $$ = new MethodDeclarationNode(false, true); }
   ;
 
 MethodParameters : VariableDeclaration { $$.push_back($1); }

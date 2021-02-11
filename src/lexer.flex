@@ -14,6 +14,7 @@
 
 %%
 class {return yy::parser::make_KEYWORD_CLASS();}
+private {return yy::parser::make_KEYWORD_PRIVATE();}
 public {return yy::parser::make_KEYWORD_PUBLIC();}
 static {return yy::parser::make_KEYWORD_STATIC();}
 extends {return yy::parser::make_KEYWORD_EXTENDS();}
@@ -36,7 +37,7 @@ new {return yy::parser::make_KEYWORD_NEW();}
 [0-9]+ {return yy::parser::make_INTEGER(yytext);}
 true|false {return yy::parser::make_BOOLEAN(yytext);}
 
-int|boolean|void {return yy::parser::make_TYPE(yytext);}
+int|boolean|void|String {return yy::parser::make_TYPE(yytext);}
 
 "!" {return yy::parser::make_OPERATOR_NOT();}
 "&&" {return yy::parser::make_OPERATOR_AND();}

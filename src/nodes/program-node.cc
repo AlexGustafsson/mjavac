@@ -6,6 +6,7 @@ ProgramNode::ProgramNode() {
 }
 
 void ProgramNode::generate_parse_graph(std::ofstream &stream) const {
+  stream << this->get_id() << "[label=\"Program\"];" << std::endl;
   for (auto class_node : this->declarations) {
     stream << this->get_id() << " -> " << class_node->get_id() << ";" << std::endl;
     class_node->generate_parse_graph(stream);
