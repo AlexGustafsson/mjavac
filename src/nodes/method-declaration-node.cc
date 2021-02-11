@@ -14,7 +14,7 @@ void MethodDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
   if (this->is_static)
     stream << "static ";
 
-   stream << this->type << " " << this->identifier << "()\"];" << std::endl;
+  stream << this->type << " " << this->identifier << "()\"];" << std::endl;
 
   for (auto node : this->parameters) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"parameter\"];" << std::endl;

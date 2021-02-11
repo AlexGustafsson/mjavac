@@ -1,24 +1,32 @@
 %skeleton "lalr1.cc"
 %require "3.7"
 %defines
+%define api.namespace {mjavac}
+%define parser_class_name {Parser}
 %define parse.error verbose
 %define api.value.type variant
-%define api.token.constructor
+%define parse.assert
 
 %code requires {
   #include <string>
 
   #include "nodes/nodes.hpp"
   using namespace nodes;
+
+  // Forward declarations
+  namespace mjavac {
+    class Scanner;
+  }
 }
 
+%parse-param { Scanner &scanner }
+%parse-param { ProgramNode **root }
+
 %code {
-  #define YY_DECL yy::parser::symbol_type yylex()
-  YY_DECL;
+  #include "scanner.hpp"
 
-  ProgramNode* root;
-
-  extern int node_id;
+  #undef yylex
+  #define yylex scanner.yylex
 }
 
 %token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_PRIVATE KEYWORD_STATIC KEYWORD_EXTENDS
@@ -56,10 +64,13 @@
 
 %type <std::string> Operator
 
+%locations
+%start Program
+
 %%
 
-Program : ClassDeclarations { root = new ProgramNode(); root->declarations = $1; }
-  | END { root = new ProgramNode(); }
+Program : ClassDeclarations { *root = new ProgramNode(); (*root)->declarations = $1; }
+  | END { *root = new ProgramNode(); }
   ;
 
 ClassDeclarations : ClassDeclaration { $$.push_back($1); }
@@ -131,3 +142,9 @@ Operator : OPERATOR_AND { $$ = Operator.And; }
   ;
 
 %%
+
+void mjavac::Parser::error(const location_type &location, const std::string &error) {
+  std::cerr << "Parser error: " << error  << '\n'
+            << "  begin at line " << location.begin.line <<  " col " << location.begin.column  << '\n'
+            << "  end   at line " << location.end.line <<  " col " << location.end.column << "\n";
+}

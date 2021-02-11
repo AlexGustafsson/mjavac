@@ -8,13 +8,13 @@
 namespace nodes {
 class LoopNode : public Node {
 public:
-  Node* expression;
+  Node *expression;
   Node *loop_expression;
 
-  LoopNode(Node* expression, Node* loop_expression);
+  LoopNode(Node *expression, Node *loop_expression);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
-}
+} // namespace nodes
 
 #endif

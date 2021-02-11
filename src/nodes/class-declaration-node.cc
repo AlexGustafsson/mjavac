@@ -8,14 +8,15 @@ ClassDeclarationNode::ClassDeclarationNode(std::string identifier) {
   this->extends = false;
 }
 
-ClassDeclarationNode::ClassDeclarationNode(std::string identifier, std::string extended_identifier) : ClassDeclarationNode::ClassDeclarationNode(identifier) {
+ClassDeclarationNode::ClassDeclarationNode(std::string identifier, std::string extended_identifier)
+    : ClassDeclarationNode::ClassDeclarationNode(identifier) {
   this->extended_identifier = extended_identifier;
   this->extends = true;
 }
 
 void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
   for (auto node : declarations) {
-    MethodDeclarationNode* method = dynamic_cast<MethodDeclarationNode*>(node);
+    MethodDeclarationNode *method = dynamic_cast<MethodDeclarationNode *>(node);
     if (method != nullptr) {
       this->method_declarations.push_back(method);
       continue;

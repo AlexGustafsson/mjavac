@@ -5,7 +5,7 @@
 
 namespace nodes {
 struct Operator {
-  public:
+public:
   static std::string And;
   static std::string LessThan;
   static std::string LessThanOrEqual;
@@ -14,6 +14,6 @@ struct Operator {
   static std::string Plus;
   static std::string Multiplication;
 };
-}
+} // namespace nodes
 
 #endif

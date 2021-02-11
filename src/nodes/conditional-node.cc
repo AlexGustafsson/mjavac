@@ -4,9 +4,9 @@
 using namespace nodes;
 
 ConditionalNode::ConditionalNode(Node *expression, Node *positive_expression, Node *negative_expression) {
-this->expression = expression;
-this->positive_expression = positive_expression;
-this->negative_expression = negative_expression;
+  this->expression = expression;
+  this->positive_expression = positive_expression;
+  this->negative_expression = negative_expression;
 }
 
 void ConditionalNode::generate_parse_graph(std::ofstream &stream) const {

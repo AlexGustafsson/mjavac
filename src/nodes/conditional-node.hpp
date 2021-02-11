@@ -8,14 +8,14 @@
 namespace nodes {
 class ConditionalNode : public Node {
 public:
-  Node* expression;
-  Node* positive_expression;
-  Node* negative_expression;
+  Node *expression;
+  Node *positive_expression;
+  Node *negative_expression;
 
-  ConditionalNode(Node* expression, Node* positive_expression, Node* negative_expression);
+  ConditionalNode(Node *expression, Node *positive_expression, Node *negative_expression);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
-}
+} // namespace nodes
 
 #endif

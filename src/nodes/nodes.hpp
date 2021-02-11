@@ -3,6 +3,6 @@
 #include "loop-node.hpp"
 #include "method-declaration-node.hpp"
 #include "node.hpp"
+#include "operator.hpp"
 #include "program-node.hpp"
 #include "variable-declaration-node.hpp"
-#include "operator.hpp"

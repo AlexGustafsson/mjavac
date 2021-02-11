@@ -12,6 +12,6 @@ public:
 
   intptr_t get_id() const;
 };
-}
+} // namespace nodes
 
 #endif

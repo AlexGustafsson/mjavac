@@ -4,18 +4,18 @@
 #include <fstream>
 #include <list>
 
-#include "node.hpp"
 #include "class-declaration-node.hpp"
+#include "node.hpp"
 
 namespace nodes {
 class ProgramNode : public Node {
 public:
-  std::list<ClassDeclarationNode*> declarations;
+  std::list<ClassDeclarationNode *> declarations;
 
   ProgramNode();
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
-}
+} // namespace nodes
 
 #endif

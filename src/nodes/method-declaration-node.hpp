@@ -10,19 +10,18 @@
 
 namespace nodes {
 class MethodDeclarationNode : public Node {
-
 public:
   bool is_public;
   bool is_static;
   std::string type;
   std::string identifier;
-  std::list<VariableDeclarationNode*> parameters;
-  std::list<Node*> statements;
+  std::list<VariableDeclarationNode *> parameters;
+  std::list<Node *> statements;
 
   MethodDeclarationNode(bool is_public, bool is_static);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
-}
+} // namespace nodes
 
 #endif

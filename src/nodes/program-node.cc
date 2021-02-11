@@ -2,7 +2,6 @@
 using namespace nodes;
 
 ProgramNode::ProgramNode() {
-
 }
 
 void ProgramNode::generate_parse_graph(std::ofstream &stream) const {
