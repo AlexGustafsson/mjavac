@@ -53,7 +53,7 @@ $(OUTPUT_PATH)/lexer.yy.o: $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/lexer.yy
 	$(CXX) $(BUILD_FLAGS) -Wno-unused-function -c $(OUTPUT_PATH)/lexer.yy.cc -o $(OUTPUT_PATH)/lexer.yy.o
 
 # Generate the lexer
-$(OUTPUT_PATH)/lexer.yy.cc: src/lexer.l
+$(OUTPUT_PATH)/lexer.yy.cc: src/lexer.l src/scanner.hpp
 	mkdir -p $(OUTPUT_PATH)
 	flex $(FLEX_FLAGS) --outfile $(OUTPUT_PATH)/lexer.yy.cc $<
 
@@ -62,7 +62,7 @@ $(OUTPUT_PATH)/parser.tab.o: $(OUTPUT_PATH)/parser.tab.cc
 	$(CXX) $(BUILD_FLAGS) -c $(OUTPUT_PATH)/parser.tab.cc -o $(OUTPUT_PATH)/parser.tab.o
 
 # Generate the parser
-$(OUTPUT_PATH)/parser.tab.cc $(OUTPUT_PATH)/parser.tab.hpp: src/parser.yy
+$(OUTPUT_PATH)/parser.tab.cc $(OUTPUT_PATH)/parser.tab.hpp: src/parser.yy  src/scanner.hpp
 	mkdir -p $(OUTPUT_PATH)
 	bison $(BISON_FLAGS) $< --output=$(OUTPUT_PATH)/parser.tab.cc --defines=$(OUTPUT_PATH)/parser.tab.hpp
 

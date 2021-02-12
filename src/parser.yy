@@ -9,6 +9,7 @@
 
 %code requires {
   #include <string>
+  #include <iomanip>
 
   #include "nodes/nodes.hpp"
   using namespace nodes;
@@ -141,7 +142,32 @@ Operator : OPERATOR_AND { $$ = Operator.And; }
 %%
 
 void mjavac::Parser::error(const location_type &location, const std::string &error) {
-  std::cerr << "Parser error: " << error  << '\n'
-            << "  begin at line " << location.begin.line <<  " col " << location.begin.column  << '\n'
-            << "  end   at line " << location.end.line <<  " col " << location.end.column << "\n";
+  std::cerr << "\e[1m" << scanner.file_name << ":" << location.begin.line << ":" << location.begin.column << "\e[0m error: " << error << std::endl;
+  std::cerr << std::setw(5) << location.begin.line << std::setw(0) << " |   ";
+
+  // Extract the relevant line from the scanner's buffer
+  size_t previous_index = 0;
+  size_t index = 0;
+  std::string_view line;
+  int line_index = scanner.total_lines - scanner.buffer_lines;
+  while ((index = scanner.current_buffer.find("\n", index)) != std::string::npos && line_index != location.begin.line) {
+    line = scanner.current_buffer.substr(previous_index, index);
+    previous_index = index;
+    line_index++;
+  }
+
+  // Write out the first part of the line
+  std::cerr << line.substr(0, location.begin.column - 1);
+
+  // Write out the error as red
+  std::cerr << "\e[31m" << line.substr(location.begin.column - 1, location.end.column - location.begin.column) << "\e[0m";
+
+  // Write out the rest of the line
+  std::cerr << line.substr(location.end.column - 1) << std::endl;
+
+  // Write out an arrow to the error
+  std::cerr << "      |   ";
+  for (int i = 0; i < location.begin.column - 1; i++)
+    std::cerr << " ";
+  std::cerr << "\e[31m^~~~~~~\e[0m" << std::endl;
 }

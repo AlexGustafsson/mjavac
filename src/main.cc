@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
   }
 
   nodes::ProgramNode* program = nullptr;
-  mjavac::Scanner* scanner = new mjavac::Scanner(&input);
+  mjavac::Scanner* scanner = new mjavac::Scanner(&input, argv[1]);
   mjavac::Parser *parser = new mjavac::Parser(*scanner, &program);
 
   bool success = parser->parse() == 0;
