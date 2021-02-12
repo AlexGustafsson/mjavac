@@ -27,18 +27,9 @@ extends {return Parser::token::KEYWORD_EXTENDS;}
 if {return Parser::token::KEYWORD_IF;}
 else {return Parser::token::KEYWORD_ELSE;}
 while {return Parser::token::KEYWORD_WHILE;}
-"(" {return Parser::token::KEYWORD_PARENTHESES_LEFT;}
-")" {return Parser::token::KEYWORD_PARENTHESES_RIGHT;}
-"[" {return Parser::token::KEYWORD_BRACKET_LEFT;}
-"]" {return Parser::token::KEYWORD_BRACKET_RIGHT;}
-"{" {return Parser::token::KEYWORD_BRACE_LEFT;}
-"}" {return Parser::token::KEYWORD_BRACE_RIGHT;}
-";" {return Parser::token::KEYWORD_SEMICOLON;}
-"," {return Parser::token::KEYWORD_COMMA;}
 this {return Parser::token::KEYWORD_THIS;}
 new {return Parser::token::KEYWORD_NEW;}
-"=" {return Parser::token::KEYWORD_EQUAL;}
-"." {return Parser::token::KEYWORD_DOT;}
+"("|")"|"["|"]"|"{"|"}"|";"|","|"="|"." {return yytext[0];}
 
 [0-9]+ {
   yylval->build<std::string>(yytext);
