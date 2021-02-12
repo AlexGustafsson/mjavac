@@ -12,7 +12,7 @@ namespace mjavac {
 class Scanner : public yyFlexLexer {
 private:
   mjavac::Parser::semantic_type *yylval = nullptr;
-  std::istream* stream;
+  std::istream *stream;
 
 public:
   std::string current_buffer;
@@ -21,7 +21,12 @@ public:
   int buffer_lines;
 
   Scanner(std::istream *stream, std::string file_name)
-      : yyFlexLexer(stream){ this->stream = stream; this->file_name = file_name; this->total_lines = 0; this->buffer_lines = 0; };
+      : yyFlexLexer(stream) {
+    this->stream = stream;
+    this->file_name = file_name;
+    this->total_lines = 0;
+    this->buffer_lines = 0;
+  };
 
   // Solve warning for override of hidden virtual function
   using FlexLexer::yylex;
