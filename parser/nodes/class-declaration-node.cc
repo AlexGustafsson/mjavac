@@ -1,7 +1,7 @@
 #include "class-declaration-node.hpp"
 #include "nodes/method-declaration-node.hpp"
 #include "nodes/variable-declaration-node.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 ClassDeclarationNode::ClassDeclarationNode(std::string identifier) {
   this->identifier = identifier;

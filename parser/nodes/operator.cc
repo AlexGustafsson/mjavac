@@ -1,5 +1,5 @@
 #include "operator.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 std::string Operator::And = "&&";
 std::string Operator::LessThan = "<";

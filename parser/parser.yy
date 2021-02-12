@@ -12,7 +12,7 @@
   #include <iomanip>
 
   #include "nodes/nodes.hpp"
-  using namespace nodes;
+  using namespace mjavac::nodes;
 
   // Forward declarations
   namespace mjavac {

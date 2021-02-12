@@ -1,8 +1,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "parser.tab.hpp"
-#include "scanner.hpp"
+#include <mjavac/parser.hpp>
 
 #include "main.hpp"
 
@@ -17,7 +16,7 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  nodes::ProgramNode *program = nullptr;
+  mjavac::nodes::ProgramNode *program = nullptr;
   mjavac::Scanner *scanner = new mjavac::Scanner(&input, argv[1]);
   mjavac::Parser *parser = new mjavac::Parser(*scanner, &program);
 

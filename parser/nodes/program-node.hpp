@@ -7,6 +7,7 @@
 #include "class-declaration-node.hpp"
 #include "node.hpp"
 
+namespace mjavac {
 namespace nodes {
 class ProgramNode : public Node {
 public:
@@ -17,5 +18,6 @@ public:
   void generate_parse_graph(std::ofstream &stream) const;
 };
 } // namespace nodes
+} // namespace mjavac
 
 #endif

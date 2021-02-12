@@ -1,5 +1,5 @@
 #include "variable-declaration-node.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 VariableDeclarationNode::VariableDeclarationNode(std::string type, std::string identifier, bool is_array) {
   this->type = type;

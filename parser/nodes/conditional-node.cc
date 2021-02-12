@@ -1,7 +1,7 @@
 #include <fstream>
 
 #include "conditional-node.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 ConditionalNode::ConditionalNode(Node *expression, Node *positive_expression, Node *negative_expression) {
   this->expression = expression;

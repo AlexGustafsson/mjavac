@@ -1,5 +1,5 @@
 #include "program-node.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 ProgramNode::ProgramNode() {
 }

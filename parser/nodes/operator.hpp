@@ -3,6 +3,7 @@
 
 #include <string>
 
+namespace mjavac {
 namespace nodes {
 struct Operator {
 public:
@@ -15,5 +16,6 @@ public:
   static std::string Multiplication;
 };
 } // namespace nodes
+} // namespace mjavac
 
 #endif

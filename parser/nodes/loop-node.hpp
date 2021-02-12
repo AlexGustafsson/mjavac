@@ -5,6 +5,7 @@
 
 #include "node.hpp"
 
+namespace mjavac {
 namespace nodes {
 class LoopNode : public Node {
 public:
@@ -16,5 +17,6 @@ public:
   void generate_parse_graph(std::ofstream &stream) const;
 };
 } // namespace nodes
+} // namespace mjavac
 
 #endif

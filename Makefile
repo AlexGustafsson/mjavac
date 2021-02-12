@@ -4,10 +4,10 @@ MAKEFLAGS += --silent
 OUTPUT_PATH=build/production
 
 # Optimize the code and show all warnings (except unused parameters)
-BUILD_FLAGS=-I src -I $(OUTPUT_PATH) -I/usr/local/opt/flex/include -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17
+export CXXFLAGS=-O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17
 
 # Don't optimize, provide all warnings and build with clang's memory checks and support for GDB debugging
-DEBUG_FLAGS=-I src -I $(OUTPUT_PATH) -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
+DEBUG_FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
 
 FLEX_FLAGS=
 BISON_FLAGS=-t
@@ -16,55 +16,34 @@ ifdef DEBUG
 	OUTPUT_PATH=build/debug
 	CXX=clang++
 	CC=clang
-	BUILD_FLAGS=$(DEBUG_FLAGS)
+	CXXFLAGS=$(DEBUG_FLAGS)
 	FLEX_FLAGS=--debug
 	BISON_FLAGS=-v -t --graph
 endif
 
 # Source code
-source := $(shell find src -type f -name "*.cc")
-headers := $(shell find src -type f -name "*.hpp")
-objects := $(subst src,$(OUTPUT_PATH),$(source:.cc=.o))
+source := $(shell find * -type f -name "*.cc" -not -path "*/build/*" -not -path "build/*")
+headers := $(shell find * -type f -name "*.hpp" -not -path "*/build/*" -not -path "build/*")
 
-.PHONY: build debug format analyze lint test package clean
+.PHONY: build debug mjavac parser format analyze lint test package clean
 
 # Build mjavac, default action
-build: $(OUTPUT_PATH)/mjavac
-	ln -s $(PWD)/build/production/mjavac $(PWD)/build/mjavac &> /dev/null || true
-	ln -s $(PWD)/build/debug/mjavac $(PWD)/build/mjavac.debug &> /dev/null || true
+build: parser mjavac
 
 # Build mjavac with extra debugging enabled
 debug:
 	DEBUG=true $(MAKE)
 
-# Executable linking
-# The repeat is there since it seems the target-specific overriding of OUTPUT_PATH
-# will not occur in time for $(OUTPUT_PATH) to be used in the rule's output
-$(OUTPUT_PATH)/mjavac: $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/parser.tab.o $(objects)
-	$(CXX) $(BUILD_FLAGS) -o $@ $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/parser.tab.o $(objects)
+# Build the compiler project
+mjavac:
+	$(MAKE) -C mjavac
+	mkdir -p build
+	ln -s $(PWD)/mjavac/build/production/mjavac $(PWD)/build/mjavac &> /dev/null || true
+	ln -s $(PWD)/mjavac/build/debug/mjavac $(PWD)/build/mjavac.debug &> /dev/null || true
 
-# Source compilation
-$(objects): $(OUTPUT_PATH)/%.o: src/%.cc src/%.hpp
-	mkdir -p $(dir $@)
-	$(CXX) $(BUILD_FLAGS) -c $< -o $@
-
-# Compile the lexer
-$(OUTPUT_PATH)/lexer.yy.o: $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/lexer.yy.cc
-	$(CXX) $(BUILD_FLAGS) -Wno-unused-function -c $(OUTPUT_PATH)/lexer.yy.cc -o $(OUTPUT_PATH)/lexer.yy.o
-
-# Generate the lexer
-$(OUTPUT_PATH)/lexer.yy.cc: src/lexer.l src/scanner.hpp
-	mkdir -p $(OUTPUT_PATH)
-	flex $(FLEX_FLAGS) --outfile $(OUTPUT_PATH)/lexer.yy.cc $<
-
-# Compile the parser
-$(OUTPUT_PATH)/parser.tab.o: $(OUTPUT_PATH)/parser.tab.cc
-	$(CXX) $(BUILD_FLAGS) -c $(OUTPUT_PATH)/parser.tab.cc -o $(OUTPUT_PATH)/parser.tab.o
-
-# Generate the parser
-$(OUTPUT_PATH)/parser.tab.cc $(OUTPUT_PATH)/parser.tab.hpp: src/parser.yy  src/scanner.hpp
-	mkdir -p $(OUTPUT_PATH)
-	bison $(BISON_FLAGS) $< --output=$(OUTPUT_PATH)/parser.tab.cc --defines=$(OUTPUT_PATH)/parser.tab.hpp
+# Build the parser project
+parser:
+	$(MAKE) -C parser
 
 # Create the compilation database for llvm tools
 compile_commands.json: Makefile
@@ -90,4 +69,6 @@ package:
 	zip -r archive.zip README.md Makefile .clang-format test src ci
 
 clean:
-	rm -rf build/*
+	rm -rf build compile_commands.json &>/dev/null || true
+	$(MAKE) -C parser clean
+	$(MAKE) -C mjavac clean

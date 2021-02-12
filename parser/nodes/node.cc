@@ -1,5 +1,5 @@
 #include "node.hpp"
-using namespace nodes;
+using namespace mjavac::nodes;
 
 Node::Node() {
 }

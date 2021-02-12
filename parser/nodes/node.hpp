@@ -3,6 +3,7 @@
 
 #include <fstream>
 
+namespace mjavac {
 namespace nodes {
 class Node {
 public:
@@ -13,5 +14,6 @@ public:
   intptr_t get_id() const;
 };
 } // namespace nodes
+} // namespace mjavac
 
 #endif

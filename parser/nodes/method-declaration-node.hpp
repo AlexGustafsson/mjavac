@@ -8,6 +8,7 @@
 #include "node.hpp"
 #include "variable-declaration-node.hpp"
 
+namespace mjavac {
 namespace nodes {
 class MethodDeclarationNode : public Node {
 public:
@@ -23,5 +24,6 @@ public:
   void generate_parse_graph(std::ofstream &stream) const;
 };
 } // namespace nodes
+} // namespace mjavac
 
 #endif

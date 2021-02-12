@@ -2,7 +2,7 @@
 #define SCANNER_H
 
 #if !defined(yyFlexLexerOnce)
-#include <FlexLexer.h>
+#include "FlexLexer.h"
 #endif
 
 #include "location.hh"
