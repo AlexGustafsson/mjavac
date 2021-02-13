@@ -56,7 +56,7 @@
 %type <std::list<VariableDeclarationNode*>> MethodParameters
 
 %type <std::list<Node*>> Statements Expressions
-%type <Node*> Statement Expression
+%type <Node*> Statement Expression Chainable
 
 %type <ValueNode*> Value
 
@@ -138,8 +138,12 @@ Expressions : Expression { $$.push_back($1); }
 
 Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
   | '(' Expression ')' { $$ = $2; }
+  | Chainable { $$ = $1; }
+  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); }
   | Value { $$ = $1; }
-  | MethodCall { $$ = $1; }
+  ;
+
+Chainable : MethodCall { $$ = $1; }
   | KEYWORD_NEW MethodCall { $$ = $2; $2->is_new = true; }
   ;
 
