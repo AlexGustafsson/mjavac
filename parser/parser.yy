@@ -144,16 +144,24 @@ Operator : OPERATOR_AND { $$ = Operator.And; }
 %%
 
 void mjavac::Parser::error(const location_type &location, const std::string &error) {
-  std::cerr << "\e[1m" << scanner.file_name << ":" << location.begin.line << ":" << location.begin.column << "\e[0m error: " << error << std::endl;
+  // NOTE: The "coordinates" given in location are one-based values.
+  // The scanner, on the other hand, has zero-based values.
+
+  std::cerr << "\033[1m" << scanner.file_name << ":" << location.begin.line << ":" << location.begin.column << "\033[0m error: " << error << std::endl;
   std::cerr << std::setw(5) << location.begin.line << std::setw(0) << " |   ";
 
   // Extract the relevant line from the scanner's buffer
   size_t previous_index = 0;
   size_t index = 0;
+  // The current line being parsed
   std::string_view line;
+  // The index of the first line in the buffer
   int line_index = scanner.total_lines - scanner.buffer_lines;
   while ((index = scanner.current_buffer.find("\n", index)) != std::string::npos && line_index != location.begin.line) {
-    line = scanner.current_buffer.substr(previous_index, index);
+    // Get the line from the buffer, excluding the trailing newline
+    line = scanner.current_buffer.substr(previous_index, index - previous_index);
+    // Consume the newline
+    index++;
     previous_index = index;
     line_index++;
   }
@@ -162,7 +170,7 @@ void mjavac::Parser::error(const location_type &location, const std::string &err
   std::cerr << line.substr(0, location.begin.column - 1);
 
   // Write out the error as red
-  std::cerr << "\e[31m" << line.substr(location.begin.column - 1, location.end.column - location.begin.column) << "\e[0m";
+  std::cerr << "\033[31m" << line.substr(location.begin.column - 1, location.end.column - location.begin.column) << "\033[0m";
 
   // Write out the rest of the line
   std::cerr << line.substr(location.end.column - 1) << std::endl;
@@ -170,6 +178,6 @@ void mjavac::Parser::error(const location_type &location, const std::string &err
   // Write out an arrow to the error
   std::cerr << "      |   ";
   for (int i = 0; i < location.begin.column - 1; i++)
-    std::cerr << " ";
-  std::cerr << "\e[31m^~~~~~~\e[0m" << std::endl;
+    std::cerr << (line[i] == '\t' ? '\t' : ' ');
+  std::cerr << "\033[31m^~~~~~~\033[0m" << std::endl;
 }
