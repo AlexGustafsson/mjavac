@@ -3,8 +3,6 @@ MAKEFLAGS += --silent
 
 OUTPUT_PATH=build/production
 
-CXXFLAGS := $(CXXFLAGS) -I . -I $(OUTPUT_PATH)
-
 FLEX_FLAGS=
 BISON_FLAGS=-t
 
@@ -13,6 +11,8 @@ ifdef DEBUG
 	FLEX_FLAGS=--debug
 	BISON_FLAGS=-v -t --graph
 endif
+
+CXXFLAGS := $(CXXFLAGS) -I . -I $(OUTPUT_PATH)
 
 nodes := $(shell find nodes -type f -name "*.cc")
 node_objects := $(addprefix $(OUTPUT_PATH)/,$(nodes:.cc=.o))
