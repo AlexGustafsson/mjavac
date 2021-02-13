@@ -14,7 +14,7 @@ public:
   std::string type;
   std::string identifier;
   bool is_array;
-  Node* value;
+  Node *value;
 
   VariableDeclarationNode(std::string type, std::string identifier, bool is_array = false);
 
