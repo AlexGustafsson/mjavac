@@ -81,6 +81,11 @@ int main(int argc, char **argv) {
 #endif
   }
 
+  // Traverse the tree and create a symbol tree
+  // node id -> symbol traits
+  // traits: int-like, callable, string-like, subscriptable, etc.
+  // if (symbol_table[node_id] != callable) error(not callable)
+
   //Build symbol table
   //ST st;
   //root->buildST(st);

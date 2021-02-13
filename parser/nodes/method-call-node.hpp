@@ -10,7 +10,7 @@ namespace mjavac {
 namespace nodes {
 class MethodCallNode : public Node {
 public:
-  std::list<std::string> objects;
+  Node *value;
   std::list<Node *> parameters;
   bool is_new;
 

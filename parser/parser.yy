@@ -99,7 +99,7 @@ Declaration : VariableDeclaration ';' { $$ = $1; }
   | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableDeclarationNode($1, $4, true); }
+VariableDeclaration : TYPE IDENTIFIER '[' ']' { $$ = new VariableDeclarationNode($1, $2, true); }
   | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
   ;
 
@@ -147,6 +147,8 @@ Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $
   | Chainable { $$ = $1; }
   | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); }
   | Value { $$ = $1; }
+  | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; }
+  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, "[]"); }
   ;
 
 Chainable : MethodCall { $$ = $1; }
@@ -156,6 +158,7 @@ Chainable : MethodCall { $$ = $1; }
 Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); }
   | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); }
   | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); }
+  | ObjectList { $$ = new ValueNode(ValueNode::Object, $1); }
   ;
 
 Operator : OPERATOR_AND { $$ = Operator::And; }
@@ -168,8 +171,8 @@ Operator : OPERATOR_AND { $$ = Operator::And; }
   | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
   ;
 
-MethodCall : ObjectList '(' ParameterList ')' { $$ = new MethodCallNode(); $$->objects = $1; $$->parameters = $3; }
-  | ObjectList '(' ')' { $$ = new MethodCallNode(); $$->objects = $1; }
+MethodCall : Value '(' ParameterList ')' { $$ = new MethodCallNode(); $$->value = $1; $$->parameters = $3; }
+  | Value '(' ')' { $$ = new MethodCallNode(); $$->value = $1; }
   ;
 
 ObjectList : IDENTIFIER { $$.push_back($1); }
