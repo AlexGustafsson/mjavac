@@ -9,8 +9,10 @@ MethodCallNode::MethodCallNode() {
 void MethodCallNode::generate_parse_graph(std::ofstream &stream) const {
   stream << this->get_id() << " [label=\"";
 
+  if (this->is_new)
+    stream << "new ";
+
   for (auto iterator = this->objects.begin(); iterator != this->objects.end(); ++iterator) {
-    ;
     stream << iterator->c_str();
     if (next(iterator) != this->objects.end())
       stream << '.';

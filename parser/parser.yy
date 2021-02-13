@@ -140,6 +140,7 @@ Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $
   | '(' Expression ')' { $$ = $2; }
   | Value { $$ = $1; }
   | MethodCall { $$ = $1; }
+  | KEYWORD_NEW MethodCall { $$ = $2; $2->is_new = true; }
   ;
 
 Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); }

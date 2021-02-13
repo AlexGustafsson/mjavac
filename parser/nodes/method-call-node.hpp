@@ -12,6 +12,7 @@ class MethodCallNode : public Node {
 public:
   std::list<std::string> objects;
   std::list<Node *> parameters;
+  bool is_new;
 
   MethodCallNode();
 
