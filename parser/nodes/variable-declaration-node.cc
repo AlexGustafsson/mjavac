@@ -5,6 +5,7 @@ VariableDeclarationNode::VariableDeclarationNode(std::string type, std::string i
   this->type = type;
   this->identifier = identifier;
   this->is_array = is_array;
+  this->value = nullptr;
 }
 
 void VariableDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
@@ -12,4 +13,9 @@ void VariableDeclarationNode::generate_parse_graph(std::ofstream &stream) const 
   if (this->is_array)
     stream << "[]";
   stream << " " << this->identifier << "\"];" << std::endl;
+
+  if (this->value != nullptr) {
+    stream << this->get_id() << " -> " << this->value->get_id() << " [label=\"value\"];" << std::endl;
+    this->value->generate_parse_graph(stream);
+  }
 }

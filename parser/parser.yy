@@ -125,6 +125,9 @@ Statements : Statement { $$.push_back($1); }
 Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
   | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3, $5); }
   | Expression ';' { $$ = $1; }
+  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->value = $3; }
+  | VariableDeclaration ';' { $$ = $1; }
+  | IDENTIFIER '=' Expression ';' { VariableDeclarationNode* declaration = new VariableDeclarationNode("variable", $1); declaration->value=$3; $$ = declaration; }
   ;
 
 Expressions : Expression { $$.push_back($1); }

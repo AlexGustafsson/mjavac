@@ -55,7 +55,7 @@ int|boolean|void|String {
 "-" {return Parser::token::OPERATOR_MINUS;}
 "*" {return Parser::token::OPERATOR_MULTIPLICATION;}
 
-[a-zA-Z_][a-zA-Z0-9]* {
+[a-zA-Z_][a-zA-Z_0-9]* {
   yylval->build<std::string>(yytext);
   return Parser::token::IDENTIFIER;
 }
