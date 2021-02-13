@@ -65,7 +65,7 @@ int|boolean|void|String {
 <COMMENTED_LINE>\n {location->lines(); yy_pop_state();}
 
 [ \t]+ /* ignore */
-\r?\n+ {location->lines();}
+\r?\n {location->lines();}
 
 <<EOF>> {return Parser::token::END;};
 
