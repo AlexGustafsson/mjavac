@@ -31,7 +31,7 @@
 }
 
 %token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_PRIVATE KEYWORD_STATIC KEYWORD_EXTENDS
-%token KEYWORD_IF KEYWORD_WHILE KEYWORD_THIS KEYWORD_NEW KEYWORD_ELSE
+%token KEYWORD_IF KEYWORD_WHILE KEYWORD_RETURN KEYWORD_NEW KEYWORD_ELSE
 
 %token <std::string> INTEGER BOOLEAN TYPE IDENTIFIER
 
@@ -128,6 +128,8 @@ Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ 
   | VariableDeclaration '=' Expression ';' { $$ = $1; $1->value = $3; }
   | VariableDeclaration ';' { $$ = $1; }
   | IDENTIFIER '=' Expression ';' { VariableDeclarationNode* declaration = new VariableDeclarationNode("variable", $1); declaration->value=$3; $$ = declaration; }
+  | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); }
+  | KEYWORD_RETURN ';' { $$ = new ReturnNode(); }
   ;
 
 Expressions : Expression { $$.push_back($1); }
@@ -135,6 +137,7 @@ Expressions : Expression { $$.push_back($1); }
   ;
 
 Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
+  | '(' Expression ')' { $$ = $2; }
   | Value { $$ = $1; }
   | MethodCall { $$ = $1; }
   ;

@@ -27,8 +27,8 @@ extends {return Parser::token::KEYWORD_EXTENDS;}
 if {return Parser::token::KEYWORD_IF;}
 else {return Parser::token::KEYWORD_ELSE;}
 while {return Parser::token::KEYWORD_WHILE;}
-this {return Parser::token::KEYWORD_THIS;}
 new {return Parser::token::KEYWORD_NEW;}
+return {return Parser::token::KEYWORD_RETURN;}
 "("|")"|"["|"]"|"{"|"}"|";"|","|"="|"." {return yytext[0];}
 
 [0-9]+ {

@@ -7,5 +7,6 @@
 #include "node.hpp"
 #include "operator.hpp"
 #include "program-node.hpp"
+#include "return-node.hpp"
 #include "value-node.hpp"
 #include "variable-declaration-node.hpp"
