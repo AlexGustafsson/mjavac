@@ -31,6 +31,7 @@ void exit_with_usage(int code) {
   std::cout << "\033[1mOPTIONS\033[0m:" << std::endl;
   std::cout << std::endl;
   std::cout << std::setw(15) << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
+  std::cout << std::setw(15) << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
 
   exit(code);
 }
