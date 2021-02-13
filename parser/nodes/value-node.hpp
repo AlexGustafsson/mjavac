@@ -23,7 +23,7 @@ public:
 
   bool is_array;
 
-  ValueNode(int type, std::string value, bool is_array=false);
+  ValueNode(int type, std::string value, bool is_array = false);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };

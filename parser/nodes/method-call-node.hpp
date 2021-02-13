@@ -11,7 +11,7 @@ namespace nodes {
 class MethodCallNode : public Node {
 public:
   std::list<std::string> objects;
-  std::list<Node*> parameters;
+  std::list<Node *> parameters;
 
   MethodCallNode();
 

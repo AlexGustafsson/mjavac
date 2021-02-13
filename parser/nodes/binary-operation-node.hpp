@@ -10,8 +10,8 @@ namespace mjavac {
 namespace nodes {
 class BinaryOperationNode : public Node {
 public:
-  Node* left;
-  Node* right;
+  Node *left;
+  Node *right;
   // Sadly operator is a keyword in this context
   std::string binary_operator;
 
