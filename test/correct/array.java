@@ -1,5 +1,5 @@
 class Array {
-  int array[];
+  int[] array;
 
   public static void main() {
     System.out.println(this.array[3]);

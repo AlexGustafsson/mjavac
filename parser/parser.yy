@@ -99,7 +99,7 @@ Declaration : VariableDeclaration ';' { $$ = $1; }
   | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDeclaration : TYPE IDENTIFIER '[' ']' { $$ = new VariableDeclarationNode($1, $2, true); }
+VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableDeclarationNode($1, $4, true); }
   | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
   ;
 
