@@ -62,6 +62,14 @@
 
 %type <std::string> Operator
 
+%type <MethodCallNode*> MethodCall
+
+%type <std::list<std::string>> ObjectList
+%type <std::string> Object
+
+%type <std::list<Node*>> ParameterList
+%type <Node*> Parameter
+
 %locations
 %start Program
 
@@ -93,7 +101,7 @@ VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableDeclarationNode
   | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
   ;
 
-MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$.type = $2; $$.identifier = $3; $$->parameters = $5; $$->statements = $8; }
+MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; }
@@ -116,6 +124,7 @@ Statements : Statement { $$.push_back($1); }
 
 Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
   | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3, $5); }
+  | Expression ';' { $$ = $1; }
   ;
 
 Expressions : Expression { $$.push_back($1); }
@@ -124,21 +133,34 @@ Expressions : Expression { $$.push_back($1); }
 
 Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
   | Value { $$ = $1; }
+  | MethodCall { $$ = $1; }
   ;
 
-Value : INTEGER { $$ = new ValueNode(ValueNode.Integer, $1); }
-  | BOOLEAN { $$ = new ValueNode(ValueNode.Boolean, $1); }
-  | IDENTIFIER { $$ = new ValueNode(ValueNode.Identifier, $1); }
+Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); }
+  | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); }
+  | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); }
   ;
 
-Operator : OPERATOR_AND { $$ = Operator.And; }
-  | OPERATOR_LESS_THAN { $$ = Operator.LessThan; }
-  | OPERATOR_LESS_THAN_OR_EQUAL { $$ = Operator.LessThanOrEqual; }
-  | OPERATOR_GREATER_THAN { $$ = Operator.GreaterThan; }
-  | OPERATOR_GREATER_THAN_OR_EQUAL { $$ = Operator.GreaterThanOrEqual; }
-  | OPERATOR_PLUS { $$ = Operator.Plus; }
-  | OPERATOR_MINUS { $$ = Operator.Minus; }
-  | OPERATOR_MULTIPLICATION { $$ = Operator.Multiplication; }
+Operator : OPERATOR_AND { $$ = Operator::And; }
+  | OPERATOR_LESS_THAN { $$ = Operator::LessThan; }
+  | OPERATOR_LESS_THAN_OR_EQUAL { $$ = Operator::LessThanOrEqual; }
+  | OPERATOR_GREATER_THAN { $$ = Operator::GreaterThan; }
+  | OPERATOR_GREATER_THAN_OR_EQUAL { $$ = Operator::GreaterThanOrEqual; }
+  | OPERATOR_PLUS { $$ = Operator::Plus; }
+  | OPERATOR_MINUS { $$ = Operator::Minus; }
+  | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
+  ;
+
+MethodCall : ObjectList '(' ParameterList ')' { $$ = new MethodCallNode(); $$->objects = $1; $$->parameters = $3; }
+  | ObjectList '(' ')' { $$ = new MethodCallNode(); $$->objects = $1; }
+  ;
+
+ObjectList : IDENTIFIER { $$.push_back($1); }
+  | ObjectList '.' IDENTIFIER { $$ = $1; $$.push_back($3); }
+  ;
+
+ParameterList : Expression { $$.push_back($1); }
+  | ParameterList ',' Expression { $$ = $1; $$.push_back($3); }
   ;
 
 %%

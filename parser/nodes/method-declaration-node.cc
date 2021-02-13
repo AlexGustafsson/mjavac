@@ -16,12 +16,12 @@ void MethodDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
 
   stream << this->type << " " << this->identifier << "()\"];" << std::endl;
 
-  for (auto node : this->parameters) {
+  for (const auto& node : this->parameters) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"parameter\"];" << std::endl;
     node->generate_parse_graph(stream);
   }
 
-  for (auto node : this->statements) {
+  for (const auto& node : this->statements) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"statement\"];" << std::endl;
     node->generate_parse_graph(stream);
   }

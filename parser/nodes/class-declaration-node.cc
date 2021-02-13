@@ -15,7 +15,7 @@ ClassDeclarationNode::ClassDeclarationNode(std::string identifier, std::string e
 }
 
 void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
-  for (auto node : declarations) {
+  for (const auto& node : declarations) {
     MethodDeclarationNode *method = dynamic_cast<MethodDeclarationNode *>(node);
     if (method != nullptr) {
       this->method_declarations.push_back(method);
@@ -33,17 +33,17 @@ void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
 }
 
 void ClassDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
-  stream << this->get_id() << " [label=\"" << this->identifier;
+  stream << this->get_id() << " [label=\"class " << this->identifier;
   if (this->extends)
     stream << " extends " << this->extended_identifier;
-  stream << "{}\"];" << std::endl;
+  stream << "\"];" << std::endl;
 
-  for (auto node : this->variable_declarations) {
+  for (const auto& node : this->variable_declarations) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"variable\"];" << std::endl;
     node->generate_parse_graph(stream);
   }
 
-  for (auto node : this->method_declarations) {
+  for (const auto& node : this->method_declarations) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"method\"];" << std::endl;
     node->generate_parse_graph(stream);
   }

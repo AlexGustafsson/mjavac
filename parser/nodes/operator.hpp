@@ -13,6 +13,7 @@ public:
   static std::string GreaterThan;
   static std::string GreaterThanOrEqual;
   static std::string Plus;
+  static std::string Minus;
   static std::string Multiplication;
 };
 } // namespace nodes

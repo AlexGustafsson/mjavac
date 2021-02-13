@@ -1,18 +1,19 @@
-#ifndef LOOP_NODE_H
-#define LOOP_NODE_H
+#ifndef METHOD_CALL_NODE_H
+#define METHOD_CALL_NODE_H
 
 #include <fstream>
+#include <list>
 
 #include "node.hpp"
 
 namespace mjavac {
 namespace nodes {
-class LoopNode : public Node {
+class MethodCallNode : public Node {
 public:
-  Node *expression;
-  Node *statement;
+  std::list<std::string> objects;
+  std::list<Node*> parameters;
 
-  LoopNode(Node *expression, Node *statement);
+  MethodCallNode();
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
