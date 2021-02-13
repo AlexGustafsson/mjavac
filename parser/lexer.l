@@ -69,5 +69,5 @@ int|boolean|void|String {
 
 <<EOF>> {return Parser::token::END;};
 
-. {std::cerr << "Failed to match: " << yytext << std::endl; return Parser::token::END;}
+. { return yytext[0]; }
 %%
