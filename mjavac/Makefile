@@ -13,7 +13,7 @@ endif
 
 build: $(OUTPUT_PATH)/mjavac
 
-$(OUTPUT_PATH)/mjavac: main.cc main.hpp
+$(OUTPUT_PATH)/mjavac: main.cc main.hpp ../parser/build/production/lib/mjavac/libmjavacparser.a
 	mkdir -p $(dir $@)
 	$(CXX) -o $@ main.cc $(CXXFLAGS) -L ../parser/build/production/lib/mjavac -l mjavacparser
 
