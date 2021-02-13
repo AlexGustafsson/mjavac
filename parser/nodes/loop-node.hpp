@@ -2,6 +2,7 @@
 #define LOOP_NODE_H
 
 #include <fstream>
+#include <list>
 
 #include "node.hpp"
 
@@ -10,9 +11,9 @@ namespace nodes {
 class LoopNode : public Node {
 public:
   Node *expression;
-  Node *statement;
+  std::list<Node *> statements;
 
-  LoopNode(Node *expression, Node *statement);
+  LoopNode(Node *statement);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };

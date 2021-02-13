@@ -1,15 +1,17 @@
 #include "loop-node.hpp"
 using namespace mjavac::nodes;
 
-LoopNode::LoopNode(Node *expression, Node *statement) {
+LoopNode::LoopNode(Node *expression) {
   this->expression = expression;
-  this->statement = statement;
 }
 
 void LoopNode::generate_parse_graph(std::ofstream &stream) const {
   stream << this->get_id() << " [label=\"Loop\"];" << std::endl;
-  stream << this->get_id() << " -> " << this->expression << " [label=\"expression\"];" << std::endl;
-  stream << this->get_id() << " -> " << this->statement << " [label=\"statement\"];" << std::endl;
+  stream << this->get_id() << " -> " << this->expression->get_id() << " [label=\"expression\"];" << std::endl;
   this->expression->generate_parse_graph(stream);
-  this->statement->generate_parse_graph(stream);
+
+  for (const auto& statement : this->statements) {
+    stream << this->get_id() << " -> " << statement->get_id() << " [label=\"statement\"];" << std::endl;
+    statement->generate_parse_graph(stream);
+  }
 }

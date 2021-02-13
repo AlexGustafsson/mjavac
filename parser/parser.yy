@@ -58,6 +58,8 @@
 %type <std::list<Node*>> Statements Expressions
 %type <Node*> Statement Expression Chainable
 
+%type <LoopNode*> Loop
+
 %type <ValueNode*> Value
 
 %type <std::string> Operator
@@ -123,13 +125,17 @@ Statements : Statement { $$.push_back($1); }
   ;
 
 Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
-  | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3, $5); }
+  | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
   | VariableDeclaration '=' Expression ';' { $$ = $1; $1->value = $3; }
   | VariableDeclaration ';' { $$ = $1; }
   | IDENTIFIER '=' Expression ';' { VariableDeclarationNode* declaration = new VariableDeclarationNode("variable", $1); declaration->value=$3; $$ = declaration; }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); }
+  ;
+
+Loop : KEYWORD_WHILE '(' Expression ')' '{' Statements '}' { $$ = new LoopNode($3); $$->statements = $6; }
+  | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3); $$->statements.push_back($5); }
   ;
 
 Expressions : Expression { $$.push_back($1); }
