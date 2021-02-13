@@ -1,36 +1,84 @@
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <algorithm>
+#include <cstring>
 
 #include <mjavac/parser.hpp>
 
 #include "main.hpp"
 
+char *parameter(int argc, char **argv, const std::string &name) {
+  char **begin = argv;
+  char **end = begin + argc;
+  char **iterator = std::find(begin, end, name);
+  if (iterator != end && ++iterator != end)
+    return *iterator;
+  return 0;
+}
+
+bool flag_is_set(int argc, char **argv, const std::string &name) {
+  char **begin = argv;
+  char **end = begin + argc;
+  return std::find(begin, end, name) != end;
+}
+
+void exit_with_usage(int code) {
+  std::cout << "\033[1mOVERVIEW\033[0m:  MiniJava compiler with extensions" << std::endl;
+  std::cout << std::endl;
+  std::cout << "\033[1mUSAGE\033[0m: mjavac [options] file" << std::endl;
+  std::cout << std::endl;
+  std::cout << "\033[1mOPTIONS\033[0m:" << std::endl;
+  std::cout << std::endl;
+  std::cout << std::setw(15) << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
+
+  exit(code);
+}
+
 int main(int argc, char **argv) {
-#ifdef DEBUG
-  printf("Running in debug mode\n");
-#endif
+  if (argc <= 1)
+    exit_with_usage(EXIT_FAILURE);
+
+  if (flag_is_set(argc, argv, "-h") || flag_is_set(argc, argv, "--help"))
+    exit_with_usage(EXIT_SUCCESS);
+
+  char *source_path = argv[argc - 1];
   std::ifstream input;
-  input.open(argv[1]);
+  input.open(source_path);
   if (!input.is_open()) {
-    std::cout << "Could not open file: " << argv[1] << std::endl;
+    std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << source_path << ": " << strerror(errno) << std::endl;
+    std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m no input files" << std::endl;
+    std::cerr << "compilation terminated." << std::endl;
     exit(EXIT_FAILURE);
   }
 
   mjavac::nodes::ProgramNode *program = nullptr;
-  mjavac::Scanner *scanner = new mjavac::Scanner(&input, argv[1]);
+  mjavac::Scanner *scanner = new mjavac::Scanner(&input, source_path);
   mjavac::Parser *parser = new mjavac::Parser(*scanner, &program);
 
   bool success = parser->parse() == 0;
+  input.close();
 
-  if (!success) {
-    std::cerr << "Parsing failed" << std::endl;
+  if (!success)
     exit(EXIT_FAILURE);
-  }
 
-  std::ofstream diagram_stream;
-  diagram_stream.open("tree.dot");
-  program->generate_parse_graph(diagram_stream);
-  diagram_stream.close();
+  char *dot_path = parameter(argc, argv, "--dot");
+  if (dot_path != nullptr) {
+    std::ofstream dot_stream;
+    dot_stream.open(dot_path);
+    if (!dot_stream.is_open()) {
+      std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << dot_path << ": " << strerror(errno) << std::endl;
+      std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output dot file" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    program->generate_parse_graph(dot_stream);
+    dot_stream.close();
+
+#ifdef GRAPHVIZ_SUPPORT
+    char *graph_path = parameter(argc, argv, "--graph");
+#endif
+  }
 
   //Build symbol table
   //ST st;
