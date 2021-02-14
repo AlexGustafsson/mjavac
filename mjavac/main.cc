@@ -1,12 +1,13 @@
+#include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <algorithm>
-#include <cstring>
 
 #include <mjavac/parser.hpp>
 
 #include "main.hpp"
+#include "symbol-table.hpp"
 
 char *parameter(int argc, char **argv, const std::string &name) {
   char **begin = argv;
@@ -32,6 +33,7 @@ void exit_with_usage(int code) {
   std::cout << std::endl;
   std::cout << std::setw(15) << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
   std::cout << std::setw(15) << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
+  std::cout << std::setw(15) << "--symbol-table" << std::setw(0) << " Output the symbol table" << std::endl;
 
   exit(code);
 }
@@ -79,6 +81,26 @@ int main(int argc, char **argv) {
 #ifdef GRAPHVIZ_SUPPORT
     char *graph_path = parameter(argc, argv, "--graph");
 #endif
+  }
+
+  SymbolTable *symbol_table = new SymbolTable();
+  symbol_table->symbols[program->get_id()] = new Symbol{
+      program->get_id(),
+      SymbolTrait::Subscriptable | SymbolTrait::Callable,
+      program};
+
+  char *symbol_table_path = parameter(argc, argv, "--symbol-table");
+  if (symbol_table_path != nullptr) {
+    std::ofstream symbol_table_stream;
+    symbol_table_stream.open(symbol_table_path);
+    if (!symbol_table_stream.is_open()) {
+      std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << symbol_table_path << ": " << strerror(errno) << std::endl;
+      std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output symbol path file" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    symbol_table->write(symbol_table_stream);
+    symbol_table_stream.close();
   }
 
   // Traverse the tree and create a symbol tree
