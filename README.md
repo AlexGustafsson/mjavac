@@ -93,6 +93,35 @@ make analyze
 make format
 ```
 
+### Test files
+
+The test directory contains several (Mini)Java files. mjavac supports testing parsing, semantics and execution of source code. Each file may have a mjavac test file header. The header looks and works as follow.
+
+```java
+// mjavac test file header
+// header: 6
+// parse: succeed - valid syntax
+// semantics: succeed - valid program
+// output: 1
+// 3
+//
+```
+
+The entire header is commented using `// `. The lines specified bellow all start with an implicit `// `.
+
+The first line must be equal to `mjavac test file header`. The consecutive lines are simply key-value pairs separated by `: `. The values for the keys `parse` and `semantics` are further separated by ` - `.
+
+* `parse`
+  * `succeed` - parse the file and ensure it succeeds
+  * `fail` - parse the file and ensure it fails
+  * `ignore` - don't parse the file (same as excluding the `parse` line completely)
+* `semantics`
+  * `succeed` - parse the file and ensure its semantics are valid
+  * `fail` - parse the file and ensure its semantics are invalid
+  * `ignore` - don't parse and evaluate the semantics of the file (same as excluding the `semantics` line completely)
+
+The last key-value pair is `output`. Its value is the number of lines to read at the end of the header and use as the expected output for the execution of the source code.
+
 ## License
 
 The mjavac logo was created by Amanda Svensson and is licensed under [Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported (CC BY-NC-ND 3.0)](https://creativecommons.org/licenses/by-nc-nd/3.0/).
