@@ -2,7 +2,7 @@
   <img src=".github/banner.png" alt="Banner">
 </p>
 <p align="center">
-  <strong><a href="#quickstart">Quick Start</a> | <a href="#contribute">Development</a> </strong>
+  <strong><a href="#quickstart">Quick Start</a> | <a href="#development">Development</a> </strong>
 </p>
 
 # mjavac
