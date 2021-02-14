@@ -1,10 +1,10 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
+#include <bitset>
 #include <cstdint>
 #include <fstream>
 #include <map>
-#include <bitset>
 
 #include <mjavac/nodes/node.hpp>
 

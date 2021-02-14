@@ -10,7 +10,7 @@ void LoopNode::generate_parse_graph(std::ofstream &stream) const {
   stream << this->get_id() << " -> " << this->expression->get_id() << " [label=\"expression\"];" << std::endl;
   this->expression->generate_parse_graph(stream);
 
-  for (const auto& statement : this->statements) {
+  for (const auto &statement : this->statements) {
     stream << this->get_id() << " -> " << statement->get_id() << " [label=\"statement\"];" << std::endl;
     statement->generate_parse_graph(stream);
   }
