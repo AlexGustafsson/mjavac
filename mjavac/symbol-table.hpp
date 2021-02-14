@@ -8,19 +8,41 @@
 
 #include <mjavac/nodes/node.hpp>
 
+#define SYMBOL_TRAITS 128
+
 struct Symbol {
   // ID of the node representing the scope (program, class, method etc.)
   intptr_t scope;
-  std::bitset<4> traits;
+  // Traits as specified by SymbolTrait
+  int traits;
+  // The node itself
   mjavac::nodes::Node *node;
+  // The (optional) name of the symbol, such as the class, method or variable name
+  std::string name;
+
+  Symbol(mjavac::nodes::Node *node, intptr_t scope, int traits) : scope(scope), traits(traits), node(node) {}
+  Symbol(mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits) : scope(scope), traits(traits), node(node), name(name) {}
 };
 
 enum SymbolTrait {
-  IntLike = 1,
-  Callable,
-  StringLike,
-  Subscriptable
+  None = 1 << 0,
+  // The symbol can be treated as an int
+  IntLike = 1 << 1,
+  // The symbol can be called (symbol(parameter))
+  Callable = 1 << 2,
+  // The symbol can be used as a string
+  StringLike = 1 << 3,
+  // The symbol is subscriptable (symbol[10])
+  Subscriptable = 1 << 4,
+  // The symbol is accessible (symbol.member)
+  Accessible = 1 << 5,
+  // The symbol is callable with new (new symbol(parameter))
+  Initializable = 1 << 6
 };
+
+inline SymbolTrait operator|(SymbolTrait a, SymbolTrait b) {
+  return static_cast<SymbolTrait>(static_cast<int>(a) | static_cast<int>(b));
+}
 
 class SymbolTable {
 public:

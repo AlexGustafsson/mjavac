@@ -90,10 +90,14 @@ int main(int argc, char **argv) {
     exit(EXIT_SUCCESS);
 
   SymbolTable *symbol_table = new SymbolTable();
-  symbol_table->symbols[program->get_id()] = new Symbol{
-      program->get_id(),
-      SymbolTrait::Subscriptable | SymbolTrait::Callable,
-      program};
+
+  // Add the program's symbol
+  symbol_table->symbols[program->get_id()] = new Symbol(program, program->get_id(), SymbolTrait::None);
+
+  for (const auto& classNode : program->declarations) {
+    // Add a symbol for the class
+    symbol_table->symbols[classNode->get_id()] = new Symbol(classNode, program->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
+  }
 
   char *symbol_table_path = parameter(argc, argv, "--symbol-table");
   if (symbol_table_path != nullptr) {
