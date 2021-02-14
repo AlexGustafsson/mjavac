@@ -49,6 +49,7 @@ function test_file() {
     else
       echo -e "✗ \e[31mexpected parsing to $parse ($parse_description): $file\e[0m"
       echo "$output"
+      return
     fi
   fi
 
@@ -62,16 +63,15 @@ function test_file() {
     else
       echo -e "✗ \e[31mexpected semantics validation to $semantics ($semantics_description): $file\e[0m"
       echo "$output"
+      return
     fi
   fi
 
   if [[ -n "$expected_output" ]]; then
     output="$($mjavac --execute "$file" 2>&1)"
     exit_code="$?"
-    if [[ "$parse" = "succeed" ]] && [[ "$output" = "$expected_output" ]]; then
+    if [[ "$output" = "$expected_output" ]]; then
       echo -e "✔ \e[32mcan execute $file\e[0m"
-    elif [[ "$parse" = "fail" ]] && [[ "$exit_code" -gt 0 ]]; then
-      echo -e "✔ \e[32mcannot execute $file\e[0m"
     else
       echo -e "✗ \e[31mexpected execution to $semantics: $file\e[0m"
       echo "=== Expected ==="
@@ -79,6 +79,7 @@ function test_file() {
       echo "===   Got    ==="
       echo "$output"
       echo "================"
+      return
     fi
   fi
 }
