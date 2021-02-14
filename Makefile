@@ -62,8 +62,8 @@ analyze: compile_commands.json
 lint: compile_commands.json
 	./ci/lint.sh $(source)
 
-test: build/debug/mjavac
-	./test/test.sh build/debug/mjavac
+test: debug
+	./test/test.sh build/mjavac.debug
 
 package:
 	zip -r archive.zip README.md Makefile .clang-format test src ci
