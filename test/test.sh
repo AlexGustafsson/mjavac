@@ -19,6 +19,16 @@ function test_files() {
   done
 }
 
+# TODO: Add test headers to each file?
+# mjavac test header
+# parse: succeed
+# semantics: fail
+# compile fail:
+# output: 10
+# hello world
+#
+# Code...
+
 test_files "$DIRECTORY/correct/"*.java
 test_files "$DIRECTORY/examples/"*.java
 test_files "$DIRECTORY/incorrect/"*.java
