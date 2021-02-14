@@ -93,6 +93,8 @@ make analyze
 make format
 ```
 
+When the main project is built in its debug configuration, it will build the parser and mjavac using clang, with enabled address (and leak) sanitizers. At runtime, further checks may be enabled by running mjavac like so: `ASAN_OPTIONS=detect_leaks=1 mjavac ...`.
+
 ### Test files
 
 The test directory contains several (Mini)Java files. mjavac supports testing parsing, semantics and execution of source code. Each file may have a mjavac test file header. The header looks and works as follow.
