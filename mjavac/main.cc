@@ -34,6 +34,9 @@ void exit_with_usage(int code) {
   std::cout << std::setw(15) << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
   std::cout << std::setw(15) << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
   std::cout << std::setw(15) << "--symbol-table" << std::setw(0) << " Output the symbol table" << std::endl;
+  std::cout << std::setw(15) << "--parse-only" << std::setw(0) << " Only parse the source" << std::endl;
+  std::cout << std::setw(15) << "--semantics-only" << std::setw(0) << " Only validate the semantics of the source" << std::endl;
+  std::cout << std::setw(15) << "--execute" << std::setw(0) << " Execute the source" << std::endl;
 
   exit(code);
 }
@@ -83,6 +86,9 @@ int main(int argc, char **argv) {
 #endif
   }
 
+  if (flag_is_set(argc, argv, "--parse-only"))
+    exit(EXIT_SUCCESS);
+
   SymbolTable *symbol_table = new SymbolTable();
   symbol_table->symbols[program->get_id()] = new Symbol{
       program->get_id(),
@@ -103,17 +109,18 @@ int main(int argc, char **argv) {
     symbol_table_stream.close();
   }
 
+  if (flag_is_set(argc, argv, "--semantics-only"))
+    exit(EXIT_SUCCESS);
+
+  if (flag_is_set(argc, argv, "--execute")) {
+    std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m execution not implemented" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
   // Traverse the tree and create a symbol tree
   // node id -> symbol traits
   // traits: int-like, callable, string-like, subscriptable, etc.
   // if (symbol_table[node_id] != callable) error(not callable)
-
-  //Build symbol table
-  //ST st;
-  //root->buildST(st);
-
-  //Semantic analysis
-  //root->checkSemantics(st);
 
   return 0;
 }
