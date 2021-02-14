@@ -1,4 +1,15 @@
-# Quickstart
+<p align="center">
+  <img src=".github/banner.png" alt="Banner">
+</p>
+<p align="center">
+  <strong><a href="#quickstart">Quick Start</a> | <a href="#contribute">Development</a> </strong>
+</p>
+
+# mjavac
+## A parser and compiler for MiniJava, with extensions
+
+<a id="quickstart"></a>
+## Quick Start
 
 This project holds modules which together build up mjavac - a MiniJava compiler (with extensions).
 
@@ -13,7 +24,20 @@ make build
 
 _Note_: allthough every project is able to be built and used in isolation, it may require additional configuration. The compiler flags in each project represent a bare minimum and are supposed to be tuned, such as is done by the main project's Makefile. To compile the projects in their simplest form simply ensure that `$CXXFLAGS` contains at least `-std=c++17` like so: `CXXFLAGS=-std=c++17 make -C ...`. The projects can be built in debug mode by setting the `DEBUG` environment variable like so: `DEBUG=true ...`. However, the debug mode provided by using the main Makefile is much more powerful as it usess Address Sanitizers etc.
 
-## Parser
+## Table of contents
+
+[Quickstart](#quickstart)<br/>
+[Features](#features)<br />
+[Documention](#documentation)<br />
+[Documentation - Parser](#documentation-parser)<br />
+[Documentation - mjavac](#documentation-mjavac)<br />
+[Development](#development)
+
+<a id="documentation"></a>
+## Documentation
+
+<a id="documentation-parser"></a>
+### Parser
 
 The parser project contains the lexer, parser and AST for the language. It's built as a statically linked library.
 
@@ -30,7 +54,8 @@ These directories are to be referenced when building projects using the parser l
 g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacparser
 ```
 
-## mjavac (CLI)
+<a id="documentation-mjavac"></a>
+### mjavac (CLI)
 
 The mjavac project is the complete tool made available in this project. It combines the parser, compiler and more and provides a complete tool for dealing with MiniJava files.
 
@@ -38,7 +63,8 @@ The simplest way to build the CLI is to run `make mjavac`. It can be built by it
 
 The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
-# Development
+<a id="development"></a>
+## Development
 
 Make sure you meet the following prerequisites:
 
@@ -53,7 +79,7 @@ Developing:
 * `scan-build` refers to version 7 or newer which comes with `clang`
 * `clang-format` refers to version 7 or newer which comes with `clang`
 
-## General code operations
+### General code operations
 
 ```sh
 # Lint
@@ -66,3 +92,7 @@ make analyze
 # Format the code
 make format
 ```
+
+## License
+
+The mjavac logo was created by Amanda Svensson and is licensed under [Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported (CC BY-NC-ND 3.0)](https://creativecommons.org/licenses/by-nc-nd/3.0/).
