@@ -97,6 +97,31 @@ int main(int argc, char **argv) {
   for (const auto& classNode : program->declarations) {
     // Add a symbol for the class
     symbol_table->symbols[classNode->get_id()] = new Symbol(classNode, program->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
+
+    // Add symbols for variables
+    for (const auto& variableNode : classNode->variable_declarations) {
+      int traits = SymbolTrait::None;
+      if (variableNode->is_array)
+        traits |= SymbolTrait::Accessible;
+      if (variableNode->type == "int")
+        traits |= SymbolTrait::IntLike;
+      symbol_table->symbols[variableNode->get_id()] = new Symbol(variableNode, variableNode->identifier, classNode->get_id(), traits);
+    }
+
+    // Add symbols for methods
+    for (const auto& methodNode : classNode->method_declarations) {
+      symbol_table->symbols[methodNode->get_id()] = new Symbol(methodNode, methodNode->identifier, classNode->get_id(), SymbolTrait::Callable);
+
+      // Add parameters
+      for (const auto& parameterNode : methodNode->parameters) {
+        int traits = SymbolTrait::None;
+        if (parameterNode->is_array)
+          traits |= SymbolTrait::Accessible;
+        if (parameterNode->type == "int")
+          traits |= SymbolTrait::IntLike;
+        symbol_table->symbols[parameterNode->get_id()] = new Symbol(parameterNode, parameterNode->identifier, methodNode->get_id(), traits);
+      }
+    }
   }
 
   char *symbol_table_path = parameter(argc, argv, "--symbol-table");
