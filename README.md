@@ -100,6 +100,28 @@ make format
 
 When the main project is built in its debug configuration, it will build the parser and mjavac using clang, with enabled address (and leak) sanitizers. At runtime, further checks may be enabled by running mjavac like so: `ASAN_OPTIONS=detect_leaks=1 mjavac ...`.
 
+### Profiling CPU
+
+To profile CPU usage, one may use Valgrind's callgrind tool (`brew install --HEAD LouisBrunner/valgrind/valgrind` on macOS, `sudo apt install valgrind` on Ubuntu).
+
+Build mjavac for production and run like so:
+
+```sh
+# Note that the direct path to the mjavac binary must be used, not a link
+valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes --callgrind-out-file=profile.out ./mjavac/build/production/mjavac test/correct/adder.java
+```
+
+One may visualize the resulting file in many ways, such as using kcachegrind (`brew install qcachegrind` on macOS) or by generating a graph using `gprof2dot` (`brew install gprof2dot` on macOS).
+
+```sh
+qcachegrind profile.out
+```
+
+```sh
+gprof2dot --format=callgrind --output=profile.dot profile.out
+dot -Tpdf -o profile.pdf profile.dot
+```
+
 ### Test files
 
 The test directory contains several (Mini)Java files. mjavac supports testing parsing, semantics and execution of source code. Each file may have a mjavac test file header. The header looks and works as follow.
