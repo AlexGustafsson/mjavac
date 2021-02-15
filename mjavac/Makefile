@@ -24,9 +24,9 @@ CXXFLAGS := $(CXXFLAGS) -I $(REAL_PARSER_PATH)/include
 
 build: $(OUTPUT_PATH)/mjavac
 
-$(OUTPUT_PATH)/mjavac: main.cc main.hpp symbol-table.cc symbol-table.hpp $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
+$(OUTPUT_PATH)/mjavac: main.cc main.hpp symbol-table.cc symbol-table.hpp symbol-generator.cc symbol-generator.hpp $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
 	mkdir -p $(dir $@)
-	$(CXX) -o $@ main.cc symbol-table.cc $(CXXFLAGS) -L $(REAL_PARSER_PATH)/lib/mjavac -l mjavacparser
+	$(CXX) -o $@ main.cc symbol-table.cc symbol-generator.cc $(CXXFLAGS) -L $(REAL_PARSER_PATH)/lib/mjavac -l mjavacparser
 
 clean:
 	rm -r build &> /dev/null || true

@@ -10,18 +10,23 @@
 
 #define SYMBOL_TRAITS 128
 
+// TODO: Add support for parameters etc. too?
+// will scale okay as there aren't too many cases to handle.
+// A more generic approach would likely require to implement the
+// symbol handling in the AST to be maintainable, but that would
+// mean that the parser would be less isolated.
 struct Symbol {
   // ID of the node representing the scope (program, class, method etc.)
   intptr_t scope;
   // Traits as specified by SymbolTrait
   int traits;
   // The node itself
-  mjavac::nodes::Node *node;
+  const mjavac::nodes::Node *node;
   // The (optional) name of the symbol, such as the class, method or variable name
   std::string name;
 
-  Symbol(mjavac::nodes::Node *node, intptr_t scope, int traits) : scope(scope), traits(traits), node(node) {}
-  Symbol(mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits) : scope(scope), traits(traits), node(node), name(name) {}
+  Symbol(const mjavac::nodes::Node *node, intptr_t scope, int traits) : scope(scope), traits(traits), node(node) {}
+  Symbol(const mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits) : scope(scope), traits(traits), node(node), name(name) {}
 };
 
 enum SymbolTrait {

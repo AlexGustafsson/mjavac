@@ -5,9 +5,12 @@
 #include <map>
 
 #include <mjavac/parser.hpp>
+#include <mjavac/nodes/nodes.hpp>
+
+#include "symbol-generator.hpp"
+#include "symbol-table.hpp"
 
 #include "main.hpp"
-#include "symbol-table.hpp"
 
 char *parameter(int argc, char **argv, const std::string &name) {
   char **begin = argv;
@@ -58,9 +61,9 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  mjavac::nodes::ProgramNode *program = nullptr;
+  mjavac::nodes::ProgramNode *program_node = nullptr;
   mjavac::Scanner *scanner = new mjavac::Scanner(&input, source_path);
-  mjavac::Parser *parser = new mjavac::Parser(*scanner, &program);
+  mjavac::Parser *parser = new mjavac::Parser(*scanner, &program_node);
 
   bool success = parser->parse() == 0;
   input.close();
@@ -78,7 +81,7 @@ int main(int argc, char **argv) {
       exit(EXIT_FAILURE);
     }
 
-    program->generate_parse_graph(dot_stream);
+    program_node->generate_parse_graph(dot_stream);
     dot_stream.close();
 
 #ifdef GRAPHVIZ_SUPPORT
@@ -90,39 +93,7 @@ int main(int argc, char **argv) {
     exit(EXIT_SUCCESS);
 
   SymbolTable *symbol_table = new SymbolTable();
-
-  // Add the program's symbol
-  symbol_table->symbols[program->get_id()] = new Symbol(program, program->get_id(), SymbolTrait::None);
-
-  for (const auto& classNode : program->declarations) {
-    // Add a symbol for the class
-    symbol_table->symbols[classNode->get_id()] = new Symbol(classNode, program->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
-
-    // Add symbols for variables
-    for (const auto& variableNode : classNode->variable_declarations) {
-      int traits = SymbolTrait::None;
-      if (variableNode->is_array)
-        traits |= SymbolTrait::Accessible;
-      if (variableNode->type == "int")
-        traits |= SymbolTrait::IntLike;
-      symbol_table->symbols[variableNode->get_id()] = new Symbol(variableNode, variableNode->identifier, classNode->get_id(), traits);
-    }
-
-    // Add symbols for methods
-    for (const auto& methodNode : classNode->method_declarations) {
-      symbol_table->symbols[methodNode->get_id()] = new Symbol(methodNode, methodNode->identifier, classNode->get_id(), SymbolTrait::Callable);
-
-      // Add parameters
-      for (const auto& parameterNode : methodNode->parameters) {
-        int traits = SymbolTrait::None;
-        if (parameterNode->is_array)
-          traits |= SymbolTrait::Accessible;
-        if (parameterNode->type == "int")
-          traits |= SymbolTrait::IntLike;
-        symbol_table->symbols[parameterNode->get_id()] = new Symbol(parameterNode, parameterNode->identifier, methodNode->get_id(), traits);
-      }
-    }
-  }
+  generate_symbols_for_program(symbol_table, program_node);
 
   char *symbol_table_path = parameter(argc, argv, "--symbol-table");
   if (symbol_table_path != nullptr) {
