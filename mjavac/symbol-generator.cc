@@ -11,7 +11,7 @@ void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *
 
 void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclarationNode *class_node, const ProgramNode *program_node) {
   // Add a symbol for the class
-  symbol_table->symbols[class_node->get_id()] = new Symbol(class_node, program_node->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
+  symbol_table->symbols[class_node->get_id()] = new Symbol(class_node, class_node->identifier, program_node->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
 
   // Add symbols for variables
   for (const auto &variable_node : class_node->variable_declarations)
@@ -22,10 +22,14 @@ void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclaratio
     generate_symbols_for_method(symbol_table, method_node, class_node);
 }
 
-void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableDeclarationNode *variable_node, const Node *scope_node) {
+void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node) {
+  // Only create symbols for variable declarations
+  if (!variable_node->is_declaration)
+    return;
+
   int traits = SymbolTrait::None;
   if (variable_node->is_array)
-    traits |= SymbolTrait::Accessible;
+    traits |= SymbolTrait::Subscriptable;
   if (variable_node->type == "int")
     traits |= SymbolTrait::IntLike;
   symbol_table->symbols[variable_node->get_id()] = new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits);
@@ -60,7 +64,7 @@ void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *state
   //   return;
   // }
 
-  const auto &variable_node = dynamic_cast<const VariableDeclarationNode *>(statement_node);
+  const auto &variable_node = dynamic_cast<const VariableNode *>(statement_node);
   if (variable_node != nullptr) {
     generate_symbols_for_variable(symbol_table, variable_node, scope_node);
     return;

@@ -49,11 +49,11 @@
 %type <std::list<Node*>> Declarations
 %type <Node*> Declaration
 
-%type <VariableDeclarationNode*> VariableDeclaration
+%type <VariableNode*> VariableDeclaration
 %type <MethodDeclarationNode*> MethodDeclaration
 %type <MethodDeclarationNode*> MethodScopeDeclaration
 
-%type <std::list<VariableDeclarationNode*>> MethodParameters
+%type <std::list<VariableNode*>> MethodParameters
 
 %type <std::list<Node*>> Statements Expressions
 %type <Node*> Statement Expression Chainable
@@ -99,8 +99,8 @@ Declaration : VariableDeclaration ';' { $$ = $1; }
   | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableDeclarationNode($1, $4, true); }
-  | TYPE IDENTIFIER { $$ = new VariableDeclarationNode($1, $2); }
+VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); }
+  | TYPE IDENTIFIER { $$ = new VariableNode($1, $2, true); }
   ;
 
 MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; }
@@ -127,9 +127,9 @@ Statements : Statement { $$.push_back($1); }
 Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
-  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->value = $3; }
+  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; }
   | VariableDeclaration ';' { $$ = $1; }
-  | IDENTIFIER '=' Expression ';' { VariableDeclarationNode* declaration = new VariableDeclarationNode("variable", $1); declaration->value=$3; $$ = declaration; }
+  | IDENTIFIER '=' Expression ';' { VariableNode* declaration = new VariableNode("variable", $1, false); declaration->assigned_value=$3; $$ = declaration; }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); }
   ;

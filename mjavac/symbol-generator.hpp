@@ -11,7 +11,7 @@ void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *
 
 void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclarationNode *class_node, const ProgramNode *program_node);
 
-void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableDeclarationNode *variable_node, const Node *scope_node);
+void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node);
 
 void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarationNode *method_node, const ClassDeclarationNode *class_node);
 

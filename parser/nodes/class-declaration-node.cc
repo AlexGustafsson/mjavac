@@ -1,6 +1,5 @@
 #include "class-declaration-node.hpp"
 #include "nodes/method-declaration-node.hpp"
-#include "nodes/variable-declaration-node.hpp"
 using namespace mjavac::nodes;
 
 ClassDeclarationNode::ClassDeclarationNode(std::string identifier) {
@@ -22,7 +21,7 @@ void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
       continue;
     }
 
-    VariableDeclarationNode *variable = dynamic_cast<VariableDeclarationNode *>(node);
+    VariableNode *variable = dynamic_cast<VariableNode *>(node);
     if (variable != nullptr) {
       this->variable_declarations.push_back(variable);
       continue;

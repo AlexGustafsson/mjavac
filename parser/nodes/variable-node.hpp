@@ -1,5 +1,5 @@
-#ifndef VARIABLE_DECLERATION_NODE_H
-#define VARIABLE_DECLERATION_NODE_H
+#ifndef VARIABLE_NODE_H
+#define VARIABLE_NODE_H
 
 #include <fstream>
 #include <string>
@@ -9,14 +9,15 @@
 /* Base node class */
 namespace mjavac {
 namespace nodes {
-class VariableDeclarationNode : public Node {
+class VariableNode : public Node {
 public:
   std::string type;
   std::string identifier;
   bool is_array;
-  Node *value;
+  Node *assigned_value;
+  bool is_declaration;
 
-  VariableDeclarationNode(std::string type, std::string identifier, bool is_array = false);
+  VariableNode(std::string type, std::string identifier, bool is_declaration, bool is_array = false);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };

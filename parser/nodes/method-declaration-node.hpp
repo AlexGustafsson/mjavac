@@ -6,7 +6,7 @@
 #include <string>
 
 #include "node.hpp"
-#include "variable-declaration-node.hpp"
+#include "variable-node.hpp"
 
 namespace mjavac {
 namespace nodes {
@@ -16,7 +16,7 @@ public:
   bool is_static;
   std::string type;
   std::string identifier;
-  std::list<VariableDeclarationNode *> parameters;
+  std::list<VariableNode *> parameters;
   std::list<Node *> statements;
 
   MethodDeclarationNode(bool is_public, bool is_static);

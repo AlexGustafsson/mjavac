@@ -7,7 +7,7 @@
 
 #include "method-declaration-node.hpp"
 #include "node.hpp"
-#include "variable-declaration-node.hpp"
+#include "variable-node.hpp"
 
 namespace mjavac {
 namespace nodes {
@@ -16,7 +16,7 @@ public:
   std::string identifier;
   std::string extended_identifier;
   bool extends;
-  std::list<VariableDeclarationNode *> variable_declarations;
+  std::list<VariableNode *> variable_declarations;
   std::list<MethodDeclarationNode *> method_declarations;
 
   ClassDeclarationNode(std::string identifier, std::string extended_identifier);
