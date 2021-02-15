@@ -45,10 +45,6 @@ enum SymbolTrait {
   Initializable = 1 << 6
 };
 
-inline SymbolTrait operator|(SymbolTrait a, SymbolTrait b) {
-  return static_cast<SymbolTrait>(static_cast<int>(a) | static_cast<int>(b));
-}
-
 class SymbolTable {
 public:
   std::map<intptr_t, Symbol *> symbols;
