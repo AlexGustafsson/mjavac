@@ -33,6 +33,11 @@ _Note_: allthough every project is able to be built and used in isolation, it ma
 [Documentation - mjavac](#documentation-mjavac)<br />
 [Development](#development)
 
+## Features
+
+* Reusable parser library
+* ...
+
 <a id="documentation"></a>
 ## Documentation
 
