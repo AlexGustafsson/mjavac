@@ -15,6 +15,6 @@ void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableDecl
 
 void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarationNode *method_node, const ClassDeclarationNode *class_node);
 
-void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *statement_node, const MethodDeclarationNode *method_node);
+void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *statement_node, const Node *method_node);
 
 #endif
