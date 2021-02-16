@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -68,7 +69,7 @@ int main(int argc, char **argv) {
   bool success = parser->parse() == 0;
   input.close();
 
-  if (!success)
+  if (!success || program_node == nullptr)
     exit(EXIT_FAILURE);
 
   char *dot_path = parameter(argc, argv, "--dot");
