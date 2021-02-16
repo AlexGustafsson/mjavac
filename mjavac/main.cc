@@ -10,6 +10,7 @@
 
 #include "symbol-generator.hpp"
 #include "symbol-table.hpp"
+#include "semantics-analyzer.hpp"
 
 #include "main.hpp"
 
@@ -66,10 +67,10 @@ int main(int argc, char **argv) {
   mjavac::Scanner *scanner = new mjavac::Scanner(&input, source_path);
   mjavac::Parser *parser = new mjavac::Parser(*scanner, &program_node);
 
-  bool success = parser->parse() == 0;
+  bool parser_succeeded = parser->parse() == 0;
   input.close();
 
-  if (!success || program_node == nullptr)
+  if (!parser_succeeded || program_node == nullptr)
     exit(EXIT_FAILURE);
 
   char *dot_path = parameter(argc, argv, "--dot");
@@ -109,6 +110,10 @@ int main(int argc, char **argv) {
     symbol_table->write(symbol_table_stream);
     symbol_table_stream.close();
   }
+
+  int semantics_analysis_succeeded = analyze_program_semantics(symbol_table, program_node);
+  if (!semantics_analysis_succeeded)
+    exit(EXIT_FAILURE);
 
   if (flag_is_set(argc, argv, "--semantics-only"))
     exit(EXIT_SUCCESS);

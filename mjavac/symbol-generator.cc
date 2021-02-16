@@ -3,7 +3,7 @@
 
 void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *program_node) {
   // Add the program's symbol
-  symbol_table->symbols[program_node->get_id()] = new Symbol(program_node, program_node->get_id(), SymbolTrait::None);
+  symbol_table->add_symbol(new Symbol(program_node, 0, SymbolTrait::None));
 
   // Add each class
   // There is some nasty bug here. If there are no declarations in the program (empty source)
@@ -25,7 +25,7 @@ void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *
 
 void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclarationNode *class_node, const ProgramNode *program_node) {
   // Add a symbol for the class
-  symbol_table->symbols[class_node->get_id()] = new Symbol(class_node, class_node->identifier, program_node->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable);
+  symbol_table->add_symbol(new Symbol(class_node, class_node->identifier, program_node->get_id(), SymbolTrait::Accessible | SymbolTrait::Initializable));
 
   // Add symbols for variables
   for (const auto &variable_node : class_node->variable_declarations)
@@ -46,13 +46,13 @@ void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode
     traits |= SymbolTrait::Subscriptable;
   if (variable_node->type == "int")
     traits |= SymbolTrait::IntLike;
-  symbol_table->symbols[variable_node->get_id()] = new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits);
+  symbol_table->add_symbol(new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits));
 }
 
 void
 generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarationNode *method_node, const ClassDeclarationNode *class_node) {
   // Add a symbol for the method itself
-  symbol_table->symbols[method_node->get_id()] = new Symbol(method_node, method_node->identifier, class_node->get_id(), SymbolTrait::Callable);
+  symbol_table->add_symbol(new Symbol(method_node, method_node->identifier, class_node->get_id(), SymbolTrait::Callable));
 
   // Add parameters
   for (const auto &parameter_node : method_node->parameters)
