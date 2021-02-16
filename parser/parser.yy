@@ -77,8 +77,8 @@
 
 %%
 
-Program : ClassDeclarations { *root = new ProgramNode(); (*root)->declarations = $1; }
-  | END { *root = new ProgramNode(); }
+Program : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; }
+  | END { *root = new ProgramNode(scanner.file_name); }
   ;
 
 ClassDeclarations : ClassDeclaration { $$.push_back($1); }

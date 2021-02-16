@@ -11,9 +11,10 @@ namespace mjavac {
 namespace nodes {
 class ProgramNode : public Node {
 public:
+  std::string file_name;
   std::list<ClassDeclarationNode *> declarations;
 
-  ProgramNode();
+  ProgramNode(std::string file_name);
 
   void generate_parse_graph(std::ofstream &stream) const;
 };
