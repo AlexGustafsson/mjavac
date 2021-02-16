@@ -89,7 +89,8 @@
 
 %%
 
-Program : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; set_location(*root, @1, @1); }
+Program
+  : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; set_location(*root, @1, @1); }
   | END { *root = new ProgramNode(scanner.file_name); set_location(*root, @1, @1); }
   ;
 
@@ -97,64 +98,76 @@ ClassDeclarations : ClassDeclaration { $$.push_back($1); }
   | ClassDeclarations ClassDeclaration { $$ = $1; $$.push_back($2); }
   ;
 
-ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2, $4); $$->setDeclarations($6); set_location($$, @1, @7); }
+ClassDeclaration
+  : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2, $4); $$->setDeclarations($6); set_location($$, @1, @7); }
   | KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2, $4); set_location($$, @1, @6); }
   | KEYWORD_CLASS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2); $$->setDeclarations($4); set_location($$, @1, @5); }
   | KEYWORD_CLASS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2); set_location($$, @1, @4); }
   ;
 
-Declarations : Declaration { $$.push_back($1); }
+Declarations
+  : Declaration { $$.push_back($1); }
   | Declarations Declaration { $$ = $1; $$.push_back($2); }
   ;
 
-Declaration : VariableDeclaration ';' { $$ = $1; }
+Declaration
+  : VariableDeclaration ';' { $$ = $1; }
   | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
+VariableDeclaration
+  : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
   | TYPE IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
   ;
 
-MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; set_location($$, @1, @8); }
+MethodDeclaration
+  : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; set_location($$, @1, @8); }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; set_location($$, @1, @8); }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; set_location($$, @1, @8); }
   | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; set_location($$, @1, @7); }
   ;
 
-MethodScopeDeclaration : KEYWORD_PUBLIC KEYWORD_STATIC { $$ = new MethodDeclarationNode(true, true); }
+MethodScopeDeclaration
+  : KEYWORD_PUBLIC KEYWORD_STATIC { $$ = new MethodDeclarationNode(true, true); }
   | KEYWORD_PRIVATE KEYWORD_STATIC { $$ = new MethodDeclarationNode(false, true); }
   | KEYWORD_PUBLIC { $$ = new MethodDeclarationNode(true, false); }
   | KEYWORD_PRIVATE { $$ = new MethodDeclarationNode(false, false); }
   | KEYWORD_STATIC { $$ = new MethodDeclarationNode(false, true); }
   ;
 
-MethodParameters : VariableDeclaration { $$.push_back($1); }
+MethodParameters
+  : VariableDeclaration { $$.push_back($1); }
   | MethodParameters ',' VariableDeclaration { $$ = $1; $1.push_back($3); }
   ;
 
-Statements : Statement { $$.push_back($1); }
+Statements
+  : Statement { $$.push_back($1); }
   | Statements Statement { $$ = $1; $$.push_back($2); }
   ;
 
-Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); set_location($$, @1, @7); }
+Statement
+  : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); set_location($$, @1, @7); }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
   | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; }
   | VariableDeclaration ';' { $$ = $1; }
-  | IDENTIFIER '=' Expression ';' { VariableNode* declaration = new VariableNode("variable", $1, false); declaration->assigned_value=$3; $$ = declaration; set_location($$, @1, @4); }
+  | Value '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
   ;
 
-Loop : KEYWORD_WHILE '(' Expression ')' '{' Statements '}' { $$ = new LoopNode($3); $$->statements = $6; set_location($$, @1, @7); }
+Loop
+  : KEYWORD_WHILE '(' Expression ')' '{' Statements '}' { $$ = new LoopNode($3); $$->statements = $6; set_location($$, @1, @7); }
   | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3); $$->statements.push_back($5); set_location($$, @1, @5); }
   ;
 
-Expressions : Expression { $$.push_back($1); }
+Expressions
+  : Expression { $$.push_back($1); }
   | Expressions Expression { $$ = $1; $$.push_back($2); }
   ;
 
-Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
+Expression
+  : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
   | Chainable { $$ = $1; set_location($$, @1, @1); }
   | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); set_location($$, @1, @3); }
@@ -163,17 +176,20 @@ Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $
   | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, "[]"); set_location($$, @1, @4); }
   ;
 
-Chainable : MethodCall { $$ = $1; }
+Chainable
+  : MethodCall { $$ = $1; }
   | KEYWORD_NEW MethodCall { $$ = $2; $2->is_new = true; }
   ;
 
-Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); set_location($$, @1, @1); }
+Value
+  : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); set_location($$, @1, @1); }
   | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); set_location($$, @1, @1); }
   | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); set_location($$, @1, @1); }
   | ObjectList { $$ = new ValueNode(ValueNode::Object, $1); }
   ;
 
-Operator : OPERATOR_AND { $$ = Operator::And; }
+Operator
+  : OPERATOR_AND { $$ = Operator::And; }
   | OPERATOR_LESS_THAN { $$ = Operator::LessThan; }
   | OPERATOR_LESS_THAN_OR_EQUAL { $$ = Operator::LessThanOrEqual; }
   | OPERATOR_GREATER_THAN { $$ = Operator::GreaterThan; }
@@ -183,15 +199,18 @@ Operator : OPERATOR_AND { $$ = Operator::And; }
   | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
   ;
 
-MethodCall : Value '(' ParameterList ')' { $$ = new MethodCallNode(); $$->value = $1; $$->parameters = $3; set_location($$, @1, @4); }
+MethodCall
+  : Value '(' ParameterList ')' { $$ = new MethodCallNode(); $$->value = $1; $$->parameters = $3; set_location($$, @1, @4); }
   | Value '(' ')' { $$ = new MethodCallNode(); $$->value = $1; set_location($$, @1, @3); }
   ;
 
-ObjectList : IDENTIFIER { $$.push_back($1); }
+ObjectList
+  : IDENTIFIER { $$.push_back($1); }
   | ObjectList '.' IDENTIFIER { $$ = $1; $$.push_back($3); }
   ;
 
-ParameterList : Expression { $$.push_back($1); }
+ParameterList
+  : Expression { $$.push_back($1); }
   | ParameterList ',' Expression { $$ = $1; $$.push_back($3); }
   ;
 

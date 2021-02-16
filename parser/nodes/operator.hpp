@@ -15,6 +15,7 @@ public:
   static std::string Plus;
   static std::string Minus;
   static std::string Multiplication;
+  static std::string Assign;
 };
 } // namespace nodes
 } // namespace mjavac

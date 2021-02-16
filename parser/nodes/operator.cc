@@ -9,3 +9,4 @@ std::string Operator::GreaterThanOrEqual = "<=";
 std::string Operator::Plus = "+";
 std::string Operator::Minus = "-";
 std::string Operator::Multiplication = "*";
+std::string Operator::Assign = "=";
