@@ -1,8 +1,9 @@
 %skeleton "lalr1.cc"
 %require "3.7"
+%language "c++"
 %defines
 %define api.namespace {mjavac}
-%define parser_class_name {Parser}
+%define api.parser.class {Parser}
 %define parse.error verbose
 %define api.value.type variant
 %define parse.assert
@@ -28,6 +29,17 @@
 
   #undef yylex
   #define yylex scanner.yylex
+
+  void set_location(Node *node, const mjavac::Parser::location_type& begin, const mjavac::Parser::location_type& end) {
+    if (node == nullptr)
+      return;
+
+    node->location.start_line = begin.begin.line;
+    node->location.start_column = begin.begin.column;
+    node->location.end_line = end.end.line;
+    node->location.end_column = end.end.column;
+    node->location.defined = true;
+  }
 }
 
 %token KEYWORD_CLASS KEYWORD_PUBLIC KEYWORD_PRIVATE KEYWORD_STATIC KEYWORD_EXTENDS
@@ -77,18 +89,18 @@
 
 %%
 
-Program : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; }
-  | END { *root = new ProgramNode(scanner.file_name); }
+Program : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; set_location(*root, @1, @1); }
+  | END { *root = new ProgramNode(scanner.file_name); set_location(*root, @1, @1); }
   ;
 
 ClassDeclarations : ClassDeclaration { $$.push_back($1); }
   | ClassDeclarations ClassDeclaration { $$ = $1; $$.push_back($2); }
   ;
 
-ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2, $4); $$->setDeclarations($6); }
-  | KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2, $4); }
-  | KEYWORD_CLASS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2); $$->setDeclarations($4); }
-  | KEYWORD_CLASS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2); }
+ClassDeclaration : KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2, $4); $$->setDeclarations($6); set_location($$, @1, @7); }
+  | KEYWORD_CLASS IDENTIFIER KEYWORD_EXTENDS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2, $4); set_location($$, @1, @6); }
+  | KEYWORD_CLASS IDENTIFIER '{' Declarations '}' { $$ = new ClassDeclarationNode($2); $$->setDeclarations($4); set_location($$, @1, @5); }
+  | KEYWORD_CLASS IDENTIFIER '{' '}' { $$ = new ClassDeclarationNode($2); set_location($$, @1, @4); }
   ;
 
 Declarations : Declaration { $$.push_back($1); }
@@ -99,14 +111,14 @@ Declaration : VariableDeclaration ';' { $$ = $1; }
   | MethodDeclaration { $$ = $1; }
   ;
 
-VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); }
-  | TYPE IDENTIFIER { $$ = new VariableNode($1, $2, true); }
+VariableDeclaration : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
+  | TYPE IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
   ;
 
-MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; }
+MethodDeclaration : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; set_location($$, @1, @8); }
+  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; set_location($$, @1, @8); }
+  | MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; set_location($$, @1, @8); }
+  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; set_location($$, @1, @7); }
   ;
 
 MethodScopeDeclaration : KEYWORD_PUBLIC KEYWORD_STATIC { $$ = new MethodDeclarationNode(true, true); }
@@ -124,18 +136,18 @@ Statements : Statement { $$.push_back($1); }
   | Statements Statement { $$ = $1; $$.push_back($2); }
   ;
 
-Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); }
+Statement : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); set_location($$, @1, @7); }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
   | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; }
   | VariableDeclaration ';' { $$ = $1; }
-  | IDENTIFIER '=' Expression ';' { VariableNode* declaration = new VariableNode("variable", $1, false); declaration->assigned_value=$3; $$ = declaration; }
-  | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); }
-  | KEYWORD_RETURN ';' { $$ = new ReturnNode(); }
+  | IDENTIFIER '=' Expression ';' { VariableNode* declaration = new VariableNode("variable", $1, false); declaration->assigned_value=$3; $$ = declaration; set_location($$, @1, @4); }
+  | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
+  | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
   ;
 
-Loop : KEYWORD_WHILE '(' Expression ')' '{' Statements '}' { $$ = new LoopNode($3); $$->statements = $6; }
-  | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3); $$->statements.push_back($5); }
+Loop : KEYWORD_WHILE '(' Expression ')' '{' Statements '}' { $$ = new LoopNode($3); $$->statements = $6; set_location($$, @1, @7); }
+  | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3); $$->statements.push_back($5); set_location($$, @1, @5); }
   ;
 
 Expressions : Expression { $$.push_back($1); }
@@ -143,21 +155,21 @@ Expressions : Expression { $$.push_back($1); }
   ;
 
 Expression : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
-  | '(' Expression ')' { $$ = $2; }
-  | Chainable { $$ = $1; }
-  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); }
+  | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
+  | Chainable { $$ = $1; set_location($$, @1, @1); }
+  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); set_location($$, @1, @3); }
   | Value { $$ = $1; }
-  | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; }
-  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, "[]"); }
+  | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; set_location($$, @1, @4); }
+  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, "[]"); set_location($$, @1, @4); }
   ;
 
 Chainable : MethodCall { $$ = $1; }
   | KEYWORD_NEW MethodCall { $$ = $2; $2->is_new = true; }
   ;
 
-Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); }
-  | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); }
-  | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); }
+Value : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); set_location($$, @1, @1); }
+  | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); set_location($$, @1, @1); }
+  | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); set_location($$, @1, @1); }
   | ObjectList { $$ = new ValueNode(ValueNode::Object, $1); }
   ;
 
@@ -171,8 +183,8 @@ Operator : OPERATOR_AND { $$ = Operator::And; }
   | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
   ;
 
-MethodCall : Value '(' ParameterList ')' { $$ = new MethodCallNode(); $$->value = $1; $$->parameters = $3; }
-  | Value '(' ')' { $$ = new MethodCallNode(); $$->value = $1; }
+MethodCall : Value '(' ParameterList ')' { $$ = new MethodCallNode(); $$->value = $1; $$->parameters = $3; set_location($$, @1, @4); }
+  | Value '(' ')' { $$ = new MethodCallNode(); $$->value = $1; set_location($$, @1, @3); }
   ;
 
 ObjectList : IDENTIFIER { $$.push_back($1); }
