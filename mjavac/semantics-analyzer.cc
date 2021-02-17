@@ -37,7 +37,7 @@ bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_n
   for (const auto &variable_node : class_node->variable_declarations) {
     // Throw an error if there are duplicate declarations
     if (view->count_symbols_by_name(variable_node->identifier) > 1) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m duplicate variable definition'" << variable_node->identifier << "'" << std::endl;
+      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m duplicate member definition'" << variable_node->identifier << "'" << std::endl;
       passed = false;
     }
   }
@@ -75,6 +75,30 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
     if (binary_operation_node->binary_operator != Operator::Assign)
       std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[33m warning:\033[0m unused result from operation" << std::endl;
     return analyze_expression_semantics(view, program_node, binary_operation_node);
+  }
+
+  const auto &variable_node = dynamic_cast<const VariableNode *>(statement_node);
+  if (variable_node != nullptr) {
+    bool passed = true;
+
+    // Error on array declaration of type other than int
+    if (variable_node->is_declaration && variable_node->is_array && variable_node->type.compare("int") != 0) {
+      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m array declaration of type other than int" << std::endl;
+      passed = false;
+    }
+
+    // Error on duplicate variables
+    if (variable_node->is_declaration && view->count_symbols_by_name(variable_node->identifier) > 1) {
+      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m duplicate variable declaration '" << variable_node->identifier << "'" << std::endl;
+      passed = false;
+    }
+
+    if (variable_node->assigned_value != nullptr) {
+      bool expression_passed = analyze_expression_semantics(view, program_node, variable_node->assigned_value);
+      passed = passed && expression_passed;
+    }
+
+    return passed;
   }
 
   debug_out << "warning: unhandled statement semantics " << std::setbase(16) << statement_node->get_id() << std::endl;
