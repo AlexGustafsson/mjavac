@@ -35,10 +35,13 @@ class DuplicateClass {
   }
 
   private void nonValidAssigns() {
-    5 = 10;
-    true = false;
-    this = 1;
-    this.nonValidAssigns = 10;
+    5 = 10; // Assignment to non-variable
+    true = false; // Assignment to non-variable
+    this = 1; // Assignment to this
+    this.nonValidAssigns = 10; // Assignment to non-defined object value
+    int assignmentWithABadType;
+    assignmentWithABadType = false;
+    nonDefined = false; // Assignment to non-defined identifier value
   }
 
   private void badValues() {

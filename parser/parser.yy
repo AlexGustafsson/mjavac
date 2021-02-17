@@ -150,9 +150,9 @@ Statement
   : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); set_location($$, @1, @7); }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
-  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; }
-  | VariableDeclaration ';' { $$ = $1; }
-  | Value '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); }
+  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; set_location($$, @1, @4); }
+  | VariableDeclaration ';' { $$ = $1; set_location($$, @1, @2); }
+  | Value '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
   | error ';' /* on error, try to skip the entire statement */

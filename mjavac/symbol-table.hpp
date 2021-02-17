@@ -75,6 +75,7 @@ public:
   void set_scope(intptr_t scope);
   int count_symbols() const;
   int count_symbols_by_name(std::string name) const;
+  Symbol *get_symbol_by_name(std::string name) const;
 };
 
 #endif

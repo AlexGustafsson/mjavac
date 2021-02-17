@@ -116,16 +116,37 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
       debug_out << "warning: missing symbols for right binary operand " << std::setbase(16) << binary_operation_node->right->get_id() << " for operator " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
 
     if (binary_operation_node->binary_operator == Operator::Plus || binary_operation_node->binary_operator == Operator::Minus || binary_operation_node->binary_operator == Operator::Multiplication) {
-      analyze_expression_semantics(view, program_node, binary_operation_node->left);
-      analyze_expression_semantics(view, program_node, binary_operation_node->right);
+      bool passed = true;
+      passed &= analyze_expression_semantics(view, program_node, binary_operation_node->left);
+      passed &= analyze_expression_semantics(view, program_node, binary_operation_node->right);
 
       if ((left->traits & SymbolTrait::IntLike) != (right->traits & SymbolTrait::IntLike)) {
         std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m unexpected operation between two values of different types" << std::endl;
-        return false;
+        passed = false;
       }
+
+      return passed;
     } else if (binary_operation_node->binary_operator == Operator::Assign) {
-      analyze_expression_semantics(view, program_node, binary_operation_node->right);
-      debug_out << "warning: unhandled assign " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
+      bool passed = true;
+
+      passed &= analyze_expression_semantics(view, program_node, binary_operation_node->right);
+
+      const auto &left = dynamic_cast<const ValueNode*>(binary_operation_node->left);
+      if (left->type == ValueNode::Identifier) {
+        Symbol *variable_symbol = view->get_symbol_by_name(left->identifier_value);
+        if (variable_symbol == nullptr) {
+          // Not defined in this scope
+          std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m assignment to non-defined variable" << std::endl;
+          passed = false;
+        } else {
+          debug_out << "warning: unhandled assign " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
+        }
+      } else if (left->type == ValueNode::Object) {
+        debug_out << "warning: unhandled assign using object " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
+      } else {
+        std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m assignment to non-variable" << std::endl;
+        passed = false;
+      }
     } else {
       debug_out << "warning: unhandled binary operator " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
       return true;

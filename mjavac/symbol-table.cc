@@ -85,3 +85,18 @@ int SymbolTableView::count_symbols_by_name(std::string name) const {
 
   return count;
 }
+
+Symbol * SymbolTableView::get_symbol_by_name(std::string name) const {
+  Symbol *root = this->symbol_table->get_symbol(this->scope);
+
+  while (root != nullptr) {
+    for (const auto &symbol : root->symbols) {
+      if (symbol->name.compare(name) == 0)
+        return symbol;
+    }
+
+    root = this->symbol_table->get_symbol(root->scope);
+  }
+
+  return nullptr;
+}
