@@ -5,7 +5,7 @@ ProgramNode::ProgramNode(std::string file_name) {
   this->file_name = file_name;
 }
 
-void ProgramNode::generate_parse_graph(std::ofstream &stream) const {
+void ProgramNode::generate_parse_graph(std::ostream &stream) const {
   stream << "digraph {" << std::endl;
   stream << this->get_id() << "[label=\"Program\"];" << std::endl;
   for (const auto &class_node : this->declarations) {

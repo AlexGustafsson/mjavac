@@ -1,7 +1,7 @@
 #ifndef PROGRAM_NODE_H
 #define PROGRAM_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 
 #include "class-declaration-node.hpp"
@@ -16,7 +16,7 @@ public:
 
   ProgramNode(std::string file_name);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

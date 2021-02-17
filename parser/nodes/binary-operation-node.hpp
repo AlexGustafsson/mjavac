@@ -1,10 +1,11 @@
 #ifndef BINARY_OPERATION_NODE_H
 #define BINARY_OPERATION_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <string>
 
 #include "node.hpp"
+#include "operator.hpp"
 
 namespace mjavac {
 namespace nodes {
@@ -13,11 +14,11 @@ public:
   Node *left;
   Node *right;
   // Sadly operator is a keyword in this context
-  std::string binary_operator;
+  Operator binary_operator;
 
-  BinaryOperationNode(Node *left, Node *right, std::string binary_operator);
+  BinaryOperationNode(Node *left, Node *right, Operator binary_operator);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

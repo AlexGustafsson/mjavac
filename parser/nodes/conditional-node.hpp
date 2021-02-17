@@ -1,7 +1,7 @@
 #ifndef CONDITIONAL_NODE_H
 #define CONDITIONAL_NODE_H
 
-#include <fstream>
+#include <ostream>
 
 #include "node.hpp"
 
@@ -15,7 +15,7 @@ public:
 
   ConditionalNode(Node *expression, Node *positive_expression, Node *negative_expression);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

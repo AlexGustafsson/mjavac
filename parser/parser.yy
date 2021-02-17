@@ -48,10 +48,17 @@
 %token <std::string> INTEGER BOOLEAN TYPE IDENTIFIER
 
 %token OPERATOR_NOT OPERATOR_AND OPERATOR_LESS_THAN OPERATOR_LESS_THAN_OR_EQUAL
-%token OPERATOR_GREATER_THAN OPERATOR_GREATER_THAN_OR_EQUAL OPERATOR_PLUS
-%token OPERATOR_MINUS OPERATOR_MULTIPLICATION
+%token OPERATOR_GREATER_THAN OPERATOR_GREATER_THAN_OR_EQUAL OPERATOR_PLUS OPERATOR_DIVISION
+%token OPERATOR_MINUS OPERATOR_MULTIPLICATION OPERATOR_OR OPERATOR_EQUALS OPERATOR_NOT_EQUALS
 
 %token END 0 "end of file"
+
+%left OPERATOR_OR
+%left OPERATOR_AND
+%left OPERATOR_LESS_THAN OPERATOR_GREATER_THAN OPERATOR_LESS_THAN_OR_EQUAL OPERATOR_GREATER_THAN_OR_EQUAL OPERATOR_NOT_EQUALS OPERATOR_EQUALS
+%left OPERATOR_PLUS OPERATOR_MINUS
+%left OPERATOR_MULTIPLICATION OPERATOR_DIVISION
+%left OPERATOR_NOT
 
 %type <ProgramNode*> Program
 
@@ -67,14 +74,14 @@
 
 %type <std::list<VariableNode*>> MethodParameters
 
-%type <std::list<Node*>> Statements Expressions
+%type <std::list<Node*>> Statements
 %type <Node*> Statement Expression Chainable
 
 %type <LoopNode*> Loop
 
 %type <ValueNode*> Value
 
-%type <std::string> Operator
+%type <Operator> Operator
 
 %type <MethodCallNode*> MethodCall
 
@@ -163,19 +170,15 @@ Loop
   | KEYWORD_WHILE '(' Expression ')' Statement { $$ = new LoopNode($3); $$->statements.push_back($5); set_location($$, @1, @5); }
   ;
 
-Expressions
-  : Expression { $$.push_back($1); }
-  | Expressions Expression { $$ = $1; $$.push_back($2); }
-  ;
-
 Expression
   : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
   | Chainable { $$ = $1; set_location($$, @1, @1); }
-  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); set_location($$, @1, @3); }
+  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, Operator::Dot); set_location($$, @1, @3); }
   | Value { $$ = $1; }
   | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; set_location($$, @1, @4); }
-  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, "[]"); set_location($$, @1, @4); }
+  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
+  | OPERATOR_MINUS Expression %prec OPERATOR_NOT { $$ = new BinaryOperationNode(new ValueNode(ValueNode::Integer, "0"), $2, Operator::Minus); set_location($$, @1, @2);}
   ;
 
 Chainable
@@ -192,6 +195,9 @@ Value
 
 Operator
   : OPERATOR_AND { $$ = Operator::And; }
+  | OPERATOR_OR { $$ = Operator::Or; }
+  | OPERATOR_EQUALS { $$ = Operator::Equal; }
+  | OPERATOR_NOT_EQUALS { $$ = Operator::NotEqual; }
   | OPERATOR_LESS_THAN { $$ = Operator::LessThan; }
   | OPERATOR_LESS_THAN_OR_EQUAL { $$ = Operator::LessThanOrEqual; }
   | OPERATOR_GREATER_THAN { $$ = Operator::GreaterThan; }
@@ -199,6 +205,7 @@ Operator
   | OPERATOR_PLUS { $$ = Operator::Plus; }
   | OPERATOR_MINUS { $$ = Operator::Minus; }
   | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
+  | OPERATOR_DIVISION { $$ = Operator::Division; }
   ;
 
 MethodCall

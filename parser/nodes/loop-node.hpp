@@ -1,7 +1,7 @@
 #ifndef LOOP_NODE_H
 #define LOOP_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 
 #include "node.hpp"
@@ -15,7 +15,7 @@ public:
 
   LoopNode(Node *statement);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

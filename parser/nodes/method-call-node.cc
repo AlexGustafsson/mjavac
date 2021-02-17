@@ -1,4 +1,4 @@
-#include <fstream>
+#include <ostream>
 
 #include "method-call-node.hpp"
 using namespace mjavac::nodes;
@@ -8,7 +8,7 @@ MethodCallNode::MethodCallNode() {
   this->is_new = false;
 }
 
-void MethodCallNode::generate_parse_graph(std::ofstream &stream) const {
+void MethodCallNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"call";
 
   if (this->is_new)

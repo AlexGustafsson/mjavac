@@ -9,7 +9,7 @@ ReturnNode::ReturnNode() {
   this->value = nullptr;
 }
 
-void ReturnNode::generate_parse_graph(std::ofstream &stream) const {
+void ReturnNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"return\"];" << std::endl;
   if (this->value != nullptr) {
     stream << this->get_id() << " -> " << this->value->get_id() << " [label=\"value\"];" << std::endl;

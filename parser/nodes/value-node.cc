@@ -1,4 +1,4 @@
-#include <fstream>
+#include <ostream>
 
 #include "value-node.hpp"
 using namespace mjavac::nodes;
@@ -10,6 +10,8 @@ int ValueNode::Object = 3;
 
 ValueNode::ValueNode(int type, std::string value) {
   this->type = type;
+  this->is_array = false;
+  this->array_index = nullptr;
 
   if (type == ValueNode::Integer)
     this->integer_value = std::stoi(value);
@@ -21,12 +23,14 @@ ValueNode::ValueNode(int type, std::string value) {
 
 ValueNode::ValueNode(int type, std::list<std::string> value) {
   this->type = type;
+  this->is_array = false;
+  this->array_index = nullptr;
 
   if (type == ValueNode::Object)
     this->object_value = value;
 }
 
-void ValueNode::generate_parse_graph(std::ofstream &stream) const {
+void ValueNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"";
 
   if (this->type == ValueNode::Integer)

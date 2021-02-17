@@ -5,7 +5,7 @@ LoopNode::LoopNode(Node *expression) {
   this->expression = expression;
 }
 
-void LoopNode::generate_parse_graph(std::ofstream &stream) const {
+void LoopNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"Loop\"];" << std::endl;
   stream << this->get_id() << " -> " << this->expression->get_id() << " [label=\"expression\"];" << std::endl;
   this->expression->generate_parse_graph(stream);

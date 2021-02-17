@@ -9,7 +9,7 @@ VariableNode::VariableNode(std::string type, std::string identifier, bool is_dec
   this->is_declaration = is_declaration;
 }
 
-void VariableNode::generate_parse_graph(std::ofstream &stream) const {
+void VariableNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"";
   if (this->is_declaration)
     stream << "declare ";

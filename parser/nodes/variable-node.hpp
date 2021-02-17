@@ -1,7 +1,7 @@
 #ifndef VARIABLE_NODE_H
 #define VARIABLE_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <string>
 
 #include "node.hpp"
@@ -19,7 +19,7 @@ public:
 
   VariableNode(std::string type, std::string identifier, bool is_declaration, bool is_array = false);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

@@ -47,6 +47,9 @@ int|boolean|void|String {
 
 "!" {return Parser::token::OPERATOR_NOT;}
 "&&" {return Parser::token::OPERATOR_AND;}
+"||" {return Parser::token::OPERATOR_OR;}
+"==" {return Parser::token::OPERATOR_EQUALS;}
+"!=" {return Parser::token::OPERATOR_NOT_EQUALS;}
 "<" {return Parser::token::OPERATOR_LESS_THAN;}
 "<=" {return Parser::token::OPERATOR_LESS_THAN_OR_EQUAL;}
 ">" {return Parser::token::OPERATOR_GREATER_THAN;}
@@ -54,6 +57,7 @@ int|boolean|void|String {
 "+" {return Parser::token::OPERATOR_PLUS;}
 "-" {return Parser::token::OPERATOR_MINUS;}
 "*" {return Parser::token::OPERATOR_MULTIPLICATION;}
+"/" {return Parser::token::OPERATOR_DIVISION;}
 
 [a-zA-Z_][a-zA-Z_0-9]* {
   yylval->build<std::string>(yytext);

@@ -6,7 +6,7 @@ MethodDeclarationNode::MethodDeclarationNode(bool is_public, bool is_static) {
   this->is_static = is_static;
 }
 
-void MethodDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
+void MethodDeclarationNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"";
 
   if (this->is_public)

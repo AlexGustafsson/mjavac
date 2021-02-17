@@ -1,7 +1,7 @@
 #ifndef RETURN_NODE_NODE_H
 #define RETURN_NODE_NODE_H
 
-#include <fstream>
+#include <ostream>
 
 #include "node.hpp"
 
@@ -14,7 +14,7 @@ public:
   ReturnNode();
   ReturnNode(Node *value);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

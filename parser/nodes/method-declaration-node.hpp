@@ -1,7 +1,7 @@
 #ifndef METHOD_DECLERATION_NODE_H
 #define METHOD_DECLERATION_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 #include <string>
 
@@ -21,7 +21,7 @@ public:
 
   MethodDeclarationNode(bool is_public, bool is_static);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

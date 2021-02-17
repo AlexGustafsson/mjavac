@@ -31,7 +31,7 @@ void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
   }
 }
 
-void ClassDeclarationNode::generate_parse_graph(std::ofstream &stream) const {
+void ClassDeclarationNode::generate_parse_graph(std::ostream &stream) const {
   stream << this->get_id() << " [label=\"class " << this->identifier;
   if (this->extends)
     stream << " extends " << this->extended_identifier;

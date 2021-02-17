@@ -1,7 +1,7 @@
 #ifndef METHOD_CALL_NODE_H
 #define METHOD_CALL_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 
 #include "node.hpp"
@@ -16,7 +16,7 @@ public:
 
   MethodCallNode();
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

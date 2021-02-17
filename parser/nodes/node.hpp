@@ -1,7 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <fstream>
+#include <ostream>
 
 // 1-based coordinates
 struct node_location_t {
@@ -20,7 +20,7 @@ public:
 
   Node();
 
-  virtual void generate_parse_graph(std::ofstream &stream) const = 0;
+  virtual void generate_parse_graph(std::ostream &stream) const = 0;
 
   intptr_t get_id() const;
 };

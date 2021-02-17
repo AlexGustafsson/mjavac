@@ -1,7 +1,7 @@
 #ifndef CLASS_DECLERATION_NODE_H
 #define CLASS_DECLERATION_NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 #include <string>
 
@@ -23,7 +23,7 @@ public:
   ClassDeclarationNode(std::string identifier);
 
   void setDeclarations(std::list<Node *> declarations);
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac

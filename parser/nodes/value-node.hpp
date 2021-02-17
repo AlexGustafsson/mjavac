@@ -1,7 +1,7 @@
 #ifndef VALUE__NODE_H
 #define VALUE__NODE_H
 
-#include <fstream>
+#include <ostream>
 #include <list>
 #include <string>
 
@@ -29,7 +29,7 @@ public:
   ValueNode(int type, std::string value);
   ValueNode(int type, std::list<std::string> object);
 
-  void generate_parse_graph(std::ofstream &stream) const;
+  void generate_parse_graph(std::ostream &stream) const;
 };
 } // namespace nodes
 } // namespace mjavac
