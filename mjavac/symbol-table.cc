@@ -5,7 +5,7 @@
 SymbolTable::SymbolTable() {
 }
 
-SymbolTableView* SymbolTable::create_view() const {
+SymbolTableView *SymbolTable::create_view() const {
   return new SymbolTableView(this);
 }
 
@@ -50,7 +50,7 @@ void SymbolTable::write(std::ofstream &stream) const {
   }
 }
 
-SymbolTableView::SymbolTableView(const SymbolTable* symbol_table) {
+SymbolTableView::SymbolTableView(const SymbolTable *symbol_table) {
   this->symbol_table = symbol_table;
 }
 
@@ -86,7 +86,7 @@ int SymbolTableView::count_symbols_by_name(std::string name) const {
   return count;
 }
 
-Symbol * SymbolTableView::get_symbol_by_name(std::string name) const {
+Symbol *SymbolTableView::get_symbol_by_name(std::string name) const {
   Symbol *root = this->symbol_table->get_symbol(this->scope);
 
   while (root != nullptr) {

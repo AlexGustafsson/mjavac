@@ -131,7 +131,7 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
 
       passed &= analyze_expression_semantics(view, program_node, binary_operation_node->right);
 
-      const auto &left = dynamic_cast<const ValueNode*>(binary_operation_node->left);
+      const auto &left = dynamic_cast<const ValueNode *>(binary_operation_node->left);
       if (left->type == ValueNode::Identifier) {
         Symbol *variable_symbol = view->get_symbol_by_name(left->identifier_value);
         if (variable_symbol == nullptr) {

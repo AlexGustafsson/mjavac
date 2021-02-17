@@ -5,12 +5,12 @@
 #include <iostream>
 #include <map>
 
-#include <mjavac/parser.hpp>
 #include <mjavac/nodes/nodes.hpp>
+#include <mjavac/parser.hpp>
 
+#include "semantics-analyzer.hpp"
 #include "symbol-generator.hpp"
 #include "symbol-table.hpp"
-#include "semantics-analyzer.hpp"
 
 #include "main.hpp"
 

@@ -4,8 +4,8 @@
 #include <bitset>
 #include <cstdint>
 #include <fstream>
-#include <map>
 #include <list>
+#include <map>
 
 #include <mjavac/nodes/node.hpp>
 
@@ -27,10 +27,14 @@ struct Symbol {
   // The (optional) name of the symbol, such as the class, method or variable name
   std::string name;
   // Symbols defined in this scope
-  std::list<Symbol*> symbols;
+  std::list<Symbol *> symbols;
 
-  Symbol(const mjavac::nodes::Node *node, intptr_t scope, int traits) : scope(scope), traits(traits), node(node) {}
-  Symbol(const mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits) : scope(scope), traits(traits), node(node), name(name) {}
+  Symbol(const mjavac::nodes::Node *node, intptr_t scope, int traits)
+      : scope(scope), traits(traits), node(node) {
+  }
+  Symbol(const mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits)
+      : scope(scope), traits(traits), node(node), name(name) {
+  }
 };
 
 enum SymbolTrait {
@@ -61,7 +65,7 @@ public:
   // Creates a view of this symbol table
   SymbolTableView *create_view() const;
   void add_symbol(Symbol *symbol);
-  Symbol* get_symbol(intptr_t id) const;
+  Symbol *get_symbol(intptr_t id) const;
 
   void write(std::ofstream &stream) const;
 };

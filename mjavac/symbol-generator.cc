@@ -56,8 +56,7 @@ void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode
   symbol_table->add_symbol(new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits));
 }
 
-void
-generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarationNode *method_node, const ClassDeclarationNode *class_node) {
+void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarationNode *method_node, const ClassDeclarationNode *class_node) {
   // Add a symbol for the method itself
   symbol_table->add_symbol(new Symbol(method_node, method_node->identifier, class_node->get_id(), SymbolTrait::Callable));
 
