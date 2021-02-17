@@ -1,8 +1,8 @@
 #include "program-node.hpp"
 using namespace mjavac::nodes;
 
-ProgramNode::ProgramNode(std::string file_name) {
-  this->file_name = file_name;
+ProgramNode::ProgramNode(Source *source) {
+  this->source = source;
 }
 
 void ProgramNode::generate_parse_graph(std::ostream &stream) const {

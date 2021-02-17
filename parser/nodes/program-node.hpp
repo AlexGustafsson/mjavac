@@ -5,16 +5,18 @@
 #include <list>
 
 #include "class-declaration-node.hpp"
+#include "../source.hpp"
+
 #include "node.hpp"
 
 namespace mjavac {
 namespace nodes {
 class ProgramNode : public Node {
 public:
-  std::string file_name;
+  Source* source;
   std::list<ClassDeclarationNode *> declarations;
 
-  ProgramNode(std::string file_name);
+  ProgramNode(Source *source);
 
   void generate_parse_graph(std::ostream &stream) const;
 };

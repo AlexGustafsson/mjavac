@@ -97,8 +97,8 @@
 %%
 
 Program
-  : ClassDeclarations { *root = new ProgramNode(scanner.file_name); (*root)->declarations = $1; set_location(*root, @1, @1); }
-  | END { *root = new ProgramNode(scanner.file_name); set_location(*root, @1, @1); }
+  : ClassDeclarations { *root = new ProgramNode(scanner.source); (*root)->declarations = $1; set_location(*root, @1, @1); }
+  | END { *root = new ProgramNode(scanner.source); set_location(*root, @1, @1); }
   ;
 
 ClassDeclarations : ClassDeclaration { $$.push_back($1); }
@@ -226,43 +226,6 @@ ParameterList
 %%
 
 void mjavac::Parser::error(const location_type &location, const std::string &error) {
-  // NOTE: The "coordinates" given in location are one-based values.
-  // The scanner, on the other hand, has zero-based values.
-
-  std::cerr << "\033[1m" << scanner.file_name << ":" << location.begin.line << ":" << location.begin.column << "\033[0m error: " << error << std::endl;
-  std::cerr << std::setw(5) << location.begin.line << std::setw(0) << " |   ";
-
-  // Extract the relevant line from the scanner's buffer
-  size_t previous_index = 0;
-  size_t index = 0;
-  // The current line being parsed
-  // TODO: Use std::string_view instead to be less memory intensive
-  // It seems to cause a use after free though. Is the view emptied
-  // after it's consumed in a std::cerr call?
-  std::string line;
-  // The index of the first line in the buffer
-  int line_index = scanner.total_lines - scanner.buffer_lines;
-  while ((index = scanner.current_buffer.find("\n", index)) != std::string::npos && line_index != location.begin.line) {
-    // Get the line from the buffer, excluding the trailing newline
-    line = scanner.current_buffer.substr(previous_index, index - previous_index);
-    // Consume the newline
-    index++;
-    previous_index = index;
-    line_index++;
-  }
-
-  // Write out the first part of the line
-  std::cerr << line.substr(0, location.begin.column - 1);
-
-  // Write out the error as red
-  std::cerr << "\033[31m" << line.substr(location.begin.column - 1, location.end.column - location.begin.column) << "\033[0m";
-
-  // Write out the rest of the line
-  std::cerr << line.substr(location.end.column - 1) << std::endl;
-
-  // Write out an arrow to the error
-  std::cerr << "      |   ";
-  for (int i = 0; i < location.begin.column - 1; i++)
-    std::cerr << (line[i] == '\t' ? '\t' : ' ');
-  std::cerr << "\033[31m^~~~~~~\033[0m" << std::endl;
+  scanner.source->print_line_error(std::cerr, location.begin.line, location.begin.column, error);
+  scanner.source->print_marked(std::cerr, location.begin.line, location.begin.column, location.end.line, location.end.column);
 }

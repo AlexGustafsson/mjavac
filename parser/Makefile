@@ -29,7 +29,7 @@ include: $(includes) $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/location.hh $(
 lib: $(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a
 
 # Build a static library for the parser
-$(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a: $(node_objects) $(OUTPUT_PATH)/parser.tab.o $(OUTPUT_PATH)/lexer.yy.o
+$(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a: $(node_objects) $(OUTPUT_PATH)/parser.tab.o $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/source.o
 	mkdir -p $(dir $@)
 	# TODO: libtool may be a macOS thing
 	# $(AR) rcs $@ $^
@@ -42,6 +42,11 @@ $(includes): $(OUTPUT_PATH)/include/mjavac/%.hpp: %.hpp
 
 # Compile nodes
 $(node_objects): $(OUTPUT_PATH)/%.o: %.cc %.hpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile the source
+$(OUTPUT_PATH)/source.o: source.cc source.hpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

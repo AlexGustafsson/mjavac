@@ -13,12 +13,12 @@ bool analyze_program_semantics(const SymbolTable *symbol_table, const ProgramNod
 
   // Warn if there are no classes defined
   if (view->count_symbols() == 0)
-    std::cerr << "\033[1m" << program_node->file_name << ":" << program_node->location.start_line << ":" << program_node->location.start_column << ":\033[33m warning:\033[0m no class definitions" << std::endl;
+    program_node->source->print_line_warning(std::cerr, program_node->location.start_line, program_node->location.start_column, "no class definitions");
 
   for (const auto &class_node : program_node->declarations) {
     // Throw an error if there are duplicate classes
     if (view->count_symbols_by_name(class_node->identifier) > 1) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << class_node->location.start_line << ":" << class_node->location.start_column << ":\033[31m error:\033[0m duplicate class definition '" << class_node->identifier << "'" << std::endl;
+      program_node->source->print_line_error(std::cerr, class_node->location.start_line, class_node->location.start_column, "duplicate class definition");
       passed = false;
     }
 
@@ -37,7 +37,7 @@ bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_n
   for (const auto &variable_node : class_node->variable_declarations) {
     // Throw an error if there are duplicate declarations
     if (view->count_symbols_by_name(variable_node->identifier) > 1) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m duplicate member definition'" << variable_node->identifier << "'" << std::endl;
+      program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "duplicate member definition");
       passed = false;
     }
   }
@@ -45,7 +45,7 @@ bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_n
   for (const auto &method_node : class_node->method_declarations) {
     // Throw an error if there are duplicate declarations
     if (view->count_symbols_by_name(method_node->identifier) > 1) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << method_node->location.start_line << ":" << method_node->location.start_column << ":\033[31m error:\033[0m duplicate method definition '" << method_node->identifier << "'" << std::endl;
+      program_node->source->print_line_error(std::cerr, method_node->location.start_line, method_node->location.start_column, "duplicate method definition");
       passed = false;
     }
 
@@ -73,7 +73,7 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
   const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(statement_node);
   if (binary_operation_node != nullptr) {
     if (binary_operation_node->binary_operator != Operator::Assign)
-      std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[33m warning:\033[0m unused result from operation" << std::endl;
+      program_node->source->print_line_warning(std::cerr, binary_operation_node->location.start_line, binary_operation_node->location.start_column, "unused result from operation");
     return analyze_expression_semantics(view, program_node, binary_operation_node);
   }
 
@@ -83,13 +83,13 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
 
     // Error on array declaration of type other than int
     if (variable_node->is_declaration && variable_node->is_array && variable_node->type.compare("int") != 0) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m array declaration of type other than int" << std::endl;
+      program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "array declaration of type other than int");
       passed = false;
     }
 
     // Error on duplicate variables
     if (variable_node->is_declaration && view->count_symbols_by_name(variable_node->identifier) > 1) {
-      std::cerr << "\033[1m" << program_node->file_name << ":" << variable_node->location.start_line << ":" << variable_node->location.start_column << ":\033[31m error:\033[0m duplicate variable declaration '" << variable_node->identifier << "'" << std::endl;
+      program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "duplicate variable declaration");
       passed = false;
     }
 
@@ -121,7 +121,7 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
       passed &= analyze_expression_semantics(view, program_node, binary_operation_node->right);
 
       if ((left->traits & SymbolTrait::IntLike) != (right->traits & SymbolTrait::IntLike)) {
-        std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m unexpected operation between two values of different types" << std::endl;
+        program_node->source->print_line_error(std::cerr, binary_operation_node->location.start_line, binary_operation_node->location.start_column, "unexpected operation between two values of different types");
         passed = false;
       }
 
@@ -136,7 +136,7 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
         Symbol *variable_symbol = view->get_symbol_by_name(left->identifier_value);
         if (variable_symbol == nullptr) {
           // Not defined in this scope
-          std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m assignment to non-defined variable" << std::endl;
+          program_node->source->print_line_error(std::cerr, binary_operation_node->location.start_line, binary_operation_node->location.start_column, "assignment to non-defined variable");
           passed = false;
         } else {
           debug_out << "warning: unhandled assign " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
@@ -144,7 +144,7 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
       } else if (left->type == ValueNode::Object) {
         debug_out << "warning: unhandled assign using object " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
       } else {
-        std::cerr << "\033[1m" << program_node->file_name << ":" << binary_operation_node->location.start_line << ":" << binary_operation_node->location.start_column << ":\033[31m error:\033[0m assignment to non-variable" << std::endl;
+        program_node->source->print_line_error(std::cerr, binary_operation_node->location.start_line, binary_operation_node->location.start_column, "assignment to non-variable");
         passed = false;
       }
     } else {
