@@ -1,5 +1,8 @@
-#include "symbol-generator.hpp"
 #include <iostream>
+
+#include "debug.hpp"
+
+#include "symbol-generator.hpp"
 
 void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *program_node) {
   // Add the program's symbol
@@ -37,6 +40,10 @@ void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclaratio
 }
 
 void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node) {
+  // Create a symbol for the expression
+  if (variable_node->assigned_value != nullptr)
+    generate_symbols_for_expression(symbol_table, variable_node->assigned_value, scope_node);
+
   // Only create symbols for variable declarations
   if (!variable_node->is_declaration)
     return;
@@ -83,4 +90,35 @@ void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *state
     generate_symbols_for_variable(symbol_table, variable_node, scope_node);
     return;
   }
+
+  const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(statement_node);
+  if (binary_operation_node != nullptr) {
+    generate_symbols_for_expression(symbol_table, binary_operation_node, scope_node);
+    return;
+  }
+
+  debug_out << "warning: unhandled statement generation " << statement_node->get_id() << std::endl;
+}
+
+void generate_symbols_for_expression(SymbolTable *symbol_table, const Node *expression_node, const Node *scope_node) {
+  const auto &value_node = dynamic_cast<const ValueNode *>(expression_node);
+  if (value_node != nullptr) {
+    if (value_node->type == ValueNode::Integer)
+      symbol_table->add_symbol(new Symbol(value_node, scope_node->get_id(), SymbolTrait::IntLike));
+    else if (value_node->type == ValueNode::Boolean)
+      symbol_table->add_symbol(new Symbol(value_node, scope_node->get_id(), SymbolTrait::BooleanLike));
+    else
+      debug_out << "warning: unhandled value type " << value_node->type << std::endl;
+    // TODO: add further types
+    return;
+  }
+
+  const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(expression_node);
+  if (binary_operation_node != nullptr) {
+    generate_symbols_for_expression(symbol_table, binary_operation_node->left, scope_node);
+    generate_symbols_for_expression(symbol_table, binary_operation_node->right, scope_node);
+    return;
+  }
+
+  debug_out << "warning: unhandled expression generation " << expression_node->get_id() << std::endl;
 }

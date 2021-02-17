@@ -46,7 +46,9 @@ enum SymbolTrait {
   // The symbol is accessible (symbol.member)
   Accessible = 1 << 5,
   // The symbol is callable with new (new symbol(parameter))
-  Initializable = 1 << 6
+  Initializable = 1 << 6,
+  // The symbol can be treated as a boolean
+  BooleanLike = 1 << 7
 };
 
 class SymbolTableView;

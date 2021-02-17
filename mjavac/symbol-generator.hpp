@@ -17,4 +17,6 @@ void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarat
 
 void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *statement_node, const Node *method_node);
 
+void generate_symbols_for_expression(SymbolTable *symbol_table, const Node *expression_node, const Node *scope_node);
+
 #endif

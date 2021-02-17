@@ -4,7 +4,7 @@ MAKEFLAGS += --silent
 OUTPUT_PATH=build/production
 
 # Optimize the code and show all warnings (except unused parameters)
-export CXXFLAGS=-O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -g
+export CXXFLAGS := $(CXXFLAGS) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -g
 
 # Don't optimize, provide all warnings and build with clang's memory checks and support for GDB debugging
 DEBUG_FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG

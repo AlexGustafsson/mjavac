@@ -40,6 +40,17 @@ class DuplicateClass {
     this = 1;
     this.nonValidAssigns = 10;
   }
+
+  private void badValues() {
+    boolean[] arrayOfUnsupportedType;
+  }
+
+  private void badOperators() {
+    int correctInts = 1 + 1;
+    int badInts = 1 + false;
+    1 + false;
+    1 + 1; // Unused result
+  }
 }
 
 class BadExtend extends NonExistingClass {

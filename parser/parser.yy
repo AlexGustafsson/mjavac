@@ -169,7 +169,7 @@ Expressions
   ;
 
 Expression
-  : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); }
+  : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
   | Chainable { $$ = $1; set_location($$, @1, @1); }
   | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, "."); set_location($$, @1, @3); }
