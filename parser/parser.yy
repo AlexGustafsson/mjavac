@@ -229,7 +229,10 @@ void mjavac::Parser::error(const location_type &location, const std::string &err
   size_t previous_index = 0;
   size_t index = 0;
   // The current line being parsed
-  std::string_view line;
+  // TODO: Use std::string_view instead to be less memory intensive
+  // It seems to cause a use after free though. Is the view emptied
+  // after it's consumed in a std::cerr call?
+  std::string line;
   // The index of the first line in the buffer
   int line_index = scanner.total_lines - scanner.buffer_lines;
   while ((index = scanner.current_buffer.find("\n", index)) != std::string::npos && line_index != location.begin.line) {
