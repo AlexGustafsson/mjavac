@@ -1,3 +1,7 @@
+// mjavac test file header
+// header: 4
+// parse: succeed - valid syntax
+// semantics: fail - it looks like someone spent too much time on StackOverflow and too little reading books
 class DuplicateClass {
   int duplicateMember;
   int duplicateMember;

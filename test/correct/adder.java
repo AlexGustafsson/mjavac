@@ -1,4 +1,7 @@
-// NOTE: The verbose code is intended to cover more parsing cases
+// mjavac test file header
+// header: 4
+// parse: succeed - valid syntax
+// semantics: fail - unitialized values for a and b
 class Adder {
   int a;
   int b;

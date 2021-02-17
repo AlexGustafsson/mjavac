@@ -1,3 +1,6 @@
+// mjavac test file header
+// header: 3
+// parse: fail - invalid syntax
 class MyClass {
   public static void main() {
     int test error recovery
