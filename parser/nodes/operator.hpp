@@ -20,7 +20,9 @@ enum Operator {
   Division,
   Or,
   Dot,
-  Subscript
+  Subscript,
+  Negate,
+  Negative
 };
 
 } // namespace nodes

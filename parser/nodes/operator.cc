@@ -20,6 +20,8 @@ std::ostream &operator<<(std::ostream &out, Operator binary_operator) {
     case Operator::Or: out << "||"; break;
     case Operator::Plus: out << "+"; break;
     case Operator::Subscript: out << "[]"; break;
+    case Operator::Negate: out << "!"; break;
+    case Operator::Negative: out << "-"; break;
   }
 
   return out;

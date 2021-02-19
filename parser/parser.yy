@@ -81,12 +81,12 @@
 
 %type <ValueNode*> Value
 
-%type <Operator> Operator
+%type <Operator> BinaryOperator UnaryOperator
 
 %type <MethodCallNode*> MethodCall
 
 %type <std::list<std::string>> ObjectList
-%type <std::string> Object
+%type <std::string> Object Type
 
 %type <std::list<Node*>> ParameterList
 %type <Node*> Parameter
@@ -123,15 +123,15 @@ Declaration
   ;
 
 VariableDeclaration
-  : TYPE '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
-  | TYPE IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
+  : Type '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
+  | Type IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
   ;
 
 MethodDeclaration
-  : MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; set_location($$, @1, @8); }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; set_location($$, @1, @8); }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; set_location($$, @1, @8); }
-  | MethodScopeDeclaration TYPE IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; set_location($$, @1, @7); }
+  : MethodScopeDeclaration Type IDENTIFIER '(' MethodParameters ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; $$->statements = $8; set_location($$, @1, @8); }
+  | MethodScopeDeclaration Type IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; set_location($$, @1, @8); }
+  | MethodScopeDeclaration Type IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; set_location($$, @1, @8); }
+  | MethodScopeDeclaration Type IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; set_location($$, @1, @7); }
   | error '}' /* on error, try to skip the entire method declaration */
   ;
 
@@ -171,14 +171,14 @@ Loop
   ;
 
 Expression
-  : Expression Operator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
+  : Expression BinaryOperator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
   | Chainable { $$ = $1; set_location($$, @1, @1); }
   | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, Operator::Dot); set_location($$, @1, @3); }
   | Value { $$ = $1; }
   | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; set_location($$, @1, @4); }
   | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
-  | OPERATOR_MINUS Expression %prec OPERATOR_NOT { $$ = new BinaryOperationNode(new ValueNode(ValueNode::Integer, "0"), $2, Operator::Minus); set_location($$, @1, @2);}
+  | UnaryOperator Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, $1); set_location($$, @1, @2);}
   ;
 
 Chainable
@@ -193,7 +193,7 @@ Value
   | ObjectList { $$ = new ValueNode(ValueNode::Object, $1); }
   ;
 
-Operator
+BinaryOperator
   : OPERATOR_AND { $$ = Operator::And; }
   | OPERATOR_OR { $$ = Operator::Or; }
   | OPERATOR_EQUALS { $$ = Operator::Equal; }
@@ -206,6 +206,11 @@ Operator
   | OPERATOR_MINUS { $$ = Operator::Minus; }
   | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
   | OPERATOR_DIVISION { $$ = Operator::Division; }
+  ;
+
+UnaryOperator
+  : OPERATOR_MINUS { $$ = Operator::Negative; }
+  | OPERATOR_NOT { $$ = Operator::Negate; }
   ;
 
 MethodCall
@@ -221,6 +226,11 @@ ObjectList
 ParameterList
   : Expression { $$.push_back($1); }
   | ParameterList ',' Expression { $$ = $1; $$.push_back($3); }
+  ;
+
+Type
+  : TYPE
+  | IDENTIFIER
   ;
 
 %%

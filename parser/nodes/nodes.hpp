@@ -10,3 +10,4 @@
 #include "return-node.hpp"
 #include "value-node.hpp"
 #include "variable-node.hpp"
+#include "unary-operation-node.hpp"
