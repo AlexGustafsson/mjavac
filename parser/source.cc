@@ -47,6 +47,22 @@ void Source::print_marked(std::ostream &stream, int begin_line, int begin_column
   for (int i = begin_line; i <= end_line; i++) {
     stream << std::setw(5) << i << std::setw(0) << " |   ";
     std::string_view line = this->get_line(i);
+
+    // Offset leading whitespace
+    size_t leading_whitespace = 0;
+    for (const char &character: line) {
+      if (character == ' ' || character == '\t')
+        leading_whitespace++;
+      else
+        break;
+    }
+
+    line = line.substr(leading_whitespace);
+    if (i == begin_line)
+      begin_column -= leading_whitespace;
+    else if (i == end_line)
+      end_column -= leading_whitespace;
+
     if (i == begin_line) {
       int line_end = end_line == begin_line ? end_column : line.size();
       // Write out the first part of the line
@@ -62,7 +78,7 @@ void Source::print_marked(std::ostream &stream, int begin_line, int begin_column
         stream << (line[i] == '\t' ? '\t' : ' ');
       stream << "\033[31m^~~~~~~\033[0m" << std::endl;
     } else {
-      stream << this->get_line(i) << std::endl;
+      stream << line << std::endl;
     }
   }
 }
