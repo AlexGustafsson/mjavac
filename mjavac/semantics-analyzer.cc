@@ -115,6 +115,10 @@ bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *prog
     if (right == nullptr)
       debug_out << "warning: missing symbols for right binary operand " << std::setbase(16) << binary_operation_node->right->get_id() << " for operator " << std::setbase(16) << binary_operation_node->get_id() << std::endl;
 
+    // TODO: This along with the logs above should be unnecessary once the symbol generator is fully implemented
+    if (left == nullptr || right == nullptr)
+      return false;
+
     if (binary_operation_node->binary_operator == Operator::Plus || binary_operation_node->binary_operator == Operator::Minus || binary_operation_node->binary_operator == Operator::Multiplication) {
       bool passed = true;
       passed &= analyze_expression_semantics(view, program_node, binary_operation_node->left);
