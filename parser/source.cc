@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <string_view>
 
 #include "source.hpp"
 using namespace mjavac;
@@ -45,23 +46,23 @@ void Source::print_line_warning(std::ostream &stream, int line, int column, std:
 void Source::print_marked(std::ostream &stream, int begin_line, int begin_column, int end_line, int end_column) const {
   for (int i = begin_line; i <= end_line; i++) {
     stream << std::setw(5) << i << std::setw(0) << " |   ";
-    stream << this->get_line(i) << std::endl;
+    std::string_view line = this->get_line(i);
+    if (i == begin_line) {
+      int line_end = end_line == begin_line ? end_column : line.size();
+      // Write out the first part of the line
+      stream << line.substr(0, begin_column - 1);
+      // Write out the error as red
+      stream << "\033[31m" << line.substr(begin_column - 1, line_end - begin_column) << "\033[0m";
+      // Write out the rest of the line
+      stream << line.substr(line_end - 1);
+
+      // Write out an arrow to the error
+      stream << "      |   ";
+      for (int i = 0; i < begin_column - 1; i++)
+        stream << (line[i] == '\t' ? '\t' : ' ');
+      stream << "\033[31m^~~~~~~\033[0m" << std::endl;
+    } else {
+      stream << this->get_line(i) << std::endl;
+    }
   }
-
-  /*
-  // Write out the first part of the line
-  std::cerr << line.substr(0, location.begin.column - 1);
-
-  // Write out the error as red
-  std::cerr << "\033[31m" << line.substr(location.begin.column - 1, location.end.column - location.begin.column) << "\033[0m";
-
-  // Write out the rest of the line
-  std::cerr << line.substr(location.end.column - 1) << std::endl;
-
-  // Write out an arrow to the error
-  std::cerr << "      |   ";
-  for (int i = 0; i < location.begin.column - 1; i++)
-    std::cerr << (line[i] == '\t' ? '\t' : ' ');
-  std::cerr << "\033[31m^~~~~~~\033[0m" << std::endl;
-  */
 }
