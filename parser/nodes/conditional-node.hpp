@@ -2,6 +2,7 @@
 #define CONDITIONAL_NODE_H
 
 #include <ostream>
+#include <list>
 
 #include "node.hpp"
 
@@ -10,10 +11,14 @@ namespace nodes {
 class ConditionalNode : public Node {
 public:
   Node *expression;
-  Node *positive_expression;
-  Node *negative_expression;
+  std::list<Node*> statements;
+  ConditionalNode *next;
 
-  ConditionalNode(Node *expression, Node *positive_expression, Node *negative_expression);
+  ConditionalNode(Node *expression, std::list<Node*> statements);
+  ConditionalNode(Node *expression, Node *statement);
+
+  ConditionalNode(std::list<Node *> statements);
+  ConditionalNode(Node *statement);
 
   void generate_parse_graph(std::ostream &stream) const;
 };

@@ -91,6 +91,8 @@
 %type <std::list<Node*>> ParameterList
 %type <Node*> Parameter
 
+%type <ConditionalNode*> Conditional ConditionalIf ConditionalElse
+
 %locations
 %start Program
 
@@ -154,7 +156,7 @@ Statements
   ;
 
 Statement
-  : KEYWORD_IF '(' Expression ')' Statement KEYWORD_ELSE Statement { $$ = new ConditionalNode($3, $5, $7); set_location($$, @1, @7); }
+  : Conditional { $$ = $1; }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
   | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; set_location($$, @1, @4); }
@@ -163,6 +165,21 @@ Statement
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
   | error ';' /* on error, try to skip the entire statement */
+  ;
+
+Conditional
+  : ConditionalIf
+  | ConditionalIf ConditionalElse { $$ = $1; $$->next = $2; }
+  ;
+
+ConditionalIf
+  : KEYWORD_IF '(' Expression ')' Statement { $$ = new ConditionalNode($3, $5); set_location($$, @1, @5); }
+  | KEYWORD_IF '(' Expression ')' '{' Statements '}' { $$ = new ConditionalNode($3, $6); set_location($$, @1, @7); }
+  ;
+
+ConditionalElse
+  : KEYWORD_ELSE Statement { $$ = new ConditionalNode($2); set_location($$, @1, @2); }
+  | KEYWORD_ELSE '{' Statements '}' { $$ = new ConditionalNode($3); set_location($$, @1, @4); }
   ;
 
 Loop
