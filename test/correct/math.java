@@ -8,6 +8,7 @@
 // 4
 // 4
 // 4
+// 0
 //
 class Math {
   public static void main() {
