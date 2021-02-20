@@ -36,12 +36,12 @@ void exit_with_usage(int code) {
   std::cout << std::endl;
   std::cout << "\033[1mOPTIONS\033[0m:" << std::endl;
   std::cout << std::endl;
-  std::cout << std::setw(15) << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
-  std::cout << std::setw(15) << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
-  std::cout << std::setw(15) << "--symbol-table" << std::setw(0) << " Output the symbol table" << std::endl;
-  std::cout << std::setw(15) << "--parse-only" << std::setw(0) << " Only parse the source" << std::endl;
-  std::cout << std::setw(15) << "--semantics-only" << std::setw(0) << " Only validate the semantics of the source" << std::endl;
-  std::cout << std::setw(15) << "--execute" << std::setw(0) << " Execute the source" << std::endl;
+  std::cout << std::setw(15) << std::left << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
+  std::cout << std::setw(15) << std::left << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
+  std::cout << std::setw(15) << std::left << "--symbol-table" << std::setw(0) << " Output the symbol table" << std::endl;
+  std::cout << std::setw(15) << std::left << "--parse-only" << std::setw(0) << " Only parse the source" << std::endl;
+  std::cout << std::setw(15) << std::left << "--semantics-only" << std::setw(0) << " Only validate the semantics of the source" << std::endl;
+  std::cout << std::setw(15) << std::left << "--execute" << std::setw(0) << " Execute the source" << std::endl;
 
   exit(code);
 }
