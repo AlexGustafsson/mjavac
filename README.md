@@ -34,7 +34,9 @@ make build
 ## Features
 
 * Reusable parser library
-* ...
+* Helpful error messages with GCC-like reporting
+* Can be built with included Graphviz support for parse graphs
+* Flags for validating syntax and or semantics only - usable for CI
 
 <a id="documentation"></a>
 ## Documentation
