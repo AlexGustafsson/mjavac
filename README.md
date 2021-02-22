@@ -68,6 +68,63 @@ The simplest way to build the CLI is to run `make mjavac`. It can be built by it
 
 The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
+#### Usage
+
+To get usage information, simply run `mjavac --help`. Depending on what features were included in your build, you'll get the output shown below.
+
+```
+OVERVIEW:  MiniJava compiler with extensions
+
+USAGE: mjavac [options] file
+
+OPTIONS:
+
+-h, --help                     Print this help page
+--parse-only                   Only parse the source
+--semantics-only               Only validate the semantics of the source
+--execute                      Execute the source
+--dot <file.dot>               Output a dot-formatted parse graph
+--graph <file.(pdf|png|jpg)>   Render the parse graph as a pdf
+--symbol-table <file.txt>      Output the symbol table
+```
+
+There are four main usages of the mjavac tool - to parse, check semantics, compile or execute a program.
+
+```sh
+# Parse, analyze semantics and compile a source file
+mjavac source.java
+
+# Only validate the syntax of a source file
+mjavac --parser source.java
+
+# Parse and validate the semantics of a source file
+mjavac --semantics-only source.java
+
+# Parse, validate semantics and execute a source file
+mjavac --execute source.java
+```
+
+During the parsing phase, mjavac will check for the following flags:
+
+* `--dot <file.dot>` - write a parse tree to `file.dot` in the Graphviz dot format
+* `--graph <file.(pdf|png|jpg)>` - render the parse tree to `file` in the specified format
+* `--parse-only` - terminate immediately after the parsing phase
+
+During the semantics check, mjavac will check for the following flags:
+
+* `--symbol-table <file.txt>` - output a plaintext representation of the symbol table
+* `--semantics-only` - terminate immediately after the semantics check
+
+A full example looks as follows:
+
+```sh
+mjavac \
+  --dot parse-graph.dot \
+  --graph parse-graph.pdf \
+  --symbol-table symbol-table.txt \
+  source.java
+```
+
 <a id="development"></a>
 ## Development
 
