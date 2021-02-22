@@ -118,11 +118,7 @@ During the semantics check, mjavac will check for the following flags:
 A full example looks as follows:
 
 ```sh
-mjavac \
-  --dot parse-graph.dot \
-  --graph parse-graph.pdf \
-  --symbol-table symbol-table.txt \
-  source.java
+mjavac --dot parse-graph.dot --graph parse-graph.pdf --symbol-table symbol-table.txt source.java
 ```
 
 <a id="development"></a>
