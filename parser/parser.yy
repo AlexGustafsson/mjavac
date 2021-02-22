@@ -23,6 +23,7 @@
 
 %parse-param { Scanner &scanner }
 %parse-param { ProgramNode **root }
+%parse-param { bool *recovered_failure }
 
 %code {
   #include "scanner.hpp"
@@ -134,7 +135,7 @@ MethodDeclaration
   | MethodScopeDeclaration Type IDENTIFIER '(' ')' '{' Statements '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->statements = $7; set_location($$, @1, @8); }
   | MethodScopeDeclaration Type IDENTIFIER '(' MethodParameters ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; $$->parameters = $5; set_location($$, @1, @8); }
   | MethodScopeDeclaration Type IDENTIFIER '(' ')' '{' '}' { $$ = $1; $$->type = $2; $$->identifier = $3; set_location($$, @1, @7); }
-  | error '}' /* on error, try to skip the entire method declaration */
+  | error '}' { (*recovered_failure = true); /* on error, try to skip the entire method declaration */ }
   ;
 
 MethodScopeDeclaration
@@ -164,7 +165,7 @@ Statement
   | Value '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
-  | error ';' /* on error, try to skip the entire statement */
+  | error ';' { (*recovered_failure = true); /* on error, try to skip the entire statement */}
   ;
 
 Conditional

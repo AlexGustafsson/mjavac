@@ -64,13 +64,14 @@ int main(int argc, char **argv) {
   }
 
   mjavac::nodes::ProgramNode *program_node = nullptr;
+  bool recovered_failure = false;
   mjavac::Scanner *scanner = new mjavac::Scanner(&input, source_path);
-  mjavac::Parser *parser = new mjavac::Parser(*scanner, &program_node);
+  mjavac::Parser *parser = new mjavac::Parser(*scanner, &program_node, &recovered_failure);
 
   bool parser_succeeded = parser->parse() == 0;
   input.close();
 
-  if (!parser_succeeded || program_node == nullptr)
+  if (!parser_succeeded || recovered_failure || program_node == nullptr)
     exit(EXIT_FAILURE);
 
   char *dot_path = parameter(argc, argv, "--dot");
