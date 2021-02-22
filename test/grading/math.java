@@ -1,5 +1,5 @@
 // mjavac test file header
-// header: 6
+// header: 12
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
 // output: 5

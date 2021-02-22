@@ -56,9 +56,9 @@ function test_file() {
   if [[ ! "$semantics" = "ignore" ]]; then
     output="$($mjavac --semantics-only "$file" 2>&1)"
     exit_code="$?"
-    if [[ "$parse" = "succeed" ]] && [[ "$exit_code" -eq 0 ]]; then
+    if [[ "$semantics" = "succeed" ]] && [[ "$exit_code" -eq 0 ]]; then
       echo -e "✔ \e[32mcan validate semantics of $file\e[0m"
-    elif [[ "$parse" = "fail" ]] && [[ "$exit_code" -gt 0 ]]; then
+    elif [[ "$semantics" = "fail" ]] && [[ "$exit_code" -gt 0 ]]; then
       echo -e "✔ \e[32mcannot validate semantics of $file\e[0m"
     else
       echo -e "✗ \e[31mexpected semantics validation to $semantics ($semantics_description): $file\e[0m"
@@ -100,3 +100,4 @@ function test_files() {
 test_files "$DIRECTORY/correct/"*.java
 test_files "$DIRECTORY/examples/"*.java
 test_files "$DIRECTORY/incorrect/"*.java
+test_files "$DIRECTORY/grading/"*.java
