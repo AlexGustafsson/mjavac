@@ -52,24 +52,6 @@ The simplest way to build the CLI is to run `make mjavac`. It can be built by it
 
 The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
-<a id="documentation-parser"></a>
-### Parser
-
-The parser project contains the lexer, parser and AST for the language. It's built as a statically linked library.
-
-The simplest way to build the parser is to simply run `make parser`. To build the parser by itself one can run `make -C parser`.
-
-Once built, the `parser/build` directory is populated with the following directories for the chosen build configuration (`production`, `debug`):
-
-* `include`
-* `lib`
-
-These directories are to be referenced when building projects using the parser like so:
-
-```sh
-g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacparser
-```
-
 #### Usage
 
 To get usage information, simply run `mjavac --help`. Depending on what features were included in your build, you'll get the output shown below.
@@ -121,6 +103,24 @@ A full example looks as follows:
 
 ```sh
 mjavac --dot parse-graph.dot --graph parse-graph.pdf --symbol-table symbol-table.txt source.java
+```
+
+<a id="documentation-parser"></a>
+### Parser
+
+The parser project contains the lexer, parser and AST for the language. It's built as a statically linked library.
+
+The simplest way to build the parser is to simply run `make parser`. To build the parser by itself one can run `make -C parser`.
+
+Once built, the `parser/build` directory is populated with the following directories for the chosen build configuration (`production`, `debug`):
+
+* `include`
+* `lib`
+
+These directories are to be referenced when building projects using the parser like so:
+
+```sh
+g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacparser
 ```
 
 <a id="development"></a>
