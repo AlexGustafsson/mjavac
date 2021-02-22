@@ -1,9 +1,16 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
+#include <string>
+
+#ifdef GRAPHVIZ_SUPPORT
+#include <graphviz/gvc.h>
+#endif
 
 #include <mjavac/nodes/nodes.hpp>
 #include <mjavac/parser.hpp>
@@ -36,12 +43,15 @@ void exit_with_usage(int code) {
   std::cout << std::endl;
   std::cout << "\033[1mOPTIONS\033[0m:" << std::endl;
   std::cout << std::endl;
-  std::cout << std::setw(20) << std::left << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
-  std::cout << std::setw(20) << std::left << "--dot" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
-  std::cout << std::setw(20) << std::left << "--symbol-table" << std::setw(0) << " Output the symbol table" << std::endl;
-  std::cout << std::setw(20) << std::left << "--parse-only" << std::setw(0) << " Only parse the source" << std::endl;
-  std::cout << std::setw(20) << std::left << "--semantics-only" << std::setw(0) << " Only validate the semantics of the source" << std::endl;
-  std::cout << std::setw(20) << std::left << "--execute" << std::setw(0) << " Execute the source" << std::endl;
+  std::cout << std::setw(30) << std::left << "-h, --help" << std::setw(0) << " Print this help page" << std::endl;
+  std::cout << std::setw(30) << std::left << "--parse-only" << std::setw(0) << " Only parse the source" << std::endl;
+  std::cout << std::setw(30) << std::left << "--semantics-only" << std::setw(0) << " Only validate the semantics of the source" << std::endl;
+  std::cout << std::setw(30) << std::left << "--execute" << std::setw(0) << " Execute the source" << std::endl;
+  std::cout << std::setw(30) << std::left << "--dot <file.dot>" << std::setw(0) << " Output a dot-formatted parse graph" << std::endl;
+#ifdef GRAPHVIZ_SUPPORT
+  std::cout << std::setw(30) << std::left << "--graph <file.(pdf|png|jpg)>" << std::setw(0) << " Render the parse graph as a pdf" << std::endl;
+#endif
+  std::cout << std::setw(30) << std::left << "--symbol-table <file.txt>" << std::setw(0) << " Output the symbol table" << std::endl;
 
   exit(code);
 }
@@ -75,20 +85,61 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
 
   char *dot_path = parameter(argc, argv, "--dot");
-  if (dot_path != nullptr) {
-    std::ofstream dot_stream;
-    dot_stream.open(dot_path);
-    if (!dot_stream.is_open()) {
-      std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << dot_path << ": " << strerror(errno) << std::endl;
-      std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output dot file" << std::endl;
-      exit(EXIT_FAILURE);
-    }
+  bool generate_parse_graph = dot_path != nullptr;
+#ifdef GRAPHVIZ_SUPPORT
+  char *graph_path = parameter(argc, argv, "--graph");
+  generate_parse_graph |= graph_path != nullptr;
+#endif
+  if (generate_parse_graph) {
+    std::stringstream raw_dot_stream;
+    program_node->generate_parse_graph(raw_dot_stream);
+    std::string graph_string = raw_dot_stream.str();
 
-    program_node->generate_parse_graph(dot_stream);
-    dot_stream.close();
+    if (dot_path != nullptr) {
+      std::ofstream dot_stream;
+      dot_stream.open(dot_path);
+      if (!dot_stream.is_open()) {
+        std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << dot_path << ": " << strerror(errno) << std::endl;
+        std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output dot file" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      dot_stream << graph_string;
+      dot_stream.close();
+    }
 
 #ifdef GRAPHVIZ_SUPPORT
     char *graph_path = parameter(argc, argv, "--graph");
+    if (graph_path != nullptr) {
+      std::filesystem::path parsed_graph_path(graph_path);
+      std::string extension = parsed_graph_path.extension();
+
+      if (extension.compare(".pdf") != 0 && extension.compare(".png") != 0 && extension.compare(".jpg") != 0) {
+        std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unsupported graph format '" << extension << "'. Expected one of '.pdf', '.png', '.jpg'" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+
+      std::ofstream graph_stream;
+      graph_stream.open(graph_path);
+      if (!graph_stream.is_open()) {
+        std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << graph_path << ": " << strerror(errno) << std::endl;
+        std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output graph file" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+
+      GVC_t *context = gvContext();
+      Agraph_t *graph = agmemread(graph_string.c_str());
+      gvLayout(context, graph, "dot");
+      char *graph_data = nullptr;
+      unsigned int graph_data_length = 0;
+      gvRenderData(context, graph, extension.substr(1).c_str(), &graph_data, &graph_data_length);
+      gvFreeLayout(context, graph);
+      agclose(graph);
+      gvFreeContext(context);
+
+      graph_stream.write(graph_data, graph_data_length);
+      graph_stream.close();
+      gvFreeRenderData(graph_data);
+    }
 #endif
   }
 

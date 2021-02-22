@@ -3,6 +3,11 @@ MAKEFLAGS += --silent
 
 OUTPUT_PATH=build/production
 
+GRAPHVIZ_SUPPORT ?= true
+ifeq ($(GRAPHVIZ_SUPPORT),true)
+	CXXFLAGS := $(CXXFLAGS) -DGRAPHVIZ_SUPPORT -I /usr/local/Cellar/graphviz/2.46.1/include/ -L /usr/local/Cellar/graphviz/2.46.1/lib -l gvc -l cgraph
+endif
+
 # Use PARSER_PATH to control where the mjavac parser library is found.
 # Defaults to the output created by the parser project. Expects
 # the directory where both lib and include resides
