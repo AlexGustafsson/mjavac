@@ -52,6 +52,8 @@ The simplest way to build the CLI is to run `make mjavac`. It can be built by it
 
 The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
+The included Graphviz support requires `graphviz` to be installed (`brew install graphviz` on macOS). It is enabled by default, but may be disabled when building like so: `GRAPHVIZ_SUPPORT=false make mjavac`.
+
 #### Usage
 
 To get usage information, simply run `mjavac --help`. Depending on what features were included in your build, you'll get the output shown below.
