@@ -22,15 +22,13 @@ make build
 ./build/mjavac test/examples/factorial.java
 ```
 
-_Note_: allthough every project is able to be built and used in isolation, it may require additional configuration. The compiler flags in each project represent a bare minimum and are supposed to be tuned, such as is done by the main project's Makefile. To compile the projects in their simplest form simply ensure that `$CXXFLAGS` contains at least `-std=c++17` like so: `CXXFLAGS=-std=c++17 make -C ...`. The projects can be built in debug mode by setting the `DEBUG` environment variable like so: `DEBUG=true ...`. However, the debug mode provided by using the main Makefile is much more powerful as it usess Address Sanitizers etc.
-
 ## Table of contents
 
 [Quickstart](#quickstart)<br/>
 [Features](#features)<br />
 [Documention](#documentation)<br />
-[Documentation - Parser](#documentation-parser)<br />
 [Documentation - mjavac](#documentation-mjavac)<br />
+[Documentation - Parser](#documentation-parser)<br />
 [Development](#development)
 
 ## Features
@@ -40,6 +38,17 @@ _Note_: allthough every project is able to be built and used in isolation, it ma
 
 <a id="documentation"></a>
 ## Documentation
+
+_Note_: allthough every project is able to be built and used in isolation, it may require additional configuration. The compiler flags in each project represent a bare minimum and are supposed to be tuned, such as is done by the main project's Makefile. To compile the projects in their simplest form simply ensure that `$CXXFLAGS` contains at least `-std=c++17` like so: `CXXFLAGS=-std=c++17 make -C ...`. The projects can be built in debug mode by setting the `DEBUG` environment variable like so: `DEBUG=true ...`. However, the debug mode provided by using the main Makefile is much more powerful as it uses Address Sanitizers etc.
+
+<a id="documentation-mjavac"></a>
+### mjavac (CLI)
+
+The mjavac project is the complete tool made available in this project. It combines the parser, compiler and more and provides a complete tool for dealing with MiniJava files.
+
+The simplest way to build the CLI is to run `make mjavac`. It can be built by itself just like other projects, but it generally makes little sense. Just like with the parser, simply run `make -C mjavac` to build.
+
+The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
 <a id="documentation-parser"></a>
 ### Parser
@@ -58,15 +67,6 @@ These directories are to be referenced when building projects using the parser l
 ```sh
 g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacparser
 ```
-
-<a id="documentation-mjavac"></a>
-### mjavac (CLI)
-
-The mjavac project is the complete tool made available in this project. It combines the parser, compiler and more and provides a complete tool for dealing with MiniJava files.
-
-The simplest way to build the CLI is to run `make mjavac`. It can be built by itself just like other projects, but it generally makes little sense. Just like with the parser, simply run `make -C mjavac` to build.
-
-The resulting binary will be available in the `mjavac/build` directory under the chosen build configuration (`production`, `debug`).
 
 #### Usage
 
