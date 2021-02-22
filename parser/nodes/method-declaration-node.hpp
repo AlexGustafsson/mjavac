@@ -1,8 +1,8 @@
 #ifndef METHOD_DECLERATION_NODE_H
 #define METHOD_DECLERATION_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 #include <string>
 
 #include "node.hpp"

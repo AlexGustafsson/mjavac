@@ -1,8 +1,8 @@
 #ifndef LOOP_NODE_H
 #define LOOP_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 
 #include "node.hpp"
 

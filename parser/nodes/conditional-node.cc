@@ -22,7 +22,8 @@ ConditionalNode::ConditionalNode(std::list<Node *> statements) {
 }
 
 ConditionalNode::ConditionalNode(Node *statement) {
-  this->expression = nullptr;;
+  this->expression = nullptr;
+  ;
   this->statements.push_back(statement);
   this->next = nullptr;
 }
@@ -36,7 +37,7 @@ void ConditionalNode::generate_parse_graph(std::ostream &stream) const {
     this->expression->generate_parse_graph(stream);
   }
 
-  for (const auto& statement : this->statements) {
+  for (const auto &statement : this->statements) {
     stream << this->get_id() << " -> " << statement->get_id() << " [label=\"statement\"];" << std::endl;
     statement->generate_parse_graph(stream);
   }

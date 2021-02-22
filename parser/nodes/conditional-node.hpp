@@ -1,8 +1,8 @@
 #ifndef CONDITIONAL_NODE_H
 #define CONDITIONAL_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 
 #include "node.hpp"
 
@@ -11,10 +11,10 @@ namespace nodes {
 class ConditionalNode : public Node {
 public:
   Node *expression;
-  std::list<Node*> statements;
+  std::list<Node *> statements;
   ConditionalNode *next;
 
-  ConditionalNode(Node *expression, std::list<Node*> statements);
+  ConditionalNode(Node *expression, std::list<Node *> statements);
   ConditionalNode(Node *expression, Node *statement);
 
   ConditionalNode(std::list<Node *> statements);

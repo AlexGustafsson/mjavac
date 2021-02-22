@@ -1,8 +1,8 @@
 #ifndef CLASS_DECLERATION_NODE_H
 #define CLASS_DECLERATION_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 #include <string>
 
 #include "method-declaration-node.hpp"

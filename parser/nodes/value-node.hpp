@@ -1,8 +1,8 @@
 #ifndef VALUE__NODE_H
 #define VALUE__NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 #include <string>
 
 #include "node.hpp"

@@ -1,8 +1,8 @@
 #ifndef METHOD_CALL_NODE_H
 #define METHOD_CALL_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 
 #include "node.hpp"
 

@@ -1,11 +1,11 @@
 #ifndef PROGRAM_NODE_H
 #define PROGRAM_NODE_H
 
-#include <ostream>
 #include <list>
+#include <ostream>
 
-#include "class-declaration-node.hpp"
 #include "../source.hpp"
+#include "class-declaration-node.hpp"
 
 #include "node.hpp"
 
@@ -13,7 +13,7 @@ namespace mjavac {
 namespace nodes {
 class ProgramNode : public Node {
 public:
-  Source* source;
+  Source *source;
   std::list<ClassDeclarationNode *> declarations;
 
   ProgramNode(Source *source);

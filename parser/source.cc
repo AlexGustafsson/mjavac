@@ -50,7 +50,7 @@ void Source::print_marked(std::ostream &stream, int begin_line, int begin_column
 
     // Offset leading whitespace
     size_t leading_whitespace = 0;
-    for (const char &character: line) {
+    for (const char &character : line) {
       if (character == ' ' || character == '\t')
         leading_whitespace++;
       else

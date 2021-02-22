@@ -1,14 +1,13 @@
 #ifndef SOURCE_H
 #define SOURCE_H
 
+#include <ostream>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <ostream>
 
 namespace mjavac {
 class Source {
-
 public:
   struct line_location_t {
     size_t start;
