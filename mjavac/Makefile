@@ -5,7 +5,7 @@ OUTPUT_PATH=build/production
 
 GRAPHVIZ_SUPPORT ?= true
 ifeq ($(GRAPHVIZ_SUPPORT),true)
-	CXXFLAGS := $(CXXFLAGS) -DGRAPHVIZ_SUPPORT -I /usr/local/Cellar/graphviz/2.46.1/include/ -L /usr/local/Cellar/graphviz/2.46.1/lib -l gvc -l cgraph
+	CXXFLAGS := $(CXXFLAGS) -DGRAPHVIZ_SUPPORT -l gvc -l cgraph
 endif
 
 # Use PARSER_PATH to control where the mjavac parser library is found.
@@ -31,7 +31,7 @@ build: $(OUTPUT_PATH)/mjavac
 
 $(OUTPUT_PATH)/mjavac: main.cc main.hpp symbol-table.cc symbol-table.hpp symbol-generator.cc symbol-generator.hpp semantics-analyzer.cc semantics-analyzer.hpp debug.hpp $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
 	mkdir -p $(dir $@)
-	$(CXX) -o $@ main.cc symbol-table.cc symbol-generator.cc semantics-analyzer.cc $(CXXFLAGS) -L $(REAL_PARSER_PATH)/lib/mjavac -l mjavacparser
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ main.cc symbol-table.cc symbol-generator.cc semantics-analyzer.cc -L $(REAL_PARSER_PATH)/lib/mjavac -l mjavacparser
 
 clean:
 	rm -r build &> /dev/null || true
