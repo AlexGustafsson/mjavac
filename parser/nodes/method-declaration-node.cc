@@ -13,8 +13,10 @@ void MethodDeclarationNode::generate_parse_graph(std::ostream &stream) const {
     stream << "public ";
   if (this->is_static)
     stream << "static ";
+  stream << this->identifier << "()\"];" << std::endl;
 
-  stream << this->type << " " << this->identifier << "()\"];" << std::endl;
+  stream << this->get_id() << " -> " << this->type->get_id() << "[label=\"type\"];" << std::endl;
+  this->type->generate_parse_graph(stream);
 
   for (const auto &node : this->parameters) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"parameter\"];" << std::endl;

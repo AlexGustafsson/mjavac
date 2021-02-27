@@ -5,19 +5,19 @@
 #include <string>
 
 #include "node.hpp"
+#include "type-node.hpp"
 
 /* Base node class */
 namespace mjavac {
 namespace nodes {
 class VariableNode : public Node {
 public:
-  std::string type;
+  TypeNode *type;
   std::string identifier;
-  bool is_array;
   Node *assigned_value;
   bool is_declaration;
 
-  VariableNode(std::string type, std::string identifier, bool is_declaration, bool is_array = false);
+  VariableNode(TypeNode *type, std::string identifier, bool is_declaration);
 
   void generate_parse_graph(std::ostream &stream) const;
 };

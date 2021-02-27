@@ -87,7 +87,9 @@
 %type <MethodCallNode*> MethodCall
 
 %type <std::list<std::string>> ObjectList
-%type <std::string> Object Type
+%type <std::string> Object
+
+%type <TypeNode*> Type
 
 %type <std::list<Node*>> ParameterList
 %type <Node*> Parameter
@@ -126,8 +128,7 @@ Declaration
   ;
 
 VariableDeclaration
-  : Type '[' ']' IDENTIFIER { $$ = new VariableNode($1, $4, true, true); set_location($$, @1, @4); }
-  | Type IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
+  : Type IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
   ;
 
 MethodDeclaration
@@ -247,8 +248,10 @@ ParameterList
   ;
 
 Type
-  : TYPE
-  | IDENTIFIER
+  : TYPE { $$ = new TypeNode($1); }
+  | IDENTIFIER { $$ = new TypeNode($1); }
+  | TYPE '[' ']' { $$ = new TypeNode($1, true); }
+  | IDENTIFIER '[' ']' { $$ = new TypeNode($1, true); }
   ;
 
 %%

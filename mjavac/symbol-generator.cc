@@ -49,9 +49,9 @@ void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode
     return;
 
   int traits = SymbolTrait::None;
-  if (variable_node->is_array)
+  if (variable_node->type->is_array)
     traits |= SymbolTrait::Subscriptable;
-  if (variable_node->type == "int")
+  if (variable_node->type->type == "int")
     traits |= SymbolTrait::IntLike;
   symbol_table->add_symbol(new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits));
 }

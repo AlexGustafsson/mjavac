@@ -82,7 +82,7 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
     bool passed = true;
 
     // Error on array declaration of type other than int
-    if (variable_node->is_declaration && variable_node->is_array && variable_node->type.compare("int") != 0) {
+    if (variable_node->is_declaration && variable_node->type->is_array && variable_node->type->type.compare("int") != 0) {
       program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "array declaration of type other than int");
       passed = false;
     }
