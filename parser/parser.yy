@@ -1,5 +1,5 @@
 %skeleton "lalr1.cc"
-%require "3.7"
+%require "3.5"
 %language "c++"
 %defines
 %define api.namespace {mjavac}

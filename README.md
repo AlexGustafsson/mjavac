@@ -22,6 +22,13 @@ make build
 ./build/mjavac test/examples/factorial.java
 ```
 
+The project can be built and used with Docker like so.
+
+```sh
+make docker
+docker run --rm -it mjavac --help
+```
+
 ## Table of contents
 
 [Quickstart](#quickstart)<br/>
@@ -112,7 +119,7 @@ mjavac --dot parse-graph.dot --graph parse-graph.pdf --symbol-table symbol-table
 
 The parser project contains the lexer, parser and AST for the language. It's built as a statically linked library.
 
-To build the parser, `bison` v3.7 or higher as well as `flex` 2.6 or higher is required. These can be installed like so:
+To build the parser, `bison` v3.5 or higher as well as `flex` 2.6 or higher is required. These can be installed like so:
 
 * macOS: `brew install bison flex`
 * Ubuntu: `sudo apt install bison flex`
@@ -142,7 +149,7 @@ Building:
 * `$AR` refers to an appropriate version of `ar` for the same toolchain
 * `bison` version 3.7 or higher is available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
 * `flex` version 2.7 or higher is available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
-* If building with Graphviz support, `graphviz` is required to be available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
+* If building with Graphviz support, `graphviz` (or `libgraphviz-dev`) is required to be available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
 
 Developing:
 * `clang` 10 or newer is installed

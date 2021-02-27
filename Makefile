@@ -7,7 +7,7 @@ OUTPUT_PATH=build/production
 export CXXFLAGS := $(CXXFLAGS) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -g
 
 # Don't optimize, provide all warnings and build with clang's memory checks and support for GDB debugging
-DEBUG_FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
+DEBUG_FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -Wno-unused-command-line-argument -std=c++17 -fsanitize=address -fno-omit-frame-pointer -g -DDEBUG
 
 FLEX_FLAGS=
 BISON_FLAGS=-t
@@ -25,10 +25,14 @@ endif
 source := $(shell find * -type f -name "*.cc" -not -path "*/build/*" -not -path "build/*")
 headers := $(shell find * -type f -name "*.hpp" -not -path "*/build/*" -not -path "build/*")
 
-.PHONY: build debug mjavac parser format analyze lint test package clean
+.PHONY: build docker debug mjavac parser format analyze lint test package clean
 
 # Build mjavac, default action
 build: parser mjavac
+
+# Build the mjavac Docker container
+docker:
+	docker build -t mjavac .
 
 # Build mjavac with extra debugging enabled
 debug:
