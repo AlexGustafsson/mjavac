@@ -3,11 +3,6 @@ MAKEFLAGS += --silent
 
 OUTPUT_PATH=build/production
 
-GRAPHVIZ_SUPPORT ?= true
-ifeq ($(GRAPHVIZ_SUPPORT),true)
-CPPFLAGS += -DGRAPHVIZ_SUPPORT
-endif
-
 # Use PARSER_PATH to control where the mjavac parser library is found.
 # Defaults to the output created by the parser project. Expects
 # the directory where both lib and include resides
@@ -23,8 +18,15 @@ REAL_PARSER_PATH=../parser/build/debug
 endif
 endif
 
+GRAPHVIZ_SUPPORT ?= true
+ifeq ($(GRAPHVIZ_SUPPORT),true)
+CPPFLAGS += -DGRAPHVIZ_SUPPORT
+LDFLAGS += -l gvc -l cgraph
+endif
+
 CPPFLAGS += -I $(REAL_PARSER_PATH)/include
 LDFLAGS += -L $(REAL_PARSER_PATH)/lib/mjavac
+LDLIBS += -l mjavacparser
 
 .PHONY: build clean
 
@@ -32,7 +34,7 @@ build: $(OUTPUT_PATH)/mjavac
 
 $(OUTPUT_PATH)/mjavac: main.cc main.hpp symbol-table.cc symbol-table.hpp symbol-generator.cc symbol-generator.hpp semantics-analyzer.cc semantics-analyzer.hpp debug.hpp $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ main.cc symbol-table.cc symbol-generator.cc semantics-analyzer.cc -l gvc -l cgraph -l mjavacparser
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ main.cc symbol-table.cc symbol-generator.cc semantics-analyzer.cc $(LDLIBS)
 
 clean:
 	rm -r build &> /dev/null || true
