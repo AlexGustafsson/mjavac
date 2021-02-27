@@ -9,7 +9,7 @@
 
 /* Base node class */
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class VariableNode : public Node {
 public:
   TypeNode *type;
@@ -21,7 +21,7 @@ public:
 
   void generate_parse_graph(std::ostream &stream) const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif

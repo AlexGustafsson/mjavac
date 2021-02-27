@@ -70,7 +70,7 @@ void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarat
 }
 
 void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *statement_node, const Node *scope_node) {
-  // const auto &loop_node = static_cast<mjavac::nodes::LoopNode *>(statement_node);
+  // const auto &loop_node = static_cast<mjavac::ast::LoopNode *>(statement_node);
   // if (loop_node != nullptr) {
   //   // Add statements
   //   // ...

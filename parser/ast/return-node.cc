@@ -1,5 +1,5 @@
 #include "return-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 ReturnNode::ReturnNode(Node *value) {
   this->value = value;

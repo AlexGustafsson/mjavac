@@ -7,7 +7,7 @@
 #include <list>
 #include <map>
 
-#include <mjavac/nodes/node.hpp>
+#include <mjavac/ast/node.hpp>
 
 #define SYMBOL_TRAITS 128
 
@@ -23,16 +23,16 @@ struct Symbol {
   // Traits as specified by SymbolTrait
   int traits;
   // The node itself
-  const mjavac::nodes::Node *node;
+  const mjavac::ast::Node *node;
   // The (optional) name of the symbol, such as the class, method or variable name
   std::string name;
   // Symbols defined in this scope
   std::list<Symbol *> symbols;
 
-  Symbol(const mjavac::nodes::Node *node, intptr_t scope, int traits)
+  Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits)
       : scope(scope), traits(traits), node(node) {
   }
-  Symbol(const mjavac::nodes::Node *node, std::string name, intptr_t scope, int traits)
+  Symbol(const mjavac::ast::Node *node, std::string name, intptr_t scope, int traits)
       : scope(scope), traits(traits), node(node), name(name) {
   }
 };

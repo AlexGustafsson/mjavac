@@ -1,5 +1,5 @@
 #include "loop-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 LoopNode::LoopNode(Node *expression) {
   this->expression = expression;

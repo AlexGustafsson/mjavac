@@ -1,11 +1,11 @@
 #ifndef SYMBOL_GENERATOR_H
 #define SYMBOL_GENERATOR_H
 
-#include <mjavac/nodes/nodes.hpp>
+#include <mjavac/ast/nodes.hpp>
 
 #include "symbol-table.hpp"
 
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 void generate_symbols_for_program(SymbolTable *symbol_table, const ProgramNode *program_node);
 

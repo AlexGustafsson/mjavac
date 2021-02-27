@@ -14,8 +14,8 @@ endif
 
 CXXFLAGS := $(CXXFLAGS) -I . -I $(OUTPUT_PATH)
 
-nodes := $(shell find nodes -type f -name "*.cc")
-node_objects := $(addprefix $(OUTPUT_PATH)/,$(nodes:.cc=.o))
+ast_source := $(shell find ast -type f -name "*.cc")
+ast_objects := $(addprefix $(OUTPUT_PATH)/,$(ast_source:.cc=.o))
 headers := $(shell find * -type f -name "*.hpp" -not -path "build/*")
 includes := $(addprefix $(OUTPUT_PATH)/include/mjavac/,$(headers))
 
@@ -29,7 +29,7 @@ include: $(includes) $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/location.hh $(
 lib: $(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a
 
 # Build a static library for the parser
-$(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a: $(node_objects) $(OUTPUT_PATH)/parser.tab.o $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/source.o
+$(OUTPUT_PATH)/lib/mjavac/libmjavacparser.a: $(ast_objects) $(OUTPUT_PATH)/parser.tab.o $(OUTPUT_PATH)/lexer.yy.o $(OUTPUT_PATH)/source.o
 	mkdir -p $(dir $@)
 	# TODO: libtool may be a macOS thing
 	# $(AR) rcs $@ $^
@@ -40,8 +40,8 @@ $(includes): $(OUTPUT_PATH)/include/mjavac/%.hpp: %.hpp
 	mkdir -p $(dir $@)
 	cp $< $@
 
-# Compile nodes
-$(node_objects): $(OUTPUT_PATH)/%.o: %.cc %.hpp
+# Compile ast
+$(ast_objects): $(OUTPUT_PATH)/%.o: %.cc %.hpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

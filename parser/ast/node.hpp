@@ -13,7 +13,7 @@ struct node_location_t {
 };
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class Node {
 public:
   node_location_t location;
@@ -24,7 +24,7 @@ public:
 
   intptr_t get_id() const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif

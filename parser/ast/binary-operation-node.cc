@@ -1,5 +1,5 @@
 #include "binary-operation-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 BinaryOperationNode::BinaryOperationNode(Node *left, Node *right, Operator binary_operator) {
   this->left = left;

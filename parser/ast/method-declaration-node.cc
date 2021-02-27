@@ -1,5 +1,5 @@
 #include "method-declaration-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 MethodDeclarationNode::MethodDeclarationNode(bool is_public, bool is_static) {
   this->is_public = is_public;

@@ -4,7 +4,7 @@
 #include <string>
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 enum Operator {
   And,
   LessThan,
@@ -25,9 +25,9 @@ enum Operator {
   Negative
 };
 
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
-std::ostream &operator<<(std::ostream &out, mjavac::nodes::Operator binary_operator);
+std::ostream &operator<<(std::ostream &out, mjavac::ast::Operator binary_operator);
 
 #endif

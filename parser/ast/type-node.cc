@@ -1,5 +1,5 @@
 #include "type-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 TypeNode::TypeNode(std::string type, bool is_array) {
   this->type = type;

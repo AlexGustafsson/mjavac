@@ -10,7 +10,7 @@
 #include "node.hpp"
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class ProgramNode : public Node {
 public:
   Source *source;
@@ -20,7 +20,7 @@ public:
 
   void generate_parse_graph(std::ostream &stream) const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif

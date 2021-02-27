@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "conditional-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 ConditionalNode::ConditionalNode(Node *expression, std::list<Node *> statements) {
   this->expression = expression;

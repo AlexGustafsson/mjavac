@@ -7,7 +7,7 @@
 #include "node.hpp"
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class TypeNode : public Node {
 public:
   std::string type;
@@ -17,7 +17,7 @@ public:
 
   void generate_parse_graph(std::ostream &stream) const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif

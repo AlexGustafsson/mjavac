@@ -8,7 +8,7 @@
 #include "node.hpp"
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class ValueNode : public Node {
 public:
   static int Integer;
@@ -31,7 +31,7 @@ public:
 
   void generate_parse_graph(std::ostream &stream) const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif

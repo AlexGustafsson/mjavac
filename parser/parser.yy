@@ -12,8 +12,8 @@
   #include <string>
   #include <iomanip>
 
-  #include "nodes/nodes.hpp"
-  using namespace mjavac::nodes;
+  #include "ast/nodes.hpp"
+  using namespace mjavac::ast;
 
   // Forward declarations
   namespace mjavac {

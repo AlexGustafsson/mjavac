@@ -1,5 +1,5 @@
 #include "unary-operation-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 UnaryOperationNode::UnaryOperationNode(Node *operand, Operator unary_operator) {
   this->operand = operand;

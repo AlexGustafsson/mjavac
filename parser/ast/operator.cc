@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "operator.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 std::ostream &operator<<(std::ostream &out, Operator binary_operator) {
   switch (binary_operator) {

@@ -1,5 +1,5 @@
 #include "program-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 ProgramNode::ProgramNode(Source *source) {
   this->source = source;

@@ -1,5 +1,5 @@
 #include "variable-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 VariableNode::VariableNode(TypeNode *type, std::string identifier, bool is_declaration) {
   this->type = type;

@@ -1,5 +1,5 @@
 #include "node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 Node::Node() {
   this->location.defined = false;

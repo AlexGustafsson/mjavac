@@ -12,7 +12,7 @@
 #include <graphviz/gvc.h>
 #endif
 
-#include <mjavac/nodes/nodes.hpp>
+#include <mjavac/ast/nodes.hpp>
 #include <mjavac/parser.hpp>
 
 #include "semantics-analyzer.hpp"
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  mjavac::nodes::ProgramNode *program_node = nullptr;
+  mjavac::ast::ProgramNode *program_node = nullptr;
   bool recovered_failure = false;
   mjavac::Scanner *scanner = new mjavac::Scanner(&input, source_path);
   mjavac::Parser *parser = new mjavac::Parser(*scanner, &program_node, &recovered_failure);

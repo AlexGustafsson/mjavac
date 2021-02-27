@@ -5,7 +5,7 @@
 
 #include "symbol-table.hpp"
 
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 bool analyze_program_semantics(const SymbolTable *symbol_table, const ProgramNode *program_node);
 bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_node, const ClassDeclarationNode *class_node);

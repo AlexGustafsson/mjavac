@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "value-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 int ValueNode::Integer = 0;
 int ValueNode::Boolean = 1;

@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "method-call-node.hpp"
-using namespace mjavac::nodes;
+using namespace mjavac::ast;
 
 MethodCallNode::MethodCallNode() {
   this->value = nullptr;

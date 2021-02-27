@@ -10,7 +10,7 @@
 #include "variable-node.hpp"
 
 namespace mjavac {
-namespace nodes {
+namespace ast {
 class ClassDeclarationNode : public Node {
 public:
   std::string identifier;
@@ -25,7 +25,7 @@ public:
   void setDeclarations(std::list<Node *> declarations);
   void generate_parse_graph(std::ostream &stream) const;
 };
-} // namespace nodes
+} // namespace ast
 } // namespace mjavac
 
 #endif
