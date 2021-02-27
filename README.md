@@ -112,6 +112,11 @@ mjavac --dot parse-graph.dot --graph parse-graph.pdf --symbol-table symbol-table
 
 The parser project contains the lexer, parser and AST for the language. It's built as a statically linked library.
 
+To build the parser, `bison` v3.7 or higher as well as `flex` 2.6 or higher is required. These can be installed like so:
+
+* macOS: `brew install bison flex`
+* Ubuntu: `sudo apt install bison flex`
+
 The simplest way to build the parser is to simply run `make parser`. To build the parser by itself one can run `make -C parser`.
 
 Once built, the `parser/build` directory is populated with the following directories for the chosen build configuration (`production`, `debug`):
@@ -135,6 +140,9 @@ Building:
   * `g++` 10 or newer (`brew install gcc` on macOS)
   * `clang++` 10 or newer (`brew install llvm` on macOS)
 * `$AR` refers to an appropriate version of `ar` for the same toolchain
+* `bison` version 3.7 or higher is available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
+* `flex` version 2.7 or higher is available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
+* If building with Graphviz support, `graphviz` is required to be available in the appropriate path or in `$CPPFLAGS` and `$LDFLAGS`
 
 Developing:
 * `clang` 10 or newer is installed

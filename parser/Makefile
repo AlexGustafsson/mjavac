@@ -69,7 +69,11 @@ $(OUTPUT_PATH)/parser.tab.o: $(OUTPUT_PATH)/parser.tab.cc
 $(OUTPUT_PATH)/parser.tab.cc $(OUTPUT_PATH)/parser.tab.hpp $(OUTPUT_PATH)/location.hh $(OUTPUT_PATH)/FlexLexer.h: parser.yy scanner.hpp
 	mkdir -p $(OUTPUT_PATH)
 	bison $(BISON_FLAGS) $< --output=$(OUTPUT_PATH)/parser.tab.cc --defines=$(OUTPUT_PATH)/parser.tab.hpp
+ifeq ($(shell uname),Linux)
 	cp /usr/local/opt/flex/include/FlexLexer.h $(OUTPUT_PATH)
+else
+	echo "Warning: Unknown location of FlexLexer.h - may result in later build failure"
+endif
 
 clean:
 	rm -r build &> /dev/null || true
