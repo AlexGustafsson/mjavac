@@ -21,7 +21,7 @@ endif
 GRAPHVIZ_SUPPORT ?= true
 ifeq ($(GRAPHVIZ_SUPPORT),true)
 CPPFLAGS += -DGRAPHVIZ_SUPPORT
-LDFLAGS += -l gvc -l cgraph
+LDLIBS += -l gvc -l cgraph
 endif
 
 CPPFLAGS += -I $(REAL_PARSER_PATH)/include
