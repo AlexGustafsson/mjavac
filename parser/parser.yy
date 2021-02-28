@@ -151,7 +151,7 @@ Statement
   : Conditional { $$ = $1; }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
-  | Expression '=' Expression ';' { new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
+  | Expression '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
   | Type IDENTIFIER '=' Expression ';' { $$ = new BinaryOperationNode(new VariableNode($1, $2), $4, Operator::Assign); set_location($$, @1, @4); }
   | Type IDENTIFIER ';' { $$ = new VariableNode($1, $2); set_location($$, @1, @3); }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
