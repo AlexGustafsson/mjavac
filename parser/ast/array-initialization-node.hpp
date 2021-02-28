@@ -1,5 +1,5 @@
-#ifndef VARIABLE_NODE_H
-#define VARIABLE_NODE_H
+#ifndef ARRAY_INITIALIZATION_NODE_H
+#define ARRAY_INITIALIZATION_NODE_H
 
 #include <ostream>
 #include <string>
@@ -10,12 +10,12 @@
 /* Base node class */
 namespace mjavac {
 namespace ast {
-class VariableNode : public Node {
+class ArrayInitializationNode : public Node {
 public:
   TypeNode *type;
-  std::string identifier;
+  Node *initialization_expression;
 
-  VariableNode(TypeNode *type, std::string identifier);
+  ArrayInitializationNode(TypeNode *type, Node *initialization_expression);
 
   void generate_parse_graph(std::ostream &stream) const;
 };

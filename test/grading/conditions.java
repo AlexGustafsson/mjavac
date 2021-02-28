@@ -9,11 +9,11 @@
 // 1
 //
 class Config {
-  int getMaxValue() {
+  public int getMaxValue() {
     return 2;
   }
 
-  boolean isBelowMaxValue(int i) {
+  public boolean isBelowMaxValue(int i) {
     return i < 2;
   }
 }

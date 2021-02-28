@@ -27,6 +27,12 @@ void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {
       continue;
     }
 
+    BinaryOperationNode *variable_assignment = dynamic_cast<BinaryOperationNode *>(node);
+    if (variable_assignment != nullptr) {
+      this->variable_assignments.push_back(variable_assignment);
+      continue;
+    }
+
     // ...
   }
 }
@@ -39,6 +45,11 @@ void ClassDeclarationNode::generate_parse_graph(std::ostream &stream) const {
 
   for (const auto &node : this->variable_declarations) {
     stream << this->get_id() << " -> " << node->get_id() << "[label=\"variable\"];" << std::endl;
+    node->generate_parse_graph(stream);
+  }
+
+  for (const auto &node : this->variable_assignments) {
+    stream << this->get_id() << " -> " << node->get_id() << "[label=\"variable assignment\"];" << std::endl;
     node->generate_parse_graph(stream);
   }
 

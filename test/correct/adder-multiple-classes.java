@@ -8,7 +8,8 @@
 
 class Application {
   public static void main() {
-    System.out.println(new Adder().add(1, 2));
+    Adder adder = new Adder();
+    System.out.println(adder.add(1, 2));
   }
 }
 

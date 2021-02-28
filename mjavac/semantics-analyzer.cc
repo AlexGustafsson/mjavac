@@ -82,20 +82,15 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
     bool passed = true;
 
     // Error on array declaration of type other than int
-    if (variable_node->is_declaration && variable_node->type->is_array && variable_node->type->type.compare("int") != 0) {
+    if (variable_node->type->is_array && variable_node->type->type.compare("int") != 0) {
       program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "array declaration of type other than int");
       passed = false;
     }
 
     // Error on duplicate variables
-    if (variable_node->is_declaration && view->count_symbols_by_name(variable_node->identifier) > 1) {
+    if (view->count_symbols_by_name(variable_node->identifier) > 1) {
       program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "duplicate variable declaration");
       passed = false;
-    }
-
-    if (variable_node->assigned_value != nullptr) {
-      bool expression_passed = analyze_expression_semantics(view, program_node, variable_node->assigned_value);
-      passed = passed && expression_passed;
     }
 
     return passed;

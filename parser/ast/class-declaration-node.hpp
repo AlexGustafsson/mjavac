@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 
+#include "binary-operation-node.hpp"
 #include "method-declaration-node.hpp"
 #include "node.hpp"
 #include "variable-node.hpp"
@@ -17,6 +18,7 @@ public:
   std::string extended_identifier;
   bool extends;
   std::list<VariableNode *> variable_declarations;
+  std::list<BinaryOperationNode *> variable_assignments;
   std::list<MethodDeclarationNode *> method_declarations;
 
   ClassDeclarationNode(std::string identifier, std::string extended_identifier);

@@ -6,7 +6,8 @@ class Array {
   int[] array;
 
   public static void main() {
+    array[0] = 3;
+    array[1] = 5;
     System.out.println(this.array[3]);
-    System.out.println(3[4]);
   }
 }

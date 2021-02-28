@@ -40,14 +40,6 @@ void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclaratio
 }
 
 void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node) {
-  // Create a symbol for the expression
-  if (variable_node->assigned_value != nullptr)
-    generate_symbols_for_expression(symbol_table, variable_node->assigned_value, scope_node);
-
-  // Only create symbols for variable declarations
-  if (!variable_node->is_declaration)
-    return;
-
   int traits = SymbolTrait::None;
   if (variable_node->type->is_array)
     traits |= SymbolTrait::Subscriptable;

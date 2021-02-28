@@ -15,5 +15,8 @@ class InvalidTypes {
     b = b * a; // Bad use of two different types
 
     array[b] = 1; // Invalid, cannot use a boolean as an index
+
+    System.out.println(1[0]); // Invalid, cannot subscript an int
+    System.out.println(false[0]); // Invalid, cannot subscript a boolean
   }
 }

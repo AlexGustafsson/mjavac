@@ -11,7 +11,6 @@ int ValueNode::Object = 3;
 ValueNode::ValueNode(int type, std::string value) {
   this->type = type;
   this->is_array = false;
-  this->array_index = nullptr;
 
   if (type == ValueNode::Integer)
     this->integer_value = std::stoi(value);
@@ -24,7 +23,6 @@ ValueNode::ValueNode(int type, std::string value) {
 ValueNode::ValueNode(int type, std::list<std::string> value) {
   this->type = type;
   this->is_array = false;
-  this->array_index = nullptr;
 
   if (type == ValueNode::Object)
     this->object_value = value;
@@ -51,9 +49,4 @@ void ValueNode::generate_parse_graph(std::ostream &stream) const {
     stream << "[]";
 
   stream << "\"];" << std::endl;
-
-  if (this->is_array) {
-    stream << this->get_id() << " -> " << this->array_index->get_id() << " [label=\"index\"];" << std::endl;
-    this->array_index->generate_parse_graph(stream);
-  }
 }

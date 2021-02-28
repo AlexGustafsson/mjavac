@@ -80,6 +80,12 @@ class Calls {
   public void nonCallable2() {
 
   }
+
+  public int multipleReturns() {
+    return 1;
+    return 2;
+    return 3;
+  }
 }
 
 class Calls2 {

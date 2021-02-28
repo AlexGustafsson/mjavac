@@ -12,3 +12,5 @@
 #include "value-node.hpp"
 #include "variable-node.hpp"
 #include "type-node.hpp"
+#include "array-initialization-node.hpp"
+#include "class-initialization-node.hpp"

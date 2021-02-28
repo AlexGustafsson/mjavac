@@ -23,7 +23,6 @@ public:
   std::string identifier_value;
   std::list<std::string> object_value;
 
-  Node *array_index;
   bool is_array;
 
   ValueNode(int type, std::string value);

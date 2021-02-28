@@ -69,7 +69,6 @@
 %type <std::list<Node*>> Declarations
 %type <Node*> Declaration
 
-%type <VariableNode*> VariableDeclaration
 %type <MethodDeclarationNode*> MethodDeclaration
 %type <MethodDeclarationNode*> MethodScopeDeclaration
 
@@ -123,12 +122,9 @@ Declarations
   ;
 
 Declaration
-  : VariableDeclaration ';' { $$ = $1; }
+  : Type IDENTIFIER ';' { $$ = new VariableNode($1, $2); }
+  | Type IDENTIFIER '=' Expression ';' { auto _variable = new VariableNode($1, $2); set_location(_variable, @1, @2); $$ = new BinaryOperationNode(_variable, $4, Operator::Assign); set_location($$, @1, @5); }
   | MethodDeclaration { $$ = $1; }
-  ;
-
-VariableDeclaration
-  : Type IDENTIFIER { $$ = new VariableNode($1, $2, true); set_location($$, @1, @2); }
   ;
 
 MethodDeclaration
@@ -148,8 +144,8 @@ MethodScopeDeclaration
   ;
 
 MethodParameters
-  : VariableDeclaration { $$.push_back($1); }
-  | MethodParameters ',' VariableDeclaration { $$ = $1; $1.push_back($3); }
+  : Type IDENTIFIER { $$.push_back(new VariableNode($1, $2)); }
+  | MethodParameters ',' Type IDENTIFIER { $$ = $1; $$.push_back(new VariableNode($3, $4)); }
   ;
 
 Statements
@@ -161,9 +157,10 @@ Statement
   : Conditional { $$ = $1; }
   | Loop { $$ = $1; }
   | Expression ';' { $$ = $1; }
-  | VariableDeclaration '=' Expression ';' { $$ = $1; $1->assigned_value = $3; set_location($$, @1, @4); }
-  | VariableDeclaration ';' { $$ = $1; set_location($$, @1, @2); }
-  | Value '=' Expression ';' { $$ = new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
+  | Value '=' Expression ';' { new BinaryOperationNode($1, $3, Operator::Assign); set_location($$, @1, @4); }
+  | Value '[' Expression ']' '=' Expression ';' { auto _value = new BinaryOperationNode($1, $3, Operator::Subscript); set_location(_value, @1, @4); $$ = new BinaryOperationNode(_value, $6, Operator::Assign); set_location($$, @1, @7); }
+  | Type IDENTIFIER '=' Expression ';' { $$ = new BinaryOperationNode(new VariableNode($1, $2), $4, Operator::Assign); set_location($$, @1, @4); }
+  | Type IDENTIFIER ';' { $$ = new VariableNode($1, $2); set_location($$, @1, @3); }
   | KEYWORD_RETURN Expression ';' { $$ = new ReturnNode($2); set_location($$, @1, @2); }
   | KEYWORD_RETURN ';' { $$ = new ReturnNode(); set_location($$, @1, @2);}
   | error ';' { (*recovered_failure = true); /* on error, try to skip the entire statement */}
@@ -192,17 +189,13 @@ Loop
 Expression
   : Expression BinaryOperator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
-  | Chainable { $$ = $1; set_location($$, @1, @1); }
-  | Chainable '.' MethodCall { $$ = new BinaryOperationNode($1, $3, Operator::Dot); set_location($$, @1, @3); }
+  | MethodCall { $$ = $1; set_location($$, @1, @1); }
   | Value { $$ = $1; }
-  | Value '[' Expression ']' { $$ = $1; $1->is_array = true; $1->array_index = $3; set_location($$, @1, @4); }
-  | Chainable '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
+  | Value '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
+  | MethodCall '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
   | UnaryOperator Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, $1); set_location($$, @1, @2);}
-  ;
-
-Chainable
-  : MethodCall { $$ = $1; }
-  | KEYWORD_NEW MethodCall { $$ = $2; $2->is_new = true; }
+  | KEYWORD_NEW TYPE '[' Expression ']' { $$ = new ArrayInitializationNode(new TypeNode($2), $4); set_location($$, @1, @5); }
+  | KEYWORD_NEW IDENTIFIER '(' ')' { $$ = new ClassInitializationNode($2); set_location($$, @1, @4); }
   ;
 
 Value
@@ -251,7 +244,6 @@ Type
   : TYPE { $$ = new TypeNode($1); }
   | IDENTIFIER { $$ = new TypeNode($1); }
   | TYPE '[' ']' { $$ = new TypeNode($1, true); }
-  | IDENTIFIER '[' ']' { $$ = new TypeNode($1, true); }
   ;
 
 %%

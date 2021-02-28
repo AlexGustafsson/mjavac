@@ -39,7 +39,7 @@ function test_file() {
     echo "warning: missing test header in $1, assuming parse only"
   fi
 
-  if [[ ! "$parse" = "ignore" ]]; then
+  if [[ -n "$parse" ]] && [[ ! "$parse" = "ignore" ]]; then
     output="$($mjavac --parse-only "$file" 2>&1)"
     exit_code="$?"
     if [[ "$parse" = "succeed" ]] && [[ "$exit_code" -eq 0 ]]; then
@@ -53,7 +53,7 @@ function test_file() {
     fi
   fi
 
-  if [[ ! "$semantics" = "ignore" ]]; then
+  if [[ -n "$semantics" ]] && [[ ! "$semantics" = "ignore" ]]; then
     output="$($mjavac --semantics-only "$file" 2>&1)"
     exit_code="$?"
     if [[ "$semantics" = "succeed" ]] && [[ "$exit_code" -eq 0 ]]; then
