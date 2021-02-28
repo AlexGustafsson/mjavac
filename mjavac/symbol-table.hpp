@@ -32,6 +32,8 @@ struct Symbol {
   // useful for variable uses or method calls where the return value is not known.
   std::string behaves_like_identifier;
   mjavac::ast::Node *behaves_like_node;
+  std::string behaves_like_object;
+  Symbol *behaves_like_object_parent;
 
   Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits)
       : scope(scope), traits(traits), node(node) {
@@ -44,6 +46,9 @@ struct Symbol {
   }
   Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits, mjavac::ast::Node *other)
       : scope(scope), traits(traits), node(node), behaves_like_node(other) {
+  }
+  Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits, std::string object, Symbol *parent)
+      : scope(scope), traits(traits), node(node), behaves_like_object(object), behaves_like_object_parent(parent) {
   }
 };
 
@@ -63,10 +68,12 @@ enum SymbolTrait {
   Initializable = 1 << 6,
   // The symbol can be treated as a boolean
   BooleanLike = 1 << 7,
-  // The symbol behaves like another symbol referenced in behave_like
+  // The symbol behaves like another symbol referenced in behaves_like_identifier
   BehavesLikeIdentifier = 1 << 8,
-  // The symbol behaves like another symbol referenced in behave_like
-  BehavesLikeNode = 1 << 9
+  // The symbol behaves like another symbol referenced in behaves_like_node
+  BehavesLikeNode = 1 << 9,
+  // The symbol behaves like another symbol which is accessed via an object
+  BehavesLikeObject = 1 << 10
 };
 
 class SymbolTableView;
@@ -93,7 +100,9 @@ public:
   void set_scope(intptr_t scope);
   int count_symbols() const;
   int count_symbols_by_name(std::string name) const;
+  Symbol *get_symbol_by_name(Symbol *root, std::string name) const;
   Symbol *get_symbol_by_name(std::string name) const;
+  int resolve_flags(const Symbol *symbol) const;
 };
 
 #endif

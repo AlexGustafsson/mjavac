@@ -50,6 +50,8 @@ class DuplicateClass {
 
   private void badValues() {
     boolean[] arrayOfUnsupportedType;
+    return new boolean[false];
+    return new int[15];
   }
 
   private void badOperators() {
@@ -57,6 +59,13 @@ class DuplicateClass {
     int badInts = 1 + false;
     1 + false;
     1 + 1; // Unused result
+    true && 1;
+    false + false;
+    1 >= true;
+    1 >= 5;
+    !1;
+    !true;
+    -false;
   }
 }
 
@@ -78,7 +87,9 @@ class Calls {
   }
 
   public void nonCallable2() {
-
+    int array;
+    return array[false];
+    return array[false || true];
   }
 
   public int multipleReturns() {

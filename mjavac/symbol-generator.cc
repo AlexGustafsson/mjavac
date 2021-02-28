@@ -58,13 +58,16 @@ void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclaratio
 }
 
 void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node) {
-  int traits = SymbolTrait::None;
+  int traits = 0;
   if (variable_node->type->is_array)
     traits |= SymbolTrait::Subscriptable;
   if (variable_node->type->type == "int")
     traits |= SymbolTrait::IntLike;
   if (variable_node->type->type == "boolean")
     traits |= SymbolTrait::BooleanLike;
+  // TODO: Handle class instances properly
+  // if (variable_node->type->type == "identifier")
+  //   traits |= SymbolTrait::BehavesLikeIdentifier;
   symbol_table->add_symbol(new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits));
 }
 
@@ -162,9 +165,17 @@ void generate_symbols_for_expression(SymbolTable *symbol_table, const Node *expr
     } else if (binary_operation_node->binary_operator == Operator::Plus || binary_operation_node->binary_operator == Operator::Minus || binary_operation_node->binary_operator == Operator::Multiplication || binary_operation_node->binary_operator == Operator::Division || binary_operation_node->binary_operator == Operator::Negative) {
       symbol_table->add_symbol(new Symbol(binary_operation_node, scope_node->get_id(), SymbolTrait::IntLike));
     } else if (binary_operation_node->binary_operator == Operator::Dot) {
-      // TODO: Add proper lookup
-      symbol_table->add_symbol(new Symbol(binary_operation_node, scope_node->get_id(), SymbolTrait::None));
-      debug_out << "warning: unimplemented symbol generation for binary operation 'dot'" << std::endl;
+      const auto &value_node = dynamic_cast<const ValueNode *>(binary_operation_node->right);
+      if (value_node != nullptr) {
+        Symbol *left_symbol = symbol_table->get_symbol(binary_operation_node->left->get_id());
+        if (left_symbol) {
+          symbol_table->add_symbol(new Symbol(binary_operation_node, scope_node->get_id(), SymbolTrait::BehavesLikeObject, value_node->identifier_value, left_symbol));
+        } else {
+          debug_out << "warning: missing symbol for value" << binary_operation_node->left->get_id() << " in dot operation " << binary_operation_node->get_id() << std::endl;
+        }
+      } else {
+        debug_out << "warning: got unexpected dot operand" << binary_operation_node->right->get_id() << " in dot operation " << binary_operation_node->get_id() << std::endl;
+      }
     } else if (binary_operation_node->binary_operator == Operator::Subscript) {
       // At this stage, even though the language only supports int arrays, assume that an array subscript
       // has the type of the symbol it subscripts

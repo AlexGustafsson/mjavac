@@ -1,7 +1,7 @@
 // mjavac test file header
 // header: 4
 // parse: succeed - valid syntax
-// semantics: fail - unitialized values for a and b
+// semantics: succeed - valid program
 class Adder {
   int a;
   int b;

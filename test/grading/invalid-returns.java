@@ -3,7 +3,7 @@
 // parse: succeed - valid syntax
 // semantics: fail - invalid program
 class BasicClass {
-  int foo = 1;
+
 }
 
 class ReturnTypes {
@@ -15,22 +15,12 @@ class ReturnTypes {
     int voidValue = ReturnTypes.voidMethod(); // Invalid, bad assignment
   }
 
-  static int integerMethod() {
-    return 1;
+  static int integerMehtod() {
+    return; // Must return a value
   }
 
   static boolean booleanMethod() {
-    return true;
-  }
-
-  static BasicClass classMethod() {
-    return new BasicClass();
-  }
-
-  static int[] arrayMethod() {
-    int[] array;
-    array[0] = 1;
-    return array;
+    return 25; // Bad value
   }
 
   static void voidMethod() {

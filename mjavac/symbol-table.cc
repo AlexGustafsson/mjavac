@@ -30,22 +30,31 @@ void SymbolTable::write(std::ofstream &stream) const {
   for (const auto &symbol : this->symbols) {
     stream << "| " << std::setw(15) << std::setbase(16) << symbol.first
            << " | " << std::setw(15) << symbol.second->name
-           << " | " << std::setw(15) << std::setbase(16) << symbol.second->scope << " | ";
+           << " | " << std::setw(15) << std::setbase(16) << symbol.second->scope
+           << " | " << std::setw(14); // 14 - An extra space is always added in the cases below
 
-    if (symbol.second->traits & SymbolTrait::Accessible)
-      stream << "Accessible ";
-    if (symbol.second->traits & SymbolTrait::Callable)
-      stream << "Callable ";
+    if (symbol.second->traits & SymbolTrait::None)
+      stream << "None " << std::setw(0);
     if (symbol.second->traits & SymbolTrait::IntLike)
-      stream << "IntLike ";
+      stream << "IntLike " << std::setw(0);
+    if (symbol.second->traits & SymbolTrait::Callable)
+      stream << "Callable " << std::setw(0);
     if (symbol.second->traits & SymbolTrait::StringLike)
-      stream << "StringLike ";
+      stream << "StringLike " << std::setw(0);
     if (symbol.second->traits & SymbolTrait::Subscriptable)
-      stream << "Subscriptable ";
+      stream << "Subscriptable " << std::setw(0);
+    if (symbol.second->traits & SymbolTrait::Accessible)
+      stream << "Accessible " << std::setw(0);
     if (symbol.second->traits & SymbolTrait::Initializable)
-      stream << "Initializable ";
-    if (symbol.second->traits == SymbolTrait::None)
-      stream << "None ";
+      stream << "Initializable " << std::setw(0);
+    if (symbol.second->traits == SymbolTrait::BooleanLike)
+      stream << "BooleanLike " << std::setw(0);
+    if (symbol.second->traits == SymbolTrait::BehavesLikeIdentifier)
+      stream << "BehavesLikeIdentifier " << std::setw(0);
+    if (symbol.second->traits == SymbolTrait::BehavesLikeNode)
+      stream << "BehavesLikeNode " << std::setw(0);
+    if (symbol.second->traits == SymbolTrait::BehavesLikeObject)
+      stream << "BehavesLikeObject " << std::setw(0);
     stream << " |" << std::endl;
   }
 }
@@ -86,9 +95,7 @@ int SymbolTableView::count_symbols_by_name(std::string name) const {
   return count;
 }
 
-Symbol *SymbolTableView::get_symbol_by_name(std::string name) const {
-  Symbol *root = this->symbol_table->get_symbol(this->scope);
-
+Symbol *SymbolTableView::get_symbol_by_name(Symbol *root, std::string name) const {
   while (root != nullptr) {
     for (const auto &symbol : root->symbols) {
       if (symbol->name.compare(name) == 0)
@@ -99,4 +106,28 @@ Symbol *SymbolTableView::get_symbol_by_name(std::string name) const {
   }
 
   return nullptr;
+}
+
+Symbol *SymbolTableView::get_symbol_by_name(std::string name) const {
+  Symbol *root = this->symbol_table->get_symbol(this->scope);
+  return this->get_symbol_by_name(root, name);
+}
+
+int SymbolTableView::resolve_flags(const Symbol *symbol) const {
+  if (symbol->traits & SymbolTrait::BehavesLikeIdentifier && !symbol->behaves_like_identifier.empty()) {
+    Symbol *other = this->get_symbol_by_name(symbol->behaves_like_identifier);
+    if (other != nullptr)
+      return other->traits;
+  } else if (symbol->traits & SymbolTrait::BehavesLikeNode && symbol->behaves_like_node != nullptr) {
+    Symbol *other = this->symbol_table->get_symbol(symbol->behaves_like_node->get_id());
+    if (other != nullptr)
+      return other->traits;
+  } else if (symbol->traits & SymbolTrait::BehavesLikeObject && !symbol->behaves_like_object.empty() && symbol->behaves_like_object_parent != nullptr) {
+    // Find the declared value in the scope of the parent object
+    Symbol *other = this->get_symbol_by_name(symbol->behaves_like_object_parent, symbol->behaves_like_object);
+    if (other != nullptr)
+      return other->traits;
+  }
+
+  return symbol->traits;
 }
