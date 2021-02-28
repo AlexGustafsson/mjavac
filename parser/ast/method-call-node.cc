@@ -3,17 +3,12 @@
 #include "method-call-node.hpp"
 using namespace mjavac::ast;
 
-MethodCallNode::MethodCallNode() {
-  this->value = nullptr;
-  this->is_new = false;
+MethodCallNode::MethodCallNode(Node *value) {
+  this->value = value;
 }
 
 void MethodCallNode::generate_parse_graph(std::ostream &stream) const {
-  stream << this->get_id() << " [label=\"call";
-
-  if (this->is_new)
-    stream << " (new)";
-  stream << "\"];" << std::endl;
+  stream << this->get_id() << " [label=\"call\"];" << std::endl;
 
   stream << this->get_id() << " -> " << this->value->get_id() << " [label=\"value\"];" << std::endl;
   this->value->generate_parse_graph(stream);

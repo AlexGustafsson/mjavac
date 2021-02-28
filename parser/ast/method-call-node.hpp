@@ -12,9 +12,8 @@ class MethodCallNode : public Node {
 public:
   Node *value;
   std::list<Node *> parameters;
-  bool is_new;
 
-  MethodCallNode();
+  MethodCallNode(Node *value);
 
   void generate_parse_graph(std::ostream &stream) const;
 };
