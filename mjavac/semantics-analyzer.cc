@@ -42,6 +42,23 @@ bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_n
     }
   }
 
+  for (const auto &variable_assignment : class_node->variable_assignments) {
+    // Throw an error if there are duplicate declarations
+    const VariableNode *variable_node = dynamic_cast<const VariableNode *>(variable_assignment);
+    if (variable_node == nullptr)
+      continue; // TODO: Print error
+    if (view->count_symbols_by_name(variable_node->identifier) > 1) {
+      program_node->source->print_line_error(std::cerr, variable_node->location.start_line, variable_node->location.start_column, "duplicate member definition");
+      passed = false;
+    }
+
+    // TODO: Throw an error if the type assigned is incorrect.
+
+    // Analyze the assigned expression
+    bool expression_passed = analyze_expression_semantics(view, program_node, variable_assignment->right);
+    passed = passed && expression_passed;
+  }
+
   for (const auto &method_node : class_node->method_declarations) {
     // Throw an error if there are duplicate declarations
     if (view->count_symbols_by_name(method_node->identifier) > 1) {
@@ -61,6 +78,9 @@ bool analyze_class_semantics(SymbolTableView *view, const ProgramNode *program_n
 bool analyze_method_semantics(SymbolTableView *view, const ProgramNode *program_node, const MethodDeclarationNode *method_node) {
   bool passed = true;
 
+  // TODO: Analyze each parameter (arrays etc.)
+
+  // Analyze each statement
   for (const auto &statement_node : method_node->statements) {
     bool statement_passed = analyze_statement_semantics(view, program_node, statement_node);
     passed = passed && statement_passed;
@@ -70,6 +90,19 @@ bool analyze_method_semantics(SymbolTableView *view, const ProgramNode *program_
 }
 
 bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *program_node, const Node *statement_node) {
+  // Analyze conditionals (conditional)
+  const auto &conditional_node = dynamic_cast<const ConditionalNode *>(statement_node);
+  if (conditional_node != nullptr) {
+    return true;
+  }
+
+  // Analyze loops (loop)
+  const auto &loop_node = dynamic_cast<const LoopNode*>(statement_node);
+  if (loop_node != nullptr) {
+    return true;
+  }
+
+  // Analyze an assignment   (expression = expression)
   const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(statement_node);
   if (binary_operation_node != nullptr) {
     if (binary_operation_node->binary_operator != Operator::Assign)
@@ -77,6 +110,9 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
     return analyze_expression_semantics(view, program_node, binary_operation_node);
   }
 
+  // Analyze a variable assignment   (type identifier = expression)
+
+  // Analyze a variable declaration (type identifier)
   const auto &variable_node = dynamic_cast<const VariableNode *>(statement_node);
   if (variable_node != nullptr) {
     bool passed = true;
@@ -96,11 +132,28 @@ bool analyze_statement_semantics(SymbolTableView *view, const ProgramNode *progr
     return passed;
   }
 
-  debug_out << "warning: unhandled statement semantics " << std::setbase(16) << statement_node->get_id() << std::endl;
-  return true;
+  // Analyze a return
+  const auto &return_node = dynamic_cast<const ReturnNode *>(statement_node);
+  if (return_node != nullptr) {
+    return true;
+  }
+
+  // Analyze a basic expression
+  return analyze_expression_semantics(view, program_node, statement_node);
 }
 
 bool analyze_expression_semantics(SymbolTableView *view, const ProgramNode *program_node, const Node *expression_node) {
+  // Analyze binary expression (expression operator expression)
+  // Analyze a single valie (value)
+  // Analyze a binary expression (value [ expression ])
+  // Analyze a unary operator unaryop expression
+  // Analyze an array initialization node (new type [expression])
+  // Analyze a class initialization node (new identiifer ())
+  // Analyze method call (expression (parameter list))
+  // Analyze a method call (expression ())
+  // Analyze a subscript (expression [ expression ])
+  // Analyze a dot access expression . identifier
+
   const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(expression_node);
   if (binary_operation_node != nullptr) {
     Symbol *left = view->symbol_table->get_symbol(binary_operation_node->left->get_id());

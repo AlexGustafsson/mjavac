@@ -34,9 +34,17 @@ void generate_symbols_for_class(SymbolTable *symbol_table, const ClassDeclaratio
   for (const auto &variable_node : class_node->variable_declarations)
     generate_symbols_for_variable(symbol_table, variable_node, class_node);
 
+  // Add symbols for variable assignments
+  for (const auto &variable_assignment : class_node->variable_assignments) {
+    const VariableNode *variable_node = dynamic_cast<const VariableNode *>(variable_assignment);
+    if (variable_node == nullptr)
+      continue; // TODO: Print error
+    generate_symbols_for_variable(symbol_table, variable_node, class_node);
+  }
+
   // Add symbols for methods
   for (const auto &method_node : class_node->method_declarations)
-    generate_symbols_for_method(symbol_table, method_node, class_node);
+      generate_symbols_for_method(symbol_table, method_node, class_node);
 }
 
 void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode *variable_node, const Node *scope_node) {
@@ -45,6 +53,8 @@ void generate_symbols_for_variable(SymbolTable *symbol_table, const VariableNode
     traits |= SymbolTrait::Subscriptable;
   if (variable_node->type->type == "int")
     traits |= SymbolTrait::IntLike;
+  if (variable_node->type->type == "boolean")
+    traits |= SymbolTrait::BooleanLike;
   symbol_table->add_symbol(new Symbol(variable_node, variable_node->identifier, scope_node->get_id(), traits));
 }
 
@@ -62,19 +72,19 @@ void generate_symbols_for_method(SymbolTable *symbol_table, const MethodDeclarat
 }
 
 void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *statement_node, const Node *scope_node) {
-  // const auto &loop_node = static_cast<mjavac::ast::LoopNode *>(statement_node);
-  // if (loop_node != nullptr) {
-  //   // Add statements
-  //   // ...
-  //   continue;
-  // }
+  const auto &loop_node = static_cast<const LoopNode *>(statement_node);
+  if (loop_node != nullptr) {
+    // Add statements
+    // ...
+    return;
+  }
 
-  // const auto &conditional_node = static_cast<const ConditionalNode *>(statement_node);
-  // if (conditional_node != nullptr) {
-  //   for (const auto& nested_statement_node : conditional_node->statements)
-  //     generate_symbols_for_statement(symbol_table, nested_statement_node, conditional_node);
-  //   return;
-  // }
+  const auto &conditional_node = static_cast<const ConditionalNode *>(statement_node);
+  if (conditional_node != nullptr) {
+    // for (const auto& nested_statement_node : conditional_node->statements)
+    //   generate_symbols_for_statement(symbol_table, nested_statement_node, conditional_node);
+    return;
+  }
 
   const auto &variable_node = dynamic_cast<const VariableNode *>(statement_node);
   if (variable_node != nullptr) {
@@ -92,6 +102,9 @@ void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *state
 }
 
 void generate_symbols_for_expression(SymbolTable *symbol_table, const Node *expression_node, const Node *scope_node) {
+  // TODO: Handle value of expression (recursively generate symbols, then assign the expression with the type)
+  // For non-simple (value) expressions such as binary operations
+
   const auto &value_node = dynamic_cast<const ValueNode *>(expression_node);
   if (value_node != nullptr) {
     if (value_node->type == ValueNode::Integer)
@@ -108,6 +121,12 @@ void generate_symbols_for_expression(SymbolTable *symbol_table, const Node *expr
   if (binary_operation_node != nullptr) {
     generate_symbols_for_expression(symbol_table, binary_operation_node->left, scope_node);
     generate_symbols_for_expression(symbol_table, binary_operation_node->right, scope_node);
+    return;
+  }
+
+  const auto &unary_operation_node = dynamic_cast<const UnaryOperationNode *>(expression_node);
+  if (unary_operation_node != nullptr) {
+    generate_symbols_for_expression(symbol_table, unary_operation_node->operand, scope_node);
     return;
   }
 

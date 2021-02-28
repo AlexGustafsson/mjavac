@@ -183,7 +183,6 @@ Expression
   : Expression BinaryOperator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
   | Value { $$ = $1; }
-  | Value '[' Expression ']' { $$ = new BinaryOperationNode($1, $3, Operator::Subscript); set_location($$, @1, @4); }
   | UnaryOperator Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, $1); set_location($$, @1, @2);}
   | KEYWORD_NEW TYPE '[' Expression ']' { $$ = new ArrayInitializationNode(new TypeNode($2), $4); set_location($$, @1, @5); }
   | KEYWORD_NEW IDENTIFIER '(' ')' { $$ = new ClassInitializationNode($2); set_location($$, @1, @4); }
