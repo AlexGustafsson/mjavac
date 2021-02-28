@@ -28,12 +28,22 @@ struct Symbol {
   std::string name;
   // Symbols defined in this scope
   std::list<Symbol *> symbols;
+  // An optional reference to a variable or method by name this symbol behaves the same like
+  // useful for variable uses or method calls where the return value is not known.
+  std::string behaves_like_identifier;
+  mjavac::ast::Node *behaves_like_node;
 
   Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits)
       : scope(scope), traits(traits), node(node) {
   }
   Symbol(const mjavac::ast::Node *node, std::string name, intptr_t scope, int traits)
       : scope(scope), traits(traits), node(node), name(name) {
+  }
+  Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits, std::string other)
+      : scope(scope), traits(traits), node(node), behaves_like_identifier(other) {
+  }
+  Symbol(const mjavac::ast::Node *node, intptr_t scope, int traits, mjavac::ast::Node *other)
+      : scope(scope), traits(traits), node(node), behaves_like_node(other) {
   }
 };
 
@@ -52,7 +62,11 @@ enum SymbolTrait {
   // The symbol is callable with new (new symbol(parameter))
   Initializable = 1 << 6,
   // The symbol can be treated as a boolean
-  BooleanLike = 1 << 7
+  BooleanLike = 1 << 7,
+  // The symbol behaves like another symbol referenced in behave_like
+  BehavesLikeIdentifier = 1 << 8,
+  // The symbol behaves like another symbol referenced in behave_like
+  BehavesLikeNode = 1 << 9
 };
 
 class SymbolTableView;
