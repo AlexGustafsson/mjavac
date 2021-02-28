@@ -6,8 +6,8 @@
 #include <string>
 
 #include "node.hpp"
-#include "variable-node.hpp"
 #include "type-node.hpp"
+#include "variable-node.hpp"
 
 namespace mjavac {
 namespace ast {
@@ -15,7 +15,7 @@ class MethodDeclarationNode : public Node {
 public:
   bool is_public;
   bool is_static;
-  TypeNode* type;
+  TypeNode *type;
   std::string identifier;
   std::list<VariableNode *> parameters;
   std::list<Node *> statements;

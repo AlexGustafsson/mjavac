@@ -1,8 +1,8 @@
 #ifndef TYPE_NODE_H
 #define TYPE_NODE_H
 
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "node.hpp"
 

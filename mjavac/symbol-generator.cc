@@ -98,7 +98,7 @@ void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *state
     // Let the expression be part of the same scope as the condition itself
     generate_symbols_for_expression(symbol_table, conditional_node->expression, scope_node);
     // Add all statements to the condition's scope
-    for (const auto& nested_statement_node : conditional_node->statements)
+    for (const auto &nested_statement_node : conditional_node->statements)
       generate_symbols_for_statement(symbol_table, nested_statement_node, conditional_node);
     // For now, only "else" is implemented, meaning there's no need to loop over chained if statements
     if (conditional_node->next != nullptr) {
@@ -127,7 +127,7 @@ void generate_symbols_for_statement(SymbolTable *symbol_table, const Node *state
     return;
   }
 
-  const auto &return_node = dynamic_cast<const ReturnNode*>(statement_node);
+  const auto &return_node = dynamic_cast<const ReturnNode *>(statement_node);
   if (return_node != nullptr) {
     if (return_node->value != nullptr)
       generate_symbols_for_expression(symbol_table, return_node->value, scope_node);
