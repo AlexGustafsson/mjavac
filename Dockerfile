@@ -2,8 +2,6 @@ FROM ubuntu:20.04 as dependencies
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV LDFLAGS=
-
 RUN apt-get update && apt-get install -y \
   bison \
   build-essential \
