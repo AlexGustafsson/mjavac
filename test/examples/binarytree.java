@@ -1,3 +1,7 @@
+// mjavac test file header
+// header: 4
+// parse: succeed - valid syntax
+// semantics: succeed - valid program
 class BinaryTree{
     public static void main(String[] a){
 	System.out.println(new BT().Start());
@@ -62,7 +66,7 @@ class Tree{
 	right = rn ;
 	return true ;
     }
-    
+
     // Update the left child with ln
     public boolean SetLeft(Tree ln){
 	left = ln ;
@@ -103,7 +107,7 @@ class Tree{
 	 has_right = val ;
 	 return true ;
     }
-    
+
     // This method compares two integers and
     // returns true if they are equal and false
     // otherwise
@@ -180,20 +184,20 @@ class Tree{
 		    current_node = current_node.GetLeft() ;
 		}
 		else cont = false ;
-	    else 
+	    else
 		if (key_aux < v_key)
 		    if (current_node.GetHas_Right()){
 			parent_node = current_node ;
 			current_node = current_node.GetRight() ;
 		    }
 		    else cont = false ;
-		else { 
-		    if (is_root) 
-			if ((!current_node.GetHas_Right()) && 
+		else {
+		    if (is_root)
+			if ((!current_node.GetHas_Right()) &&
 			    (!current_node.GetHas_Left()) )
 			    ntb = true ;
-			else 
-			    ntb = this.Remove(parent_node,current_node); 
+			else
+			    ntb = this.Remove(parent_node,current_node);
 		    else ntb = this.Remove(parent_node,current_node);
 		    found = true ;
 		    cont = false ;
@@ -210,10 +214,10 @@ class Tree{
 	boolean ntb ;
 	int auxkey1 ;
 	int auxkey2 ;
-	
-	if (c_node.GetHas_Left()) 
+
+	if (c_node.GetHas_Left())
 	    ntb = this.RemoveLeft(p_node,c_node) ;
-	else 
+	else
 	    if (c_node.GetHas_Right())
 		ntb = this.RemoveRight(p_node,c_node) ;
 	    else {
@@ -289,12 +293,12 @@ class Tree{
 		if (current_node.GetHas_Left())
 		    current_node = current_node.GetLeft() ;
 		else cont = false ;
-	    else 
+	    else
 		if (key_aux < v_key)
 		    if (current_node.GetHas_Right())
 			current_node = current_node.GetRight() ;
 		    else cont = false ;
-		else { 
+		else {
 		    ifound = 1 ;
 		    cont = false ;
 		}
@@ -331,4 +335,3 @@ class Tree{
     }
 
 }
-   
