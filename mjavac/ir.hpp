@@ -7,6 +7,32 @@
 namespace mjavac {
 namespace ir {
 class Address {
+public:
+  virtual void write(std::ostream &stream) const = 0;
+};
+
+class Variable : public Address {
+public:
+  std::string identifier;
+
+  Variable(std::string identifier);
+  void write(std::ostream &stream) const;
+};
+
+class Constant : public Address {
+public:
+  int value;
+
+  Constant(int value);
+  void write(std::ostream &stream) const;
+};
+
+class TemporaryVariable : public Address {
+public:
+  unsigned long long id;
+
+  TemporaryVariable(unsigned long long id);
+  void write(std::ostream &stream) const;
 };
 
 class ThreeAddressCode {

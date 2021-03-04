@@ -2,8 +2,40 @@
 
 using namespace mjavac::ir;
 
+std::ostream &operator<<(std::ostream &stream, const Address *address) {
+  if (address == nullptr)
+    stream << "null";
+  else
+    address->write(stream);
+  return stream;
+}
+
+Variable::Variable(std::string identifier)
+    : identifier(identifier) {
+}
+
+void Variable::write(std::ostream &stream) const {
+  stream << this->identifier;
+}
+
+Constant::Constant(int value)
+    : value(value) {
+}
+
+void Constant::write(std::ostream &stream) const {
+  stream << "$" << this->value;
+}
+
+TemporaryVariable::TemporaryVariable(unsigned long long id)
+    : id(id) {
+}
+
+void TemporaryVariable::write(std::ostream &stream) const {
+  stream << "_t" << this->id;
+}
+
 ThreeAddressCode::ThreeAddressCode(Address *left, Address *right)
-    : left(left), right(right) {
+    : result(nullptr), left(left), right(right) {
 }
 
 Expression::Expression(Address *left, Address *right, std::string ir_operator)
