@@ -76,8 +76,10 @@ OPTIONS:
 --parse-only                   Only parse the source
 --semantics-only               Only validate the semantics of the source
 --execute                      Execute the source
---dot <file.dot>               Output a dot-formatted parse graph
---graph <file.(pdf|png|jpg)>   Render the parse graph as a pdf
+--ast <file.dot>               Output a dot-formatted parse graph
+--cfg <file.dot>               Output a dot-formatted control flow graph
+--ast-graph <file.(pdf|png|jpg)> Render the parse graph as a pdf
+--cfg-graph <file.(pdf|png|jpg)> Render the control flow graph as a pdf
 --symbol-table <file.txt>      Output the symbol table
 ```
 
@@ -99,8 +101,8 @@ mjavac --execute source.java
 
 During the parsing phase, mjavac will check for the following flags:
 
-* `--dot <file.dot>` - write a parse tree to `file.dot` in the Graphviz dot format
-* `--graph <file.(pdf|png|jpg)>` - render the parse tree to `file` in the specified format
+* `--ast <file.dot>` - write a parse tree to `file.dot` in the Graphviz dot format
+* `--ast-graph <file.(pdf|png|jpg)>` - render the parse tree to `file` in the specified format
 * `--parse-only` - terminate immediately after the parsing phase
 
 During the semantics check, mjavac will check for the following flags:
@@ -108,10 +110,21 @@ During the semantics check, mjavac will check for the following flags:
 * `--symbol-table <file.txt>` - output a plaintext representation of the symbol table
 * `--semantics-only` - terminate immediately after the semantics check
 
+After the semantics check, the compilation phase begins. mjavac will check for the following flags:
+
+* `--cfg <file.dot>` - write a control flow graph to `file.dot` in the Graphviz dot format
+* `--cfg-graph <file.(pdf|png|jpg)>` - render the control flow graph to `file` in the specified format
+
 A full example looks as follows:
 
 ```sh
-mjavac --dot parse-graph.dot --graph parse-graph.pdf --symbol-table symbol-table.txt source.java
+mjavac \
+  --ast ast.dot \
+  --ast-graph ast.pdf \
+  --symbol-table symbol-table.txt \
+  --cfg cfg.dot \
+  --cfg-graph cfg.pdf \
+  source.java
 ```
 
 <a id="documentation-parser"></a>
