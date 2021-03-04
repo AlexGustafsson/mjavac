@@ -28,13 +28,22 @@ CPPFLAGS += -I $(REAL_PARSER_PATH)/include
 LDFLAGS += -L $(REAL_PARSER_PATH)/lib/mjavac
 LDLIBS += -l mjavacparser
 
+source := $(shell find * -type f -name "*.cc" -not -path "build/*")
+objects := $(addprefix $(OUTPUT_PATH)/,$(source:.cc=.o))
+headers := $(shell find * -type f -name "*.hpp" -not -path "build/*")
+
 .PHONY: build clean
 
 build: $(OUTPUT_PATH)/mjavac
 
-$(OUTPUT_PATH)/mjavac: main.cc main.hpp symbol-table.cc symbol-table.hpp symbol-generator.cc symbol-generator.hpp semantics-analyzer.cc semantics-analyzer.hpp debug.hpp $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
+$(OUTPUT_PATH)/mjavac: $(objects) $(headers) $(REAL_PARSER_PATH)/lib/mjavac/libmjavacparser.a
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ main.cc symbol-table.cc symbol-generator.cc semantics-analyzer.cc $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $(objects) $(LDLIBS)
+
+# Compile source
+$(objects): $(OUTPUT_PATH)/%.o: %.cc $(wildcard %.hpp)
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) -c $< -o $@
 
 clean:
 	rm -r build &> /dev/null || true
