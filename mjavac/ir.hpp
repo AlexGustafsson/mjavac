@@ -8,6 +8,7 @@ namespace mjavac {
 namespace ir {
 class Address {
 public:
+  intptr_t get_id() const;
   virtual void write(std::ostream &stream) const = 0;
 };
 
@@ -42,6 +43,7 @@ public:
   Address *right;
 
   ThreeAddressCode(Address *left, Address *right);
+  ThreeAddressCode(Address *result, Address *left, Address *right);
 
   virtual void write(std::ostream &stream) const = 0;
 };
@@ -51,6 +53,7 @@ public:
   std::string ir_operator;
 
   Expression(Address *left, Address *right, std::string ir_operator);
+  Expression(Address *left, Address *right, const char *ir_operator);
   void write(std::ostream &stream) const;
 };
 
@@ -65,6 +68,7 @@ public:
 class Copy : public ThreeAddressCode {
 public:
   Copy(Address *operand);
+  Copy(Address *target, Address *operand);
   void write(std::ostream &stream) const;
 };
 

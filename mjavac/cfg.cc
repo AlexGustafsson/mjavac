@@ -1,17 +1,25 @@
 #include "cfg.hpp"
 
 BasicBlock::BasicBlock()
-    : parent(nullptr), positive_branch(nullptr), negative_branch(nullptr) {
+    : positive_branch(nullptr), negative_branch(nullptr) {
 }
 BasicBlock::BasicBlock(BasicBlock *positive_branch)
-    : parent(nullptr), positive_branch(positive_branch), negative_branch(nullptr) {
+    : positive_branch(positive_branch), negative_branch(nullptr) {
 }
 BasicBlock::BasicBlock(BasicBlock *positive_branch, BasicBlock *negative_branch)
-    : parent(nullptr), positive_branch(positive_branch), negative_branch(negative_branch) {
+    : positive_branch(positive_branch), negative_branch(negative_branch) {
 }
 
 intptr_t BasicBlock::get_id() const {
   return reinterpret_cast<intptr_t>(this);
+}
+
+void BasicBlock::add_code(mjavac::ir::ThreeAddressCode *code) {
+  this->codes.push_back(code);
+}
+
+void BasicBlock::set_identifier(std::string identifier, Address *result) {
+  this->identifiers[identifier] = result;
 }
 
 void BasicBlock::write(std::ostream &stream) const {
@@ -37,33 +45,6 @@ void BasicBlock::write(std::ostream &stream) const {
 
 ControlFlowGraph::ControlFlowGraph() {
   this->entry_point = new BasicBlock();
-  this->current_block = this->entry_point;
-}
-
-BasicBlock *ControlFlowGraph::push_positive_branch() {
-  BasicBlock *block = new BasicBlock();
-  block->parent = this->current_block;
-  this->current_block->positive_branch = block;
-  this->current_block = block;
-  return block;
-}
-
-BasicBlock *ControlFlowGraph::push_negative_branch() {
-  BasicBlock *block = new BasicBlock();
-  block->parent = this->current_block;
-  this->current_block->negative_branch = block;
-  this->current_block = block;
-  return block;
-}
-
-BasicBlock *ControlFlowGraph::pop_branch() {
-  if (this->current_block->parent != nullptr)
-    this->current_block = this->current_block->parent;
-  return this->current_block;
-}
-
-void ControlFlowGraph::add_code(mjavac::ir::ThreeAddressCode *code) {
-  this->current_block->codes.push_back(code);
 }
 
 void ControlFlowGraph::write(std::ostream &stream) const {

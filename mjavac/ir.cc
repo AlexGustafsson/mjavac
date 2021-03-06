@@ -10,6 +10,10 @@ std::ostream &operator<<(std::ostream &stream, const Address *address) {
   return stream;
 }
 
+intptr_t Address::get_id() const {
+  return reinterpret_cast<intptr_t>(this);
+}
+
 Variable::Variable(std::string identifier)
     : identifier(identifier) {
 }
@@ -38,11 +42,19 @@ ThreeAddressCode::ThreeAddressCode(Address *left, Address *right)
     : result(nullptr), left(left), right(right) {
 }
 
+ThreeAddressCode::ThreeAddressCode(Address *result, Address *left, Address *right)
+    : result(result), left(left), right(right) {
+}
+
 Expression::Expression(Address *left, Address *right, std::string ir_operator)
     : ThreeAddressCode(left, right), ir_operator(ir_operator) {
 }
 
-void Expression::write(std::ostream &stream) const {
+Expression::Expression(Address *left, Address *right, const char *ir_operator)
+    : Expression(left, right, std::string(ir_operator)) {
+}
+
+void Expression::write(std::ostream & stream) const {
   stream << this->result << " := " << this->left << " " << this->ir_operator << " " << this->right;
 }
 
@@ -56,6 +68,10 @@ void UnaryExpression::write(std::ostream &stream) const {
 
 Copy::Copy(Address *operand)
     : ThreeAddressCode(operand, nullptr) {
+}
+
+Copy::Copy(Address *target, Address *operand)
+    : ThreeAddressCode(target, operand, nullptr) {
 }
 
 void Copy::write(std::ostream &stream) const {

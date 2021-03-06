@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
     exit(EXIT_SUCCESS);
 
   ControlFlowGraph *cfg = new ControlFlowGraph();
-  generate_program_ir(cfg, symbol_table, program_node);
+  generate_program_ir(cfg, program_node);
 
   char *cfg_dot_path = parameter(argc, argv, "--cfg");
   bool generate_cfg_path = cfg_dot_path != nullptr;
@@ -162,11 +162,6 @@ int main(int argc, char **argv) {
     std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m execution not implemented" << std::endl;
     exit(EXIT_FAILURE);
   }
-
-  // Traverse the tree and create a symbol tree
-  // node id -> symbol traits
-  // traits: int-like, callable, string-like, subscriptable, etc.
-  // if (symbol_table[node_id] != callable) error(not callable)
 
   return 0;
 }
