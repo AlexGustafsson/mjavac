@@ -46,20 +46,23 @@ ThreeAddressCode::ThreeAddressCode(Address *result, Address *left, Address *righ
     : result(result), left(left), right(right) {
 }
 
-Expression::Expression(Address *left, Address *right, std::string ir_operator)
-    : ThreeAddressCode(left, right), ir_operator(ir_operator) {
+Expression::Expression(Address *result, Address *left, Address *right, std::string ir_operator)
+  : ThreeAddressCode(result, left, right), ir_operator(ir_operator) {
 }
 
-Expression::Expression(Address *left, Address *right, const char *ir_operator)
-    : Expression(left, right, std::string(ir_operator)) {
+Expression::Expression(Address *left, Address *right, std::string ir_operator)
+    : Expression(nullptr, left, right, ir_operator) {
 }
 
 void Expression::write(std::ostream & stream) const {
   stream << this->result << " := " << this->left << " " << this->ir_operator << " " << this->right;
 }
 
+UnaryExpression::UnaryExpression(Address *result, Address *operand, std::string ir_operator)
+    : ThreeAddressCode(result, operand, nullptr), ir_operator(ir_operator) {
+}
 UnaryExpression::UnaryExpression(Address *operand, std::string ir_operator)
-    : ThreeAddressCode(operand, nullptr), ir_operator(ir_operator) {
+    : UnaryExpression(nullptr, operand, ir_operator) {
 }
 
 void UnaryExpression::write(std::ostream &stream) const {

@@ -52,8 +52,8 @@ class Expression : public ThreeAddressCode {
 public:
   std::string ir_operator;
 
+  Expression(Address *target, Address *left, Address *right, std::string ir_operator);
   Expression(Address *left, Address *right, std::string ir_operator);
-  Expression(Address *left, Address *right, const char *ir_operator);
   void write(std::ostream &stream) const;
 };
 
@@ -61,6 +61,7 @@ class UnaryExpression : public ThreeAddressCode {
 public:
   std::string ir_operator;
 
+  UnaryExpression(Address *target, Address *left, std::string ir_operator);
   UnaryExpression(Address *left, std::string ir_operator);
   void write(std::ostream &stream) const;
 };
