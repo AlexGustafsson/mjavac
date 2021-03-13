@@ -19,6 +19,7 @@
 #include "semantics-analyzer.hpp"
 #include "symbol-generator.hpp"
 #include "symbol-table.hpp"
+#include "program.hpp"
 
 #include "main.hpp"
 
@@ -135,8 +136,7 @@ int main(int argc, char **argv) {
   if (flag_is_set(argc, argv, "--semantics-only"))
     exit(EXIT_SUCCESS);
 
-  ControlFlowGraph *cfg = new ControlFlowGraph();
-  generate_program_ir(cfg, program_node);
+  Program *program = new Program(program_node);
 
   char *cfg_dot_path = parameter(argc, argv, "--cfg");
   bool generate_cfg_path = cfg_dot_path != nullptr;
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 #endif
   if (generate_cfg_path) {
     std::stringstream raw_dot_stream;
-    cfg->write(raw_dot_stream);
+    program->write(raw_dot_stream);
     std::string graph_string = raw_dot_stream.str();
 
     if (cfg_dot_path != nullptr)

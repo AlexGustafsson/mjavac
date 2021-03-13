@@ -8,6 +8,6 @@
 
 using namespace mjavac::ast;
 
-void generate_program_ir(ControlFlowGraph *cfg, const ProgramNode *program_node);
+void generate_method_ir(ControlFlowGraph *cfg, const MethodDeclarationNode *MethodDeclarationNode);
 
 #endif

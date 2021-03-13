@@ -150,12 +150,8 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
   return current_block;
 }
 
-void generate_program_ir(ControlFlowGraph *cfg, const ProgramNode *program_node) {
+void generate_method_ir(ControlFlowGraph *cfg, const MethodDeclarationNode *method_declaration_node) {
   BasicBlock *current_block = cfg->entry_point;
-  for (const auto &class_node : program_node->declarations) {
-    for (const auto &method_declaration_node : class_node->method_declarations) {
-      for (const auto &statement_node : method_declaration_node->statements)
-        current_block = generate_statement_ir(cfg, current_block, statement_node);
-    }
-  }
+  for (const auto &statement_node : method_declaration_node->statements)
+    current_block = generate_statement_ir(cfg, current_block, statement_node);
 }

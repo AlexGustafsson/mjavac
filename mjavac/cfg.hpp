@@ -36,6 +36,7 @@ public:
   ControlFlowGraph();
 
   void write(std::ostream &stream) const;
+  void write_standalone(std::ostream &stream) const;
 
   intptr_t get_id() const;
 };

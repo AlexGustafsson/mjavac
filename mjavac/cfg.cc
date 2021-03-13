@@ -52,15 +52,19 @@ ControlFlowGraph::ControlFlowGraph() {
   this->entry_point = new BasicBlock();
 }
 
-void ControlFlowGraph::write(std::ostream &stream) const {
+void ControlFlowGraph::write_standalone(std::ostream &stream) const {
   stream << "digraph {" << std::endl;
 
   stream << "graph [splines=ortho]" << std::endl;
 
-  std::map<long, bool> visited;
-  this->entry_point->write(stream, visited);
+  this->write(stream);
 
   stream << "}" << std::endl;
+}
+
+void ControlFlowGraph::write(std::ostream &stream) const {
+  std::map<long, bool> visited;
+  this->entry_point->write(stream, visited);
 }
 
 intptr_t ControlFlowGraph::get_id() const {
