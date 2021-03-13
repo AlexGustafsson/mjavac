@@ -112,6 +112,7 @@ public:
 class Return : public ThreeAddressCode {
 public:
   Return(Address *operand);
+  Return();
   void write(std::ostream &stream) const;
 };
 

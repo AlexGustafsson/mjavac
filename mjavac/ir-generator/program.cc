@@ -145,6 +145,17 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
     return rejoinder;
   }
 
+  const auto &return_node = dynamic_cast<const ReturnNode *>(statement_node);
+  if (return_node != nullptr) {
+    if (return_node->value == nullptr) {
+      current_block->add_code(new Return());
+    } else {
+      Address *result = generate_expression_ir(cfg, current_block, return_node->value);
+      current_block->add_code(new Return(result));
+    }
+    return current_block;
+  }
+
   generate_expression_ir(cfg, current_block, statement_node);
 
   return current_block;

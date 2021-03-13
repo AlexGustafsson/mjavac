@@ -136,6 +136,10 @@ Return::Return(Address *operand)
     : ThreeAddressCode(operand, nullptr) {
 }
 
+Return::Return()
+  : Return(nullptr) {
+}
+
 void Return::write(std::ostream &stream) const {
   stream << "return " << this->left;
 }
