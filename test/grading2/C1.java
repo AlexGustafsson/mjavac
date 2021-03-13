@@ -8,7 +8,7 @@
 // 2
 // 1
 //
-class Sum {
+class SumUtility {
   public static void main(String[] a){
     System.out.println(new Test().Sum(100));
   }
