@@ -13,7 +13,7 @@ Address *generate_expression_ir(ControlFlowGraph *cfg, BasicBlock *current_block
   const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(expression_node);
   if (binary_operation_node != nullptr) {
     if (binary_operation_node->binary_operator == Operator::Subscript) {
-
+      // Not supported
     } else {
       Address *left = generate_expression_ir(cfg, current_block, binary_operation_node->left);
       Address *right = generate_expression_ir(cfg, current_block, binary_operation_node->right);
@@ -50,6 +50,17 @@ Address *generate_expression_ir(ControlFlowGraph *cfg, BasicBlock *current_block
     } else if (value_node->type == ValueNode::Identifier) {
       return new Variable(value_node->identifier_value);
     }
+  }
+
+  const auto &method_call_node = dynamic_cast<const MethodCallNode *>(expression_node);
+  if (method_call_node != nullptr) {
+    // Evaluate all parameters and push them to the stack
+    for (const auto &parameter : method_call_node->parameters) {
+      Address *result = generate_expression_ir(cfg, current_block, parameter);
+      current_block->add_code(new Push(result));
+    }
+    // TODO: Add actual method name or id to the call
+    current_block->add_code(new MethodCall(nullptr, new Constant(method_call_node->parameters.size())));
   }
 
   return nullptr;

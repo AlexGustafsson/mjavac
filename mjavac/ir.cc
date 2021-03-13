@@ -110,7 +110,7 @@ Push::Push(Address *operand)
 }
 
 void Push::write(std::ostream &stream) const {
-  stream << this->result << " := push " << this->left;
+  stream << "push " << this->left;
 }
 
 Parameter::Parameter(Address *operand)
@@ -126,7 +126,10 @@ MethodCall::MethodCall(Address *left, Address *right)
 }
 
 void MethodCall::write(std::ostream &stream) const {
-  stream << this->result << " := call " << this->left << "," << this->right;
+  if (this->result == nullptr)
+    stream << "call " << this->left << ", " << this->right;
+  else
+    stream << this->result << " := call " << this->left << ", " << this->right;
 }
 
 Return::Return(Address *operand)
@@ -134,7 +137,7 @@ Return::Return(Address *operand)
 }
 
 void Return::write(std::ostream &stream) const {
-  stream << this->result << " := return " << this->left;
+  stream << "return " << this->left;
 }
 
 UnconditionalJump::UnconditionalJump(Address *operand)
@@ -142,7 +145,7 @@ UnconditionalJump::UnconditionalJump(Address *operand)
 }
 
 void UnconditionalJump::write(std::ostream &stream) const {
-  stream << this->result << " := goto " << this->left;
+  stream << "goto " << this->left;
 }
 
 ConditionalJump::ConditionalJump(Address *left, Address *right)
@@ -150,5 +153,5 @@ ConditionalJump::ConditionalJump(Address *left, Address *right)
 }
 
 void ConditionalJump::write(std::ostream &stream) const {
-  stream << this->result << " := iffalse " << this->left << " goto " << this->right;
+  stream << "iffalse " << this->left << " goto " << this->right;
 }
