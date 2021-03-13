@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include <ostream>
+#include <map>
 
 #include "ir.hpp"
 
@@ -23,7 +24,7 @@ public:
   void add_code(mjavac::ir::ThreeAddressCode *code);
   void set_identifier(std::string identifier, Address *result);
 
-  void write(std::ostream &stream) const;
+  void write(std::ostream &stream, std::map<long, bool> &visited) const;
 
   intptr_t get_id() const;
 };

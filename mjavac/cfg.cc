@@ -22,7 +22,12 @@ void BasicBlock::set_identifier(std::string identifier, Address *result) {
   this->identifiers[identifier] = result;
 }
 
-void BasicBlock::write(std::ostream &stream) const {
+void BasicBlock::write(std::ostream &stream, std::map<long, bool> &visited) const {
+  // Recursion guard
+  if (visited.count(this->get_id()) > 0)
+    return;
+  visited[this->get_id()] = true;
+
   stream << this->get_id() << "[shape=box label=\"";
 
   for (const auto &code : this->codes) {
@@ -34,12 +39,12 @@ void BasicBlock::write(std::ostream &stream) const {
 
   if (this->positive_branch != nullptr) {
     stream << this->get_id() << " -> " << this->positive_branch->get_id() << "[xlabel=\"true\"];" << std::endl;
-    this->positive_branch->write(stream);
+    this->positive_branch->write(stream, visited);
   }
 
   if (this->negative_branch != nullptr) {
     stream << this->get_id() << " -> " << this->negative_branch->get_id() << "[xlabel=\"false\"];" << std::endl;
-    this->negative_branch->write(stream);
+    this->negative_branch->write(stream, visited);
   }
 }
 
@@ -52,7 +57,8 @@ void ControlFlowGraph::write(std::ostream &stream) const {
 
   stream << "graph [splines=ortho]" << std::endl;
 
-  this->entry_point->write(stream);
+  std::map<long, bool> visited;
+  this->entry_point->write(stream, visited);
 
   stream << "}" << std::endl;
 }
