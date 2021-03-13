@@ -84,21 +84,28 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
   const auto &conditional_node = dynamic_cast<const ConditionalNode *>(statement_node);
   if (conditional_node != nullptr) {
     Address *result = generate_expression_ir(cfg, current_block, conditional_node->expression);
-    current_block->add_code(new Expression(result, new Constant(1), "<"));
+    current_block->add_code(new Expression(new TemporaryVariable(conditional_node->get_id()), result, new Constant(1), "<"));
 
     BasicBlock *rejoinder = new BasicBlock();
 
     BasicBlock *positive_branch = new BasicBlock();
-    positive_branch->positive_branch = rejoinder;
     current_block->positive_branch = positive_branch;
-    // TODO: Evaluate statements
+    // Evaluate statements, making sure the last branch ends up in the rejoinder
+    BasicBlock *positive_branch_end = positive_branch;
+    for (const auto &statement : conditional_node->statements)
+      positive_branch_end = generate_statement_ir(cfg, positive_branch, statement);
+    positive_branch_end->positive_branch = rejoinder;
 
     if (conditional_node->next == nullptr) {
       current_block->negative_branch = rejoinder;
     } else {
       BasicBlock *negative_branch = new BasicBlock();
       current_block->negative_branch = negative_branch;
-      // TODO: Evaluate statements
+      // Evaluate statements, making sure the last branch ends up in the rejoinder
+      BasicBlock *negative_branch_end = negative_branch;
+      for (const auto &statement : conditional_node->statements)
+        negative_branch_end = generate_statement_ir(cfg, negative_branch, statement);
+      negative_branch_end->positive_branch = rejoinder;
     }
 
     return rejoinder;
@@ -108,18 +115,21 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
   if (loop_node != nullptr) {
     BasicBlock *header = new BasicBlock();
     Address *result = generate_expression_ir(cfg, header, loop_node->expression);
-    Address *target = new TemporaryVariable(loop_node->get_id());
-    header->add_code(new Expression(target, result, new Constant(1), "<"));
+    // Compare the expression with < 1
+    header->add_code(new Expression(new TemporaryVariable(loop_node->get_id()), result, new Constant(1), "<"));
     current_block->positive_branch = header;
 
     BasicBlock *body = new BasicBlock();
     header->positive_branch = body;
 
-    // TODO: Evaluate statements
+    // Evaluate statements, making sure the last branch ends up in the header
+    BasicBlock *body_end = body;
+    for (const auto &statement : loop_node->statements)
+      body_end = generate_statement_ir(cfg, body, statement);
+    body_end->positive_branch = header;
 
     BasicBlock *rejoinder = new BasicBlock();
     header->negative_branch = rejoinder;
-    body->positive_branch = rejoinder;
 
     return rejoinder;
   }
