@@ -101,3 +101,4 @@ test_files "$DIRECTORY/correct/"*.java
 test_files "$DIRECTORY/examples/"*.java
 test_files "$DIRECTORY/incorrect/"*.java
 test_files "$DIRECTORY/grading/"*.java
+test_files "$DIRECTORY/grading2/"*.java
