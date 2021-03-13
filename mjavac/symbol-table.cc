@@ -79,13 +79,13 @@ int SymbolTableView::count_symbols() const {
   return count;
 }
 
-int SymbolTableView::count_symbols_by_name(std::string name) const {
+int SymbolTableView::count_symbols_by_name(std::string name, int traits) const {
   Symbol *root = this->symbol_table->get_symbol(this->scope);
   int count = 0;
 
   while (root != nullptr) {
     for (const auto &symbol : root->symbols) {
-      if (symbol->name.compare(name) == 0)
+      if (symbol->name.compare(name) == 0 && symbol->traits & traits)
         count++;
     }
 
@@ -93,6 +93,10 @@ int SymbolTableView::count_symbols_by_name(std::string name) const {
   }
 
   return count;
+}
+
+int SymbolTableView::count_symbols_by_name(std::string name) const {
+  return this->count_symbols_by_name(name, SymbolTrait::Any);
 }
 
 Symbol *SymbolTableView::get_symbol_by_name(Symbol *root, std::string name) const {

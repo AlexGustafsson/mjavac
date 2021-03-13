@@ -73,7 +73,9 @@ enum SymbolTrait {
   // The symbol behaves like another symbol referenced in behaves_like_node
   BehavesLikeNode = 1 << 9,
   // The symbol behaves like another symbol which is accessed via an object
-  BehavesLikeObject = 1 << 10
+  BehavesLikeObject = 1 << 10,
+  // Any symbol, useful for masking
+  Any = 0xFFFFFFFF
 };
 
 class SymbolTableView;
@@ -99,6 +101,7 @@ public:
 
   void set_scope(intptr_t scope);
   int count_symbols() const;
+  int count_symbols_by_name(std::string name, int traits) const;
   int count_symbols_by_name(std::string name) const;
   Symbol *get_symbol_by_name(Symbol *root, std::string name) const;
   Symbol *get_symbol_by_name(std::string name) const;
