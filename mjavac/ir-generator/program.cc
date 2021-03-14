@@ -116,6 +116,19 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
     }
   }
 
+  // Initialize a variable to a default value
+  const auto &variable_node = dynamic_cast<const VariableNode *>(statement_node);
+  if (variable_node != nullptr) {
+    // Integers and booleans are initialized to 0
+    if (variable_node->type->type.compare("int") == 0 || variable_node->type->type.compare("boolean") == 0) {
+      current_block->add_code(new Copy(new Variable(variable_node->identifier), new Constant(0)));
+    } else {
+      // Class initialization etc.
+    }
+
+    return current_block;
+  }
+
   const auto &conditional_node = dynamic_cast<const ConditionalNode *>(statement_node);
   if (conditional_node != nullptr) {
     Address *result = generate_expression_ir(cfg, current_block, conditional_node->expression);
@@ -138,7 +151,7 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
       current_block->negative_branch = negative_branch;
       // Evaluate statements, making sure the last branch ends up in the rejoinder
       BasicBlock *negative_branch_end = negative_branch;
-      for (const auto &statement : conditional_node->statements)
+      for (const auto &statement : conditional_node->next->statements)
         negative_branch_end = generate_statement_ir(cfg, negative_branch, statement);
       negative_branch_end->positive_branch = rejoinder;
     }
@@ -187,6 +200,9 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
 
 void generate_method_ir(ControlFlowGraph *cfg, const MethodDeclarationNode *method_declaration_node) {
   BasicBlock *current_block = cfg->entry_point;
-  for (const auto &statement_node : method_declaration_node->statements)
+  for (const auto &parameter_node : method_declaration_node->parameters)
+    current_block->add_code(new Parameter(new Variable(parameter_node->identifier)));
+  for (const auto &statement_node : method_declaration_node->statements) {
     current_block = generate_statement_ir(cfg, current_block, statement_node);
+  }
 }

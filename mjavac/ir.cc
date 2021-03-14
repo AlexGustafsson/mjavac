@@ -118,7 +118,7 @@ Parameter::Parameter(Address *operand)
 }
 
 void Parameter::write(std::ostream &stream) const {
-  stream << this->result << " := param " << this->left;
+  stream << "param " << this->left;
 }
 
 MethodCall::MethodCall(Address *result, Address *left, Address *right)
