@@ -5,12 +5,13 @@ using namespace mjavac::ast;
 ClassDeclarationNode::ClassDeclarationNode(std::string identifier) {
   this->identifier = identifier;
   this->extends = false;
+  this->internal = false;
 }
 
 ClassDeclarationNode::ClassDeclarationNode(std::string identifier, std::string extended_identifier)
     : ClassDeclarationNode::ClassDeclarationNode(identifier) {
-  this->extended_identifier = extended_identifier;
   this->extends = true;
+  this->extended_identifier = extended_identifier;
 }
 
 void ClassDeclarationNode::setDeclarations(std::list<Node *> declarations) {

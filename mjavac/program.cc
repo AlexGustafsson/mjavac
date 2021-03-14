@@ -4,6 +4,9 @@
 
 Program::Program(const ProgramNode *program_node) {
   for (const auto &class_node : program_node->declarations) {
+    if (class_node->internal)
+      continue;
+
     for (const auto &method_declaration_node : class_node->method_declarations) {
       ControlFlowGraph *cfg = new ControlFlowGraph();
       generate_method_ir(cfg, method_declaration_node);

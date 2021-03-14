@@ -20,6 +20,7 @@
 #include "symbol-generator.hpp"
 #include "symbol-table.hpp"
 #include "program.hpp"
+#include "stdlib.hpp"
 
 #include "main.hpp"
 
@@ -87,6 +88,9 @@ int main(int argc, char **argv) {
 
   if (!parser_succeeded || recovered_failure || program_node == nullptr)
     exit(EXIT_FAILURE);
+
+  // Mount the system stdlib
+  mount_stdlib_system(program_node);
 
   char *ast_dot_path = parameter(argc, argv, "--ast");
   bool generate_parse_graph = ast_dot_path != nullptr;

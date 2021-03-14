@@ -20,6 +20,7 @@ public:
   std::list<VariableNode *> variable_declarations;
   std::list<BinaryOperationNode *> variable_assignments;
   std::list<MethodDeclarationNode *> method_declarations;
+  bool internal;
 
   ClassDeclarationNode(std::string identifier, std::string extended_identifier);
   ClassDeclarationNode(std::string identifier);
