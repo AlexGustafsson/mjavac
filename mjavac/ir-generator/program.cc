@@ -216,8 +216,11 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
 void generate_method_ir(ControlFlowGraph *cfg, const ClassDeclarationNode *class_node, const MethodDeclarationNode *method_declaration_node) {
   BasicBlock *current_block = cfg->entry_point;
   current_block->identifier = class_node->identifier + "." + method_declaration_node->identifier;
-  for (const auto &parameter_node : method_declaration_node->parameters)
-    current_block->add_code(new Parameter(new Variable(parameter_node->identifier)));
+  for (const auto &parameter_node : method_declaration_node->parameters) {
+    // Only add integers and booleans
+    if (parameter_node->type->type.compare("int") == 0 || parameter_node->type->type.compare("boolean") == 0)
+      current_block->add_code(new Parameter(new Variable(parameter_node->identifier)));
+  }
   for (const auto &statement_node : method_declaration_node->statements) {
     current_block = generate_statement_ir(cfg, class_node, current_block, statement_node);
   }

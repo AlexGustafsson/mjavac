@@ -58,6 +58,7 @@ void exit_with_usage(int code) {
   std::cout << std::setw(30) << std::left << "--cfg-graph <file.(pdf|png|jpg)>" << std::setw(0) << " Render the control flow graph as a pdf" << std::endl;
 #endif
   std::cout << std::setw(30) << std::left << "--symbol-table <file.txt>" << std::setw(0) << " Output the symbol table" << std::endl;
+  std::cout << std::setw(30) << std::left << "--bytecode     <file.txt>" << std::setw(0) << " Output the bytecode" << std::endl;
 
   exit(code);
 }
@@ -151,7 +152,7 @@ int main(int argc, char **argv) {
 #endif
   if (generate_cfg_path) {
     std::stringstream raw_dot_stream;
-    program->write(raw_dot_stream);
+    program->write_cfg(raw_dot_stream);
     std::string graph_string = raw_dot_stream.str();
 
     if (cfg_dot_path != nullptr)
@@ -163,29 +164,22 @@ int main(int argc, char **argv) {
 #endif
   }
 
+  char *bytecode_path = parameter(argc, argv, "--bytecode");
+  if (bytecode_path != nullptr) {
+    std::ofstream bytecode_stream;
+    bytecode_stream.open(bytecode_path);
+    if (!bytecode_stream.is_open()) {
+      std::cerr << "\033[1mmjavac: \033[31merror:\033[0m " << bytecode_path << ": " << strerror(errno) << std::endl;
+      std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m unable to create output bytecode path file" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    program->write_bytecode(bytecode_stream);
+    bytecode_stream.close();
+  }
+
   if (flag_is_set(argc, argv, "--execute")) {
-    mjavac::vm::Block *block = new mjavac::vm::Block("Application.main");
-    // Assign 1 to x
-    block->instructions.push_back(new mjavac::vm::Instruction_iconst(1));
-    block->instructions.push_back(new mjavac::vm::Instruction_istore("x"));
-    // Assign x to y
-    block->instructions.push_back(new mjavac::vm::Instruction_iload("x"));
-    block->instructions.push_back(new mjavac::vm::Instruction_istore("y"));
-    // Print x and y
-    block->instructions.push_back(new mjavac::vm::Instruction_iload("x"));
-    block->instructions.push_back(new mjavac::vm::Instruction_print());
-    block->instructions.push_back(new mjavac::vm::Instruction_iload("y"));
-    block->instructions.push_back(new mjavac::vm::Instruction_print());
-    // Stop
-    block->instructions.push_back(new mjavac::vm::Instruction_stop());
-
-    mjavac::vm::Bytecode *bytecode = new mjavac::vm::Bytecode();
-    bytecode->blocks[block->identifier] = block;
-    bytecode->entry_point = block;
-    bytecode->write(std::cout);
-
-    mjavac::vm::VirtualMachine *vm = new mjavac::vm::VirtualMachine(bytecode);
-    vm->execute();
+    program->execute();
   }
 
   return 0;

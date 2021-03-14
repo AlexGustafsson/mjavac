@@ -168,7 +168,7 @@ void Instruction_goto::perform(std::stack<long> &stack, std::map<std::string, in
 }
 
 void Instruction_goto::write(std::ostream &stream) const {
-  stream << "goto" << std::endl;
+  stream << "goto " << this->target << std::endl;
 }
 
 Instruction_iffalse::Instruction_iffalse(long target)
@@ -184,11 +184,10 @@ void Instruction_iffalse::perform(std::stack<long> &stack, std::map<std::string,
 }
 
 void Instruction_iffalse::write(std::ostream &stream) const {
-  stream << "iffalse" << std::endl;
+  stream << "iffalse " << this->target << std::endl;
 }
 
-Instruction_invokevirtual::Instruction_invokevirtual(std::string identifier)
-    : identifier(identifier) {
+Instruction_invokevirtual::Instruction_invokevirtual() {
 }
 
 void Instruction_invokevirtual::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {

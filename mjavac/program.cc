@@ -1,4 +1,7 @@
+#include <mjavac/virtual-machine.hpp>
+
 #include "ir-generator.hpp"
+#include "bytecode-generator.hpp"
 
 #include "program.hpp"
 
@@ -16,9 +19,21 @@ Program::Program(const ProgramNode *program_node) {
         this->entry_point = cfg;
     }
   }
+
+  this->bytecode = new mjavac::vm::Bytecode();
+  generate_bytecode(this->cfgs, this->entry_point, this->bytecode);
 }
 
-void Program::write(std::ostream &stream) const {
+void Program::execute() const {
+  VirtualMachine *vm = new VirtualMachine(this->bytecode);
+  vm->execute();
+}
+
+void Program::write_bytecode(std::ostream &stream) const {
+  this->bytecode->write(stream);
+}
+
+void Program::write_cfg(std::ostream &stream) const {
   stream << "digraph {" << std::endl;
   stream << "graph [splines=ortho]" << std::endl;
   stream << "compound=true;" << std::endl;

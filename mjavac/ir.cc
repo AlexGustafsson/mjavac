@@ -156,8 +156,8 @@ void UnconditionalJump::write(std::ostream &stream) const {
   stream << "goto " << this->left;
 }
 
-ConditionalJump::ConditionalJump(Address *left, Address *right)
-    : ThreeAddressCode(left, right) {
+ConditionalJump::ConditionalJump(Address *condition, Address *target)
+    : ThreeAddressCode(condition, target) {
 }
 
 void ConditionalJump::write(std::ostream &stream) const {

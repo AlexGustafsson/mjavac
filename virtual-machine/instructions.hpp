@@ -54,6 +54,7 @@ public:
 };
 
 class Instruction_imul : public Instruction {
+public:
   Instruction_imul();
   void perform(std::stack<long> &stack, std::map<std::string, int> &variables) const;
   void write(std::ostream &stream) const;
@@ -113,7 +114,7 @@ public:
 class Instruction_invokevirtual : public Instruction {
 public:
   std::string identifier;
-  Instruction_invokevirtual(std::string identifier);
+  Instruction_invokevirtual();
   void perform(std::stack<long> &stack, std::map<std::string, int> &variables) const;
   void write(std::ostream &stream) const;
 };
