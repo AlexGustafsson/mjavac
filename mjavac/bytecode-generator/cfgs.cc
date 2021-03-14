@@ -37,12 +37,14 @@ std::string resolve_variable(Address *address) {
   return "";
 }
 
-void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<long, bool> &visited) {
+void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<long, bool> &visited, bool is_entry_point) {
   if (visited.count(block->get_id()) > 0)
     return;
   visited[block->get_id()] = true;
 
   Block *bytecode_block = new Block(block->identifier);
+  if (is_entry_point)
+    bytecode->entry_point = bytecode_block;
   bytecode->blocks[block->identifier] = bytecode_block;
   for (const auto &code : block->codes) {
     const Expression *expression = dynamic_cast<const Expression *>(code);
@@ -145,15 +147,15 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
   }
 
   if (block->positive_branch != nullptr)
-    generate_block_bytecode(block->positive_branch, bytecode, visited);
+    generate_block_bytecode(block->positive_branch, bytecode, visited, false);
   if (block->negative_branch != nullptr)
-    generate_block_bytecode(block->negative_branch, bytecode, visited);
+    generate_block_bytecode(block->negative_branch, bytecode, visited, false);
 }
 
 void generate_bytecode(std::map<std::string, ControlFlowGraph *> &cfgs, ControlFlowGraph *entry_point, Bytecode *bytecode) {
   // Recursion guard
   std::map<long, bool> visited;
   for (const auto &[_, cfg] : cfgs) {
-    generate_block_bytecode(cfg->entry_point, bytecode, visited);
+    generate_block_bytecode(cfg->entry_point, bytecode, visited, cfg == entry_point);
   }
 }
