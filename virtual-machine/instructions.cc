@@ -45,9 +45,9 @@ Instruction_iadd::Instruction_iadd() {
 }
 
 void Instruction_iadd::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a + b);
 }
@@ -60,9 +60,9 @@ Instruction_isub::Instruction_isub() {
 }
 
 void Instruction_isub::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a - b);
 }
@@ -75,9 +75,9 @@ Instruction_imul::Instruction_imul() {
 }
 
 void Instruction_imul::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a * b);
 }
@@ -90,9 +90,9 @@ Instruction_idiv::Instruction_idiv() {
 }
 
 void Instruction_idiv::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a / b);
 }
@@ -105,9 +105,9 @@ Instruction_ilt::Instruction_ilt() {
 }
 
 void Instruction_ilt::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a < b ? 1 : 0);
 }
@@ -120,9 +120,9 @@ Instruction_iand::Instruction_iand() {
 }
 
 void Instruction_iand::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a * b == 0 ? 0 : 1);
 }
@@ -135,9 +135,9 @@ Instruction_ior::Instruction_ior() {
 }
 
 void Instruction_ior::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int a = (int)stack.top();
-  stack.pop();
   int b = (int)stack.top();
+  stack.pop();
+  int a = (int)stack.top();
   stack.pop();
   stack.push(a + b == 0 ? 0 : 1);
 }
@@ -213,9 +213,14 @@ Instruction_print::Instruction_print() {
 }
 
 void Instruction_print::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {
-  int value = (int)stack.top();
-  std::cout << value << std::endl;
+  int parameter_count = (int)stack.top();
   stack.pop();
+
+  for (int i = 0; i < parameter_count; i++) {
+    int parameter = (int)stack.top();
+    stack.pop();
+    std::cout << parameter << std::endl;
+  }
 }
 
 void Instruction_print::write(std::ostream &stream) const {
