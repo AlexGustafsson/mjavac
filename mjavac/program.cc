@@ -9,7 +9,7 @@ Program::Program(const ProgramNode *program_node) {
 
     for (const auto &method_declaration_node : class_node->method_declarations) {
       ControlFlowGraph *cfg = new ControlFlowGraph();
-      generate_method_ir(cfg, method_declaration_node);
+      generate_method_ir(cfg, class_node, method_declaration_node);
       this->cfgs[class_node->identifier + "." + method_declaration_node->identifier] = cfg;
       if (method_declaration_node->identifier.compare("main") == 0)
         this->entry_point = cfg;
