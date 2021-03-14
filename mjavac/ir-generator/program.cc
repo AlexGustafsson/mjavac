@@ -173,7 +173,7 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, BasicBlock *current_blo
     // Evaluate statements, making sure the last branch ends up in the header
     BasicBlock *body_end = body;
     for (const auto &statement : loop_node->statements)
-      body_end = generate_statement_ir(cfg, body, statement);
+      body_end = generate_statement_ir(cfg, body_end, statement);
     body_end->positive_branch = header;
 
     BasicBlock *rejoinder = new BasicBlock();
