@@ -134,28 +134,35 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
   const auto &conditional_node = dynamic_cast<const ConditionalNode *>(statement_node);
   if (conditional_node != nullptr) {
     Address *result = generate_expression_ir(cfg, class_node, current_block, conditional_node->expression);
-    current_block->add_code(new Expression(new TemporaryVariable(conditional_node->get_id()), result, new Constant(1), "<"));
+    Address *comparison = new TemporaryVariable(conditional_node->get_id());
+    current_block->add_code(new Expression(comparison, result, new Constant(1), "<"));
 
     BasicBlock *rejoinder = new BasicBlock();
 
     BasicBlock *positive_branch = new BasicBlock();
     current_block->positive_branch = positive_branch;
+    current_block->add_code(new ConditionalJump(comparison, new Constant(positive_branch->get_id())));
+
     // Evaluate statements, making sure the last branch ends up in the rejoinder
     BasicBlock *positive_branch_end = positive_branch;
     for (const auto &statement : conditional_node->statements)
       positive_branch_end = generate_statement_ir(cfg, class_node, positive_branch, statement);
     positive_branch_end->positive_branch = rejoinder;
+    positive_branch_end->add_code(new UnconditionalJump(new Constant(rejoinder->get_id())));
 
     if (conditional_node->next == nullptr) {
       current_block->negative_branch = rejoinder;
+      current_block->add_code(new UnconditionalJump(new Constant(rejoinder->get_id())));
     } else {
       BasicBlock *negative_branch = new BasicBlock();
       current_block->negative_branch = negative_branch;
+      current_block->add_code(new UnconditionalJump(new Constant(negative_branch->get_id())));
       // Evaluate statements, making sure the last branch ends up in the rejoinder
       BasicBlock *negative_branch_end = negative_branch;
       for (const auto &statement : conditional_node->next->statements)
         negative_branch_end = generate_statement_ir(cfg, class_node, negative_branch, statement);
       negative_branch_end->positive_branch = rejoinder;
+      negative_branch_end->add_code(new UnconditionalJump(new Constant(rejoinder->get_id())));
     }
 
     return rejoinder;
@@ -166,8 +173,10 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
     BasicBlock *header = new BasicBlock();
     Address *result = generate_expression_ir(cfg, class_node, header, loop_node->expression);
     // Compare the expression with < 1
-    header->add_code(new Expression(new TemporaryVariable(loop_node->get_id()), result, new Constant(1), "<"));
+    Address *comparison = new TemporaryVariable(loop_node->get_id());
+    header->add_code(new Expression(comparison, result, new Constant(1), "<"));
     current_block->positive_branch = header;
+    current_block->add_code(new UnconditionalJump(new Constant(header->get_id())));
 
     BasicBlock *body = new BasicBlock();
     header->positive_branch = body;
@@ -177,9 +186,13 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
     for (const auto &statement : loop_node->statements)
       body_end = generate_statement_ir(cfg, class_node, body_end, statement);
     body_end->positive_branch = header;
+    body_end->add_code(new UnconditionalJump(new Constant(header->get_id())));
 
     BasicBlock *rejoinder = new BasicBlock();
     header->negative_branch = rejoinder;
+
+    header->add_code(new ConditionalJump(comparison, new Constant(rejoinder->get_id())));
+    header->add_code(new UnconditionalJump(new Constant(body->get_id())));
 
     return rejoinder;
   }

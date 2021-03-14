@@ -22,9 +22,10 @@ public:
 
 class Constant : public Address {
 public:
-  int value;
+  // Long to enable storage of intptr_t, not only ints
+  unsigned long long value;
 
-  Constant(int value);
+  Constant(unsigned long long value);
   void write(std::ostream &stream) const;
 };
 
