@@ -3,11 +3,11 @@
 using namespace mjavac::vm;
 
 Block::Block(std::string identifier)
-  : identifier(identifier) {
-  }
+    : identifier(identifier) {
+}
 
 Block::Block(std::string identifier, std::vector<Instruction *> instructions)
-  : Block(identifier) {
+    : Block(identifier) {
   this->instructions = instructions;
 }
 
@@ -18,11 +18,10 @@ void Block::write(std::ostream &stream) const {
 }
 
 Bytecode::Bytecode() {
-
 }
 
-Bytecode::Bytecode(std::map<std::string, Block *> blocks, Block *entry_point) :
-  blocks(blocks), entry_point(entry_point) {
+Bytecode::Bytecode(std::map<std::string, Block *> blocks, Block *entry_point)
+    : blocks(blocks), entry_point(entry_point) {
 }
 
 void Bytecode::write(std::ostream &stream) const {

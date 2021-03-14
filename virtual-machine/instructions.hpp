@@ -1,10 +1,10 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
-#include <stack>
 #include <map>
-#include <string>
 #include <ostream>
+#include <stack>
+#include <string>
 
 namespace mjavac {
 namespace vm {
@@ -139,7 +139,7 @@ public:
   void write(std::ostream &stream) const;
 };
 
-}
-}
+} // namespace vm
+} // namespace mjavac
 
 #endif

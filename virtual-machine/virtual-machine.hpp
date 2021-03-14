@@ -1,9 +1,9 @@
 #ifndef VIRTUAL_MACHINE_H
 #define VIRTUAL_MACHINE_H
 
-#include <stack>
 #include <istream>
 #include <sstream>
+#include <stack>
 #include <vector>
 
 #include "bytecode.hpp"
@@ -24,7 +24,7 @@ public:
   int step();
   int execute();
 };
-}
-}
+} // namespace vm
+} // namespace mjavac
 
 #endif

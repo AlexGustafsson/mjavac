@@ -17,11 +17,11 @@
 #include <mjavac/virtual-machine.hpp>
 
 #include "ir-generator.hpp"
+#include "program.hpp"
 #include "semantics-analyzer.hpp"
+#include "stdlib.hpp"
 #include "symbol-generator.hpp"
 #include "symbol-table.hpp"
-#include "program.hpp"
-#include "stdlib.hpp"
 
 #include "main.hpp"
 

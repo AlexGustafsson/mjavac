@@ -211,7 +211,6 @@ void Instruction_ireturn::write(std::ostream &stream) const {
 }
 
 Instruction_print::Instruction_print() {
-
 }
 
 void Instruction_print::perform(std::stack<long> &stack, std::map<std::string, int> &variables) const {

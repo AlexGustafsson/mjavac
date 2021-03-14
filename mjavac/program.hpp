@@ -9,8 +9,9 @@ using namespace mjavac::ast;
 class Program {
 private:
   const ProgramNode *program_node;
-  std::map<std::string, ControlFlowGraph*> cfgs;
+  std::map<std::string, ControlFlowGraph *> cfgs;
   ControlFlowGraph *entry_point;
+
 public:
   Program(const ProgramNode *program_node);
   void write(std::ostream &stream) const;

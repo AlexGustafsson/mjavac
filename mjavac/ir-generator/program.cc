@@ -10,19 +10,19 @@ using namespace mjavac::ast;
 using namespace mjavac::ir;
 
 std::string resolve_method(const Node *node) {
-  const auto &value_node = dynamic_cast<const ValueNode*>(node);
+  const auto &value_node = dynamic_cast<const ValueNode *>(node);
   if (value_node != nullptr) {
     if (value_node->type == ValueNode::Identifier)
       return value_node->identifier_value;
   }
 
-  const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode*>(node);
+  const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(node);
   if (binary_operation_node != nullptr) {
     if (binary_operation_node->binary_operator == Operator::Dot)
       return resolve_method(binary_operation_node->left) + "." + resolve_method(binary_operation_node->right);
   }
 
-  const auto &class_initialization_node = dynamic_cast<const ClassInitializationNode*>(node);
+  const auto &class_initialization_node = dynamic_cast<const ClassInitializationNode *>(node);
   if (class_initialization_node != nullptr) {
     return class_initialization_node->identifier;
   }

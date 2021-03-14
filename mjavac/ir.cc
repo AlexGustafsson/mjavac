@@ -47,14 +47,14 @@ ThreeAddressCode::ThreeAddressCode(Address *result, Address *left, Address *righ
 }
 
 Expression::Expression(Address *result, Address *left, Address *right, std::string ir_operator)
-  : ThreeAddressCode(result, left, right), ir_operator(ir_operator) {
+    : ThreeAddressCode(result, left, right), ir_operator(ir_operator) {
 }
 
 Expression::Expression(Address *left, Address *right, std::string ir_operator)
     : Expression(nullptr, left, right, ir_operator) {
 }
 
-void Expression::write(std::ostream & stream) const {
+void Expression::write(std::ostream &stream) const {
   stream << this->result << " := " << this->left << " " << this->ir_operator << " " << this->right;
 }
 
@@ -141,7 +141,7 @@ Return::Return(Address *operand)
 }
 
 Return::Return()
-  : Return(nullptr) {
+    : Return(nullptr) {
 }
 
 void Return::write(std::ostream &stream) const {

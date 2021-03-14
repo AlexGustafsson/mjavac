@@ -1,10 +1,9 @@
 #ifndef CFG_H
 #define CFG_H
 
-#include <map>
 #include <list>
-#include <ostream>
 #include <map>
+#include <ostream>
 
 #include "ir.hpp"
 
@@ -12,7 +11,7 @@ using namespace mjavac::ir;
 
 class BasicBlock {
 public:
-  std::map<std::string, Address*> identifiers;
+  std::map<std::string, Address *> identifiers;
   std::list<mjavac::ir::ThreeAddressCode *> codes;
   BasicBlock *positive_branch;
   BasicBlock *negative_branch;
