@@ -25,7 +25,7 @@ endif
 source := $(shell find * -type f -name "*.cc" -not -path "*/build/*" -not -path "build/*")
 headers := $(shell find * -type f -name "*.hpp" -not -path "*/build/*" -not -path "build/*")
 
-.PHONY: build docker debug mjavac parser format analyze lint test package clean
+.PHONY: build docker debug mjavac parser virtual-machine ormat analyze lint test package clean
 
 # Build mjavac, default action
 build: parser mjavac
@@ -39,7 +39,7 @@ debug:
 	DEBUG=true $(MAKE)
 
 # Build the compiler project
-mjavac:
+mjavac: parser virtual-machine
 	$(MAKE) -C mjavac
 	mkdir -p build
 	ln -s $(PWD)/mjavac/build/production/mjavac $(PWD)/build/mjavac &> /dev/null || true
@@ -48,6 +48,10 @@ mjavac:
 # Build the parser project
 parser:
 	$(MAKE) -C parser
+
+# Build the virtual machien project
+virtual-machine:
+	$(MAKE) -C virtual-machine
 
 # Create the compilation database for llvm tools
 compile_commands.json: Makefile
@@ -76,3 +80,4 @@ clean:
 	rm -rf build compile_commands.json &>/dev/null || true
 	$(MAKE) -C parser clean
 	$(MAKE) -C mjavac clean
+	$(MAKE) -C virtual-machine clean

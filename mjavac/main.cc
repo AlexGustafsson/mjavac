@@ -14,6 +14,7 @@
 
 #include <mjavac/ast/nodes.hpp>
 #include <mjavac/parser.hpp>
+#include <mjavac/virtual-machine.hpp>
 
 #include "ir-generator.hpp"
 #include "semantics-analyzer.hpp"
@@ -163,8 +164,28 @@ int main(int argc, char **argv) {
   }
 
   if (flag_is_set(argc, argv, "--execute")) {
-    std::cerr << "\033[1mmjavac: \033[31mfatal error:\033[0m execution not implemented" << std::endl;
-    exit(EXIT_FAILURE);
+    mjavac::vm::Block *block = new mjavac::vm::Block("Application.main");
+    // Assign 1 to x
+    block->instructions.push_back(new mjavac::vm::Instruction_iconst(1));
+    block->instructions.push_back(new mjavac::vm::Instruction_istore("x"));
+    // Assign x to y
+    block->instructions.push_back(new mjavac::vm::Instruction_iload("x"));
+    block->instructions.push_back(new mjavac::vm::Instruction_istore("y"));
+    // Print x and y
+    block->instructions.push_back(new mjavac::vm::Instruction_iload("x"));
+    block->instructions.push_back(new mjavac::vm::Instruction_print());
+    block->instructions.push_back(new mjavac::vm::Instruction_iload("y"));
+    block->instructions.push_back(new mjavac::vm::Instruction_print());
+    // Stop
+    block->instructions.push_back(new mjavac::vm::Instruction_stop());
+
+    mjavac::vm::Bytecode *bytecode = new mjavac::vm::Bytecode();
+    bytecode->blocks[block->identifier] = block;
+    bytecode->entry_point = block;
+    bytecode->write(std::cout);
+
+    mjavac::vm::VirtualMachine *vm = new mjavac::vm::VirtualMachine(bytecode);
+    vm->execute();
   }
 
   return 0;

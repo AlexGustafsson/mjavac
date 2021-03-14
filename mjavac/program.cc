@@ -3,6 +3,7 @@
 #include "program.hpp"
 
 Program::Program(const ProgramNode *program_node) {
+  this->program_node = program_node;
   for (const auto &class_node : program_node->declarations) {
     if (class_node->internal)
       continue;
