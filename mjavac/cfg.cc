@@ -1,7 +1,7 @@
 #include "cfg.hpp"
 
 BasicBlock::BasicBlock(std::string identifier)
-  : positive_branch(nullptr), negative_branch(nullptr), identifier(identifier) {
+    : positive_branch(nullptr), negative_branch(nullptr), identifier(identifier) {
 }
 
 BasicBlock::BasicBlock()

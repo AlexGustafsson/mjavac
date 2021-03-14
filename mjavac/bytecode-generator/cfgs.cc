@@ -1,5 +1,5 @@
-#include <string>
 #include <map>
+#include <string>
 
 #include <mjavac/instructions.hpp>
 
@@ -80,15 +80,15 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
       continue;
     }
 
-    const Push *push = dynamic_cast<const Push*>(code);
+    const Push *push = dynamic_cast<const Push *>(code);
     if (push != nullptr) {
       push_address(push->left, bytecode_block);
       continue;
     }
 
-    const MethodCall *method_call = dynamic_cast<const MethodCall*>(code);
+    const MethodCall *method_call = dynamic_cast<const MethodCall *>(code);
     if (method_call != nullptr) {
-      const Variable *possible_print = dynamic_cast<const Variable*>(method_call->left);
+      const Variable *possible_print = dynamic_cast<const Variable *>(method_call->left);
       if (possible_print != nullptr && possible_print->identifier.compare("System.out.println") == 0) {
         // Special case for printing
         // Push the number of parameters pushed onto the stack to print
@@ -105,22 +105,22 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
       continue;
     }
 
-    const Return *return_ = dynamic_cast<const Return*>(code);
+    const Return *return_ = dynamic_cast<const Return *>(code);
     if (return_ != nullptr) {
       push_address(return_->left, bytecode_block);
       bytecode_block->instructions.push_back(new Instruction_ireturn());
       continue;
     }
 
-    const Copy *copy = dynamic_cast<const Copy*>(code);
+    const Copy *copy = dynamic_cast<const Copy *>(code);
     if (copy != nullptr) {
       push_address(copy->left, bytecode_block);
-      const Variable *variable = dynamic_cast<const Variable*>(copy->result);
+      const Variable *variable = dynamic_cast<const Variable *>(copy->result);
       bytecode_block->instructions.push_back(new Instruction_istore(variable->identifier));
       continue;
     }
 
-    const ConditionalJump *conditional_jump = dynamic_cast<const ConditionalJump*>(code);
+    const ConditionalJump *conditional_jump = dynamic_cast<const ConditionalJump *>(code);
     if (conditional_jump != nullptr) {
       // Push condition
       push_address(conditional_jump->left, bytecode_block);
@@ -130,7 +130,7 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
       continue;
     }
 
-    const UnconditionalJump *unconditional_jump = dynamic_cast<const UnconditionalJump*>(code);
+    const UnconditionalJump *unconditional_jump = dynamic_cast<const UnconditionalJump *>(code);
     if (unconditional_jump != nullptr) {
       // Get the target "address" from the constant
       const Constant *target = dynamic_cast<Constant *>(unconditional_jump->left);

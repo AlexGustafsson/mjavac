@@ -1,7 +1,7 @@
 #include <mjavac/virtual-machine.hpp>
 
-#include "ir-generator.hpp"
 #include "bytecode-generator.hpp"
+#include "ir-generator.hpp"
 
 #include "program.hpp"
 
