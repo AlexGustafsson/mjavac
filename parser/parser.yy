@@ -81,8 +81,6 @@
 
 %type <ValueNode*> Value
 
-%type <Operator> BinaryOperator UnaryOperator
-
 %type <TypeNode*> Type
 
 %type <std::list<Node*>> ParameterList
@@ -180,10 +178,22 @@ Loop
   ;
 
 Expression
-  : Expression BinaryOperator Expression { $$ = new BinaryOperationNode($1, $3, $2); set_location($$, @1, @3); }
+  : OPERATOR_MINUS Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, Operator::Negative); set_location($$, @1, @2);}
+  | OPERATOR_NOT Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, Operator::Negate); set_location($$, @1, @2);}
   | '(' Expression ')' { $$ = $2; set_location($$, @1, @3); }
+  | Expression OPERATOR_AND Expression { $$ = new BinaryOperationNode($1, $3, Operator::And); set_location($$, @1, @3); }
+  | Expression OPERATOR_OR Expression { $$ = new BinaryOperationNode($1, $3, Operator::Or); set_location($$, @1, @3); }
+  | Expression OPERATOR_EQUALS Expression { $$ = new BinaryOperationNode($1, $3, Operator::Equal); set_location($$, @1, @3); }
+  | Expression OPERATOR_NOT_EQUALS Expression { $$ = new BinaryOperationNode($1, $3, Operator::NotEqual); set_location($$, @1, @3); }
+  | Expression OPERATOR_LESS_THAN Expression { $$ = new BinaryOperationNode($1, $3, Operator::LessThan); set_location($$, @1, @3); }
+  | Expression OPERATOR_LESS_THAN_OR_EQUAL Expression { $$ = new BinaryOperationNode($1, $3, Operator::LessThanOrEqual); set_location($$, @1, @3); }
+  | Expression OPERATOR_GREATER_THAN Expression { $$ = new BinaryOperationNode($1, $3, Operator::GreaterThan); set_location($$, @1, @3); }
+  | Expression OPERATOR_GREATER_THAN_OR_EQUAL Expression { $$ = new BinaryOperationNode($1, $3, Operator::GreaterThanOrEqual); set_location($$, @1, @3); }
+  | Expression OPERATOR_MULTIPLICATION Expression { $$ = new BinaryOperationNode($1, $3, Operator::Multiplication); set_location($$, @1, @3); }
+  | Expression OPERATOR_DIVISION Expression { $$ = new BinaryOperationNode($1, $3, Operator::Division); set_location($$, @1, @3); }
+  | Expression OPERATOR_PLUS Expression { $$ = new BinaryOperationNode($1, $3, Operator::Plus); set_location($$, @1, @3); }
+  | Expression OPERATOR_MINUS Expression { $$ = new BinaryOperationNode($1, $3, Operator::Minus); set_location($$, @1, @3); }
   | Value { $$ = $1; }
-  | UnaryOperator Expression %prec OPERATOR_NOT { $$ = new UnaryOperationNode($2, $1); set_location($$, @1, @2);}
   | KEYWORD_NEW TYPE '[' Expression ']' { $$ = new ArrayInitializationNode(new TypeNode($2), $4); set_location($$, @1, @5); }
   | KEYWORD_NEW IDENTIFIER '(' ')' { $$ = new ClassInitializationNode($2); set_location($$, @1, @4); }
   | Expression '(' ParameterList ')' { auto _call = new MethodCallNode($1); _call->parameters = $3; $$ = _call; set_location($$, @1, @4); }
@@ -196,26 +206,6 @@ Value
   : INTEGER { $$ = new ValueNode(ValueNode::Integer, $1); set_location($$, @1, @1); }
   | BOOLEAN { $$ = new ValueNode(ValueNode::Boolean, $1); set_location($$, @1, @1); }
   | IDENTIFIER { $$ = new ValueNode(ValueNode::Identifier, $1); set_location($$, @1, @1); }
-  ;
-
-BinaryOperator
-  : OPERATOR_AND { $$ = Operator::And; }
-  | OPERATOR_OR { $$ = Operator::Or; }
-  | OPERATOR_EQUALS { $$ = Operator::Equal; }
-  | OPERATOR_NOT_EQUALS { $$ = Operator::NotEqual; }
-  | OPERATOR_LESS_THAN { $$ = Operator::LessThan; }
-  | OPERATOR_LESS_THAN_OR_EQUAL { $$ = Operator::LessThanOrEqual; }
-  | OPERATOR_GREATER_THAN { $$ = Operator::GreaterThan; }
-  | OPERATOR_GREATER_THAN_OR_EQUAL { $$ = Operator::GreaterThanOrEqual; }
-  | OPERATOR_PLUS { $$ = Operator::Plus; }
-  | OPERATOR_MINUS { $$ = Operator::Minus; }
-  | OPERATOR_MULTIPLICATION { $$ = Operator::Multiplication; }
-  | OPERATOR_DIVISION { $$ = Operator::Division; }
-  ;
-
-UnaryOperator
-  : OPERATOR_MINUS { $$ = Operator::Negative; }
-  | OPERATOR_NOT { $$ = Operator::Negate; }
   ;
 
 ParameterList
