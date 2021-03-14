@@ -1,7 +1,12 @@
 #include "cfg.hpp"
 
+BasicBlock::BasicBlock(std::string identifier)
+  : positive_branch(nullptr), negative_branch(nullptr), identifier(identifier) {
+}
+
 BasicBlock::BasicBlock()
     : positive_branch(nullptr), negative_branch(nullptr) {
+  this->identifier = std::to_string(this->get_id());
 }
 BasicBlock::BasicBlock(BasicBlock *positive_branch)
     : positive_branch(positive_branch), negative_branch(nullptr) {
@@ -28,8 +33,7 @@ void BasicBlock::write(std::ostream &stream, std::map<long, bool> &visited) cons
     return;
   visited[this->get_id()] = true;
 
-  stream << this->get_id() << "[shape=box label=\"";
-
+  stream << this->get_id() << "[shape=box xlabel=\"" << this->identifier << "\", label=\"";
   for (const auto &code : this->codes) {
     code->write(stream);
     stream << "\\n";

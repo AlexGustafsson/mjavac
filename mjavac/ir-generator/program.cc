@@ -202,6 +202,7 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
 
 void generate_method_ir(ControlFlowGraph *cfg, const ClassDeclarationNode *class_node, const MethodDeclarationNode *method_declaration_node) {
   BasicBlock *current_block = cfg->entry_point;
+  current_block->identifier = class_node->identifier + "." + method_declaration_node->identifier;
   for (const auto &parameter_node : method_declaration_node->parameters)
     current_block->add_code(new Parameter(new Variable(parameter_node->identifier)));
   for (const auto &statement_node : method_declaration_node->statements) {

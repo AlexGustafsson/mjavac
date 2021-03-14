@@ -15,8 +15,10 @@ public:
   std::list<mjavac::ir::ThreeAddressCode *> codes;
   BasicBlock *positive_branch;
   BasicBlock *negative_branch;
+  std::string identifier;
 
   BasicBlock();
+  BasicBlock(std::string identifier);
   BasicBlock(BasicBlock *positive_branch);
   BasicBlock(BasicBlock *positive_branch, BasicBlock *negative_branch);
 
