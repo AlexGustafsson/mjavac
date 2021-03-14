@@ -18,7 +18,7 @@ class Test {
   public int Sum(int num) {
     int sum;
     sum = 0;
-    while (0 < num && sum < 1000) {
+    while ((0 < num) && (sum < 1000)) {
       System.out.println(sum);
       sum = sum + num;
       num = num - 1;
