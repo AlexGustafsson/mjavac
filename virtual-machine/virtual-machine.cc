@@ -15,8 +15,8 @@ int VirtualMachine::step() {
     return 0;
 
   Instruction *instruction = this->current_block->instructions[this->instruction_pointer];
-  // TODO: temp write the instruction
-  instruction->write(std::cerr);
+  // Write out each instruction
+  // instruction->write(std::cerr);
 
   instruction->perform(this->stack, this->variables);
 
