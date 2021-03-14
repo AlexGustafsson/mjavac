@@ -121,8 +121,12 @@ void Parameter::write(std::ostream &stream) const {
   stream << this->result << " := param " << this->left;
 }
 
+MethodCall::MethodCall(Address *result, Address *left, Address *right)
+    : ThreeAddressCode(result, left, right) {
+}
+
 MethodCall::MethodCall(Address *left, Address *right)
-    : ThreeAddressCode(left, right) {
+    : MethodCall(nullptr, left, right) {
 }
 
 void MethodCall::write(std::ostream &stream) const {

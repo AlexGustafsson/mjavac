@@ -105,6 +105,7 @@ public:
 
 class MethodCall : public ThreeAddressCode {
 public:
+  MethodCall(Address *result, Address *left, Address *right);
   MethodCall(Address *left, Address *right);
   void write(std::ostream &stream) const;
 };

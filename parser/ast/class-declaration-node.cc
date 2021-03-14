@@ -1,5 +1,5 @@
 #include "class-declaration-node.hpp"
-#include "ast/method-declaration-node.hpp"
+
 using namespace mjavac::ast;
 
 ClassDeclarationNode::ClassDeclarationNode(std::string identifier) {

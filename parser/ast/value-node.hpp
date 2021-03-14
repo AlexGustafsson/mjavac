@@ -14,19 +14,16 @@ public:
   static int Integer;
   static int Boolean;
   static int Identifier;
-  static int Object;
 
   int type;
 
   int integer_value;
   bool boolean_value;
   std::string identifier_value;
-  std::list<std::string> object_value;
 
   bool is_array;
 
   ValueNode(int type, std::string value);
-  ValueNode(int type, std::list<std::string> object);
 
   void generate_parse_graph(std::ostream &stream) const;
 };

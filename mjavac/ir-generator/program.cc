@@ -9,6 +9,27 @@
 using namespace mjavac::ast;
 using namespace mjavac::ir;
 
+std::string resolve_method(const Node *node) {
+  const auto &value_node = dynamic_cast<const ValueNode*>(node);
+  if (value_node != nullptr) {
+    if (value_node->type == ValueNode::Identifier)
+      return value_node->identifier_value;
+  }
+
+  const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode*>(node);
+  if (binary_operation_node != nullptr) {
+    if (binary_operation_node->binary_operator == Operator::Dot)
+      return resolve_method(binary_operation_node->left) + "." + resolve_method(binary_operation_node->right);
+  }
+
+  const auto &class_initialization_node = dynamic_cast<const ClassInitializationNode*>(node);
+  if (class_initialization_node != nullptr) {
+    return class_initialization_node->identifier;
+  }
+
+  return "N/A";
+}
+
 Address *generate_expression_ir(ControlFlowGraph *cfg, BasicBlock *current_block, const Node *expression_node) {
   const auto &binary_operation_node = dynamic_cast<const BinaryOperationNode *>(expression_node);
   if (binary_operation_node != nullptr) {
@@ -59,8 +80,11 @@ Address *generate_expression_ir(ControlFlowGraph *cfg, BasicBlock *current_block
       Address *result = generate_expression_ir(cfg, current_block, parameter);
       current_block->add_code(new Push(result));
     }
-    // TODO: Add actual method name or id to the call
-    current_block->add_code(new MethodCall(nullptr, new Constant(method_call_node->parameters.size())));
+
+    std::string method_name = resolve_method(method_call_node->value);
+    TemporaryVariable *return_value = new TemporaryVariable(method_call_node->get_id());
+    current_block->add_code(new MethodCall(return_value, new Variable(method_name), new Constant(method_call_node->parameters.size())));
+    return return_value;
   }
 
   return nullptr;
