@@ -19,7 +19,7 @@ class Test {
     int sum;
     sum = 0;
     while (0 < num) {
-      if ((50 < num) && (sum < 2000)) {
+      if (50 < num && sum < 2000) {
     	  System.out.println(sum);
       } else {
     	  System.out.println(num);
