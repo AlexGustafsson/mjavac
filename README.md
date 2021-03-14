@@ -6,7 +6,7 @@
 </p>
 
 # mjavac
-## A parser and compiler for MiniJava, with extensions
+## A parser, vm and compiler for MiniJava, with extensions
 
 <a id="quickstart"></a>
 ## Quick Start
@@ -36,11 +36,13 @@ docker run --rm -it mjavac --help
 [Documention](#documentation)<br />
 [Documentation - mjavac](#documentation-mjavac)<br />
 [Documentation - Parser](#documentation-parser)<br />
+[Documentation - Virtual Machine](#documentation-vm)<br />
 [Development](#development)
 
 ## Features
 
 * Reusable parser library
+* Reusable stack-based virtual machine
 * Helpful error messages with GCC-like reporting
 * Can be built with included Graphviz support for parse graphs
 * Flags for validating syntax and or semantics only - usable for CI
@@ -148,6 +150,24 @@ These directories are to be referenced when building projects using the parser l
 
 ```sh
 g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacparser
+```
+
+<a id="documentation-vm"></a>
+### Virtual Machine
+
+The virtual machine project contains the bytecode, instructions and virtual machine. It's built as a statically linked library.
+
+The simplest way to build the virtual-machine is to simply run `make virtual-machine`. To build the virtual-machine by itself one can run `make -C virtual-machine`.
+
+Once built, the `virtual-machine/build` directory is populated with the following directories for the chosen build configuration (`production`, `debug`):
+
+* `include`
+* `lib`
+
+These directories are to be referenced when building projects using the virtual-machine like so:
+
+```sh
+g++ my-compiler.cc -I path/to/build/production/include -L path/to/build/production/lib/mjavac -l mjavacvm
 ```
 
 <a id="development"></a>
