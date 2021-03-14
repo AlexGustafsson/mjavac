@@ -22,7 +22,7 @@ void Variable::write(std::ostream &stream) const {
   stream << this->identifier;
 }
 
-Constant::Constant(unsigned long long value)
+Constant::Constant(long value)
     : value(value) {
 }
 
