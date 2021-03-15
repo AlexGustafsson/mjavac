@@ -1,11 +1,10 @@
 // mjavac test file header
-// header: 10
+// header: 9
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 0
-// 1
-// 2
+// output: 3
+// 120
+// 55
 // 1
 //
 class FacFib {

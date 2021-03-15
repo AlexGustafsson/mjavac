@@ -1,12 +1,9 @@
 // mjavac test file header
-// header: 10
+// header: 7
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 0
-// 1
-// 2
-// 1
+// output: 1
+// 50005000
 //
 class RecursiveSum {
   public static void main(String[] a){

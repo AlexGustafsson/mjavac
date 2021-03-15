@@ -1,12 +1,20 @@
 // mjavac test file header
-// header: 10
+// header: 18
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
+// output: 13
 // 0
-// 1
-// 2
-// 1
+// 100
+// 199
+// 297
+// 394
+// 490
+// 585
+// 679
+// 772
+// 864
+// 955
+// 1045
 //
 class SumUtility {
   public static void main(String[] a){

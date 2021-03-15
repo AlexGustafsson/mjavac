@@ -191,8 +191,8 @@ BasicBlock *generate_statement_ir(ControlFlowGraph *cfg, const ClassDeclarationN
     BasicBlock *rejoinder = new BasicBlock();
     header->negative_branch = rejoinder;
 
-    header->add_code(new ConditionalJump(comparison, new Constant(rejoinder->get_id())));
-    header->add_code(new UnconditionalJump(new Constant(body->get_id())));
+    header->add_code(new ConditionalJump(comparison, new Constant(body->get_id())));
+    header->add_code(new UnconditionalJump(new Constant(rejoinder->get_id())));
 
     return rejoinder;
   }

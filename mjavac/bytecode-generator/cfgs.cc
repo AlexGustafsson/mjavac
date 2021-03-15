@@ -77,6 +77,8 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
       push_address(unary_expression->left, bytecode_block);
       if (unary_expression->ir_operator.compare("!") == 0)
         bytecode_block->instructions.push_back(new Instruction_inot());
+      // Pop the result into the resulting variable
+      bytecode_block->instructions.push_back(new Instruction_istore(resolve_variable(unary_expression->result)));
       continue;
     }
 
@@ -95,10 +97,10 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
         push_address(method_call->right, bytecode_block);
         bytecode_block->instructions.push_back(new Instruction_print());
       } else {
-        // Push method identifier and number of parameters
-        push_address(method_call->left, bytecode_block);
+        // Push number of parameters
         push_address(method_call->right, bytecode_block);
-        bytecode_block->instructions.push_back(new Instruction_invokevirtual());
+        const Variable *target = dynamic_cast<Variable*>(method_call->left);
+        bytecode_block->instructions.push_back(new Instruction_invokevirtual(target->identifier));
         // Pop result into variable
         bytecode_block->instructions.push_back(new Instruction_istore(resolve_variable(method_call->result)));
       }

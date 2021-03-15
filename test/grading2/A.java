@@ -1,12 +1,13 @@
 // mjavac test file header
-// header: 10
+// header: 11
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
 // output: 5
-// 0
+// 10
 // 1
 // 2
-// 1
+// 3
+// 4
 //
 class Bar {
 	public static void main(String[] a) {
