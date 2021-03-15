@@ -1,5 +1,7 @@
 #include <mjavac/ast/nodes.hpp>
 #include <sstream>
+#include <iterator>
+#include <list>
 
 #include "../ir-generator.hpp"
 #include "mjavac/ast/conditional-node.hpp"
@@ -75,9 +77,10 @@ Address *generate_expression_ir(ControlFlowGraph *cfg, const ClassDeclarationNod
 
   const auto &method_call_node = dynamic_cast<const MethodCallNode *>(expression_node);
   if (method_call_node != nullptr) {
-    // Evaluate all parameters and push them to the stack
-    for (const auto &parameter : method_call_node->parameters) {
-      Address *result = generate_expression_ir(cfg, class_node, current_block, parameter);
+    // Evaluate all parameters and push them to the stack in reversed order
+    // since the stack will reverse the push/pop
+    for (auto iterator = method_call_node->parameters.rbegin(); iterator != method_call_node->parameters.rend(); ++iterator) {
+      Address *result = generate_expression_ir(cfg, class_node, current_block, *iterator);
       current_block->add_code(new Push(result));
     }
 
