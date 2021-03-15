@@ -2,12 +2,6 @@
 // header: 10
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 1
-// 1
-// 1
-// 1
-//
 class BasicClass {
   int foo = 1;
 }

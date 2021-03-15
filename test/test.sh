@@ -67,9 +67,8 @@ function test_file() {
     fi
   fi
 
-  # Skip execution - not implemented
-  if [[ -n "$expected_output" ]] && false; then
-    output="$($mjavac --execute "$file" 2>&1)"
+  if [[ -n "$expected_output" ]]; then
+    output="$($mjavac --execute "$file" 2>/dev/null)"
     exit_code="$?"
     if [[ "$output" = "$expected_output" ]]; then
       echo -e "✔ \e[32mcan execute $file\e[0m"
@@ -102,3 +101,4 @@ test_files "$DIRECTORY/examples/"*.java
 test_files "$DIRECTORY/incorrect/"*.java
 test_files "$DIRECTORY/grading/"*.java
 test_files "$DIRECTORY/grading2/"*.java
+test_files "$DIRECTORY/vm/"*.java

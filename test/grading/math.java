@@ -2,14 +2,6 @@
 // header: 12
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 4
-// 4
-// 4
-// 4
-// 4
-// 0
-//
 class Math {
   public static void main() {
     System.out.println(1 + 3);

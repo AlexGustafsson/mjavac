@@ -2,12 +2,6 @@
 // header: 10
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 0
-// 1
-// 2
-// 1
-//
 class Config {
   public int getMaxValue() {
     return 2;

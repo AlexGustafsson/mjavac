@@ -2,9 +2,6 @@
 // header: 6
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 1
-// 3
-//
 
 class Application {
   public static void main() {

@@ -2,12 +2,6 @@
 // header: 11
 // parse: succeed - valid syntax
 // semantics: succeed - valid program
-// output: 5
-// 5
-// 10
-// 10
-// 5
-//
 class Alfa {
   int foo = 5;
   int bar = 10;
