@@ -1,7 +1,7 @@
-#include <mjavac/ast/nodes.hpp>
-#include <sstream>
 #include <iterator>
 #include <list>
+#include <mjavac/ast/nodes.hpp>
+#include <sstream>
 
 #include "../ir-generator.hpp"
 #include "mjavac/ast/conditional-node.hpp"

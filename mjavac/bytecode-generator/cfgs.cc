@@ -99,7 +99,7 @@ void generate_block_bytecode(BasicBlock *block, Bytecode *bytecode, std::map<lon
       } else {
         // Push number of parameters
         push_address(method_call->right, bytecode_block);
-        const Variable *target = dynamic_cast<Variable*>(method_call->left);
+        const Variable *target = dynamic_cast<Variable *>(method_call->left);
         bytecode_block->instructions.push_back(new Instruction_invokevirtual(target->identifier));
         // Pop result into variable
         bytecode_block->instructions.push_back(new Instruction_istore(resolve_variable(method_call->result)));

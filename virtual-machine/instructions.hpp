@@ -11,7 +11,6 @@
 namespace mjavac {
 namespace vm {
 
-
 class Instruction {
 public:
   virtual void perform(State *state) const = 0;

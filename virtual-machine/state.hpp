@@ -3,9 +3,9 @@
 
 #include <map>
 #include <stack>
+#include <string>
 #include <tuple>
 #include <vector>
-#include <string>
 
 namespace mjavac {
 namespace vm {
@@ -27,7 +27,7 @@ public:
   std::string current_block;
 };
 
-}
-}
+} // namespace vm
+} // namespace mjavac
 
 #endif

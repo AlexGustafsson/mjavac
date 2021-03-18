@@ -205,7 +205,7 @@ void Instruction_iffalse::write(std::ostream &stream) const {
 }
 
 Instruction_invokevirtual::Instruction_invokevirtual(std::string identifier)
-  : identifier(identifier) {
+    : identifier(identifier) {
 }
 
 void Instruction_invokevirtual::perform(State *state) const {
