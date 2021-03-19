@@ -74,7 +74,7 @@ test: debug
 	./test/test.sh build/mjavac.debug
 
 package:
-	zip -r ci mjavac parser virtual-machine test .clang-format .dockerignore Dockerfile Makefile README.md
+	zip -r mjavac.zip ci mjavac parser virtual-machine test .clang-format .dockerignore Dockerfile Makefile README.md
 
 clean:
 	rm -rf build compile_commands.json &>/dev/null || true
